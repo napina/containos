@@ -21,29 +21,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
 =============================================================================*/
-#pragma once
-#ifndef containos_singleton_h
-#define containos_singleton_h
+#include "unitos/unitos.h"
+#include "containos/singleton.h"
 
-#include "containos\config.h"
+namespace c = containos;
 
-namespace containos {
-
-template<typename T>
-class Singleton
+class TestSingleton : public c::Singleton<TestSingleton>
 {
 public:
-    static void createInstance();
-    static void deleteInstance();
-    static bool hasInstance();
-    static T& getInstance();
-
-private:
-    static T* instance;
+    TestSingleton() : value(1337) {}
+    ~TestSingleton() { }
+    int value;
 };
 
-} // end of containos
-
-#include "containos/singleton.inl"
-
-#endif
+TEST_SUITE(Singleton)
+{
+    TEST(Invalid)
+    {
+        EXPECT_EQUAL(TestSingleton::hasInstance(), false);
+    }
+    
+    TEST(CreateDelete)
+    {
+        EXPECT_EQUAL(TestSingleton::hasInstance(), false);
+        TestSingleton::createInstance();
+        EXPECT_EQUAL(TestSingleton::hasInstance(), true);
+        EXPECT_EQUAL(TestSingleton::getInstance().value, 1337);
+        TestSingleton::deleteInstance();
+        EXPECT_EQUAL(TestSingleton::hasInstance(), false);
+    }
+}
