@@ -25,29 +25,36 @@ IN THE SOFTWARE.
 #ifndef containos_container_h
 #define containos_container_h
 
-#include "containos/containerbase.h"
+/*----------------------------------------------------------------------------
+struct Allocator
+{
+    static void* alloc(size_t size, size_t align, int flags = 0);
+    static void* realloc(void* ptr, size_t size);
+    static void  dealloc(void* ptr);
+};
+//--------------------------------------------------------------------------*/
 
 namespace containos {
 
+namespace internal {
+    template<typename Allocator, bool IsStatic> struct ContainerBase;
+}
+
 template<typename Allocator>
-class Container : protected internal::ContainerBase<Allocator, Allocator::IsStatic>
+class Container : protected internal::ContainerBase<Allocator,__is_pod(Allocator)>
 {
-    typedef internal::ContainerBase<Allocator, Allocator::IsStatic> Base;
-
+    typedef internal::ContainerBase<Allocator,__is_pod(Allocator)> Base;
 protected:
-    Container();
-    Container(const Allocator& allocator);
-
     template<typename T>
     T* construct();
-    template<typename T, typename ARG1>
-    T* construct(ARG1 arg1);
-    template<typename T, typename ARG1, typename ARG2>
-    T* construct(ARG1 arg1, ARG2 arg2);
-    template<typename T, typename ARG1, typename ARG2, typename ARG3>
-    T* construct(ARG1 arg1, ARG2 arg2, ARG3 arg3);
-    template<typename T, typename ARG1, typename ARG2, typename ARG3, typename ARG4>
-    T* construct(ARG1 arg1, ARG2 arg2, ARG3 arg3, ARG4 arg4);
+    template<typename T,typename A>
+    T* construct(A a);
+    template<typename T,typename A,typename B>
+    T* construct(A a, B b);
+    template<typename T,typename A,typename B,typename C>
+    T* construct(A a, B b, C c);
+    template<typename T,typename A,typename B,typename C,typename D>
+    T* construct(A a, B b, C c, D d);
     template<typename T>
     void destruct(T* ptr);
 

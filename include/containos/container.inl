@@ -1,81 +1,117 @@
-// Copyright (C) Ville Ruusutie, 2008
+/*=============================================================================
 
+Copyright (c) 2007-2013 Ville Ruusutie
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+
+=============================================================================*/
 #pragma once
-#ifndef korppu_container_inl
-#define korppu_container_inl
+#ifndef containos_container_inl
+#define containos_container_inl
 
-#include "korppu/memory/memory.h"
+namespace containos {
 
-namespace k {
+//----------------------------------------------------------------------------
+namespace internal {
 
-template<typename AllocatorType>
-__forceinline Container<AllocatorType>::Container()
-    : Base()
+template<typename Allocator, bool IsStatic>
+struct ContainerBase
 {
-}
+protected:
+    void* alloc(size_t size, size_t align, int flags = 0)   { return Allocator::alloc(size, align, flags); }
+    void* realloc(void* ptr, size_t size)                   { return Allocator::realloc(ptr, size); }
+    void  dealloc(void* ptr)                                { Allocator::dealloc(ptr); }
+};
 
-template<typename AllocatorType>
-__forceinline Container<AllocatorType>::Container(const AllocatorType& allocator)
-    : Base(allocator)
+template<typename Allocator>
+struct ContainerBase<Allocator,false>
 {
-}
+    void setAllocator(Allocator* allocator)                 { m_allocator = allocator; }
 
-template<typename AllocatorType>
+protected:
+    void* alloc(size_t size, size_t align, int flags = 0)   { return m_allocator->alloc(size, align, flags); }
+    void* realloc(void* ptr, size_t size)                   { return m_allocator->realloc(ptr, size); }
+    void  dealloc(void* ptr)                                { m_allocator->dealloc(ptr); }
+
+private:
+    Allocator* m_allocator;
+};
+
+} // end of internal
+//----------------------------------------------------------------------------
+
+template<typename Allocator>
 template<typename T>
-__forceinline T* Container<AllocatorType>::construct()
+__forceinline T* Container<Allocator>::construct()
 {
-    return k_placement_new(Base::allocate(sizeof(T)), T);
+    return containos_placement_new(Base::alloc(sizeof(T)), T);
 }
 
-template<typename AllocatorType>
-template<typename T, typename ARG1>
-__forceinline T* Container<AllocatorType>::construct(ARG1 arg1)
+template<typename Allocator>
+template<typename T, typename A>
+__forceinline T* Container<Allocator>::construct(A a)
 {
-    return k_placement_new1(Base::allocate(sizeof(T)), T, arg1);
+    return containos_placement_new1(Base::alloc(sizeof(T)), T, a);
 }
 
-template<typename AllocatorType>
-template<typename T, typename ARG1, typename ARG2>
-__forceinline T* Container<AllocatorType>::construct(ARG1 arg1, ARG2 arg2)
+template<typename Allocator>
+template<typename T, typename A, typename B>
+__forceinline T* Container<Allocator>::construct(A a, B b)
 {
-    return k_placement_new2(Base::allocate(sizeof(T)), T, arg1, arg2);
+    return containos_placement_new2(Base::alloc(sizeof(T)), T, a, b);
 }
 
-template<typename AllocatorType>
-template<typename T, typename ARG1, typename ARG2, typename ARG3>
-__forceinline T* Container<AllocatorType>::construct(ARG1 arg1, ARG2 arg2, ARG3 arg3)
+template<typename Allocator>
+template<typename T, typename A, typename B, typename C>
+__forceinline T* Container<Allocator>::construct(A a, B b, C c)
 {
-    return k_placement_new3(Base::allocate(sizeof(T)), T, arg1, arg2, arg3);
+    return containos_placement_new3(Base::alloc(sizeof(T)), T, a, b, c);
 }
 
-template<typename AllocatorType>
-template<typename T, typename ARG1, typename ARG2, typename ARG3, typename ARG4>
-__forceinline T* Container<AllocatorType>::construct(ARG1 arg1, ARG2 arg2, ARG3 arg3, ARG4 arg4)
+template<typename Allocator>
+template<typename T, typename A, typename B, typename C, typename D>
+__forceinline T* Container<Allocator>::construct(A a, B b, C c, D d)
 {
-    return k_placement_new4(Base::allocate(sizeof(T)), T, arg1, arg2, arg3, arg4);
+    return containos_placement_new4(Base::alloc(sizeof(T)), T, a, b, c, d);
 }
 
-template<typename AllocatorType>
+template<typename Allocator>
 template<typename T>
-__forceinline void Container<AllocatorType>::destruct(T* ptr)
+__forceinline void Container<Allocator>::destruct(T* ptr)
 {
-    k_placement_delete(ptr, T);
+    containos_placement_delete(ptr, T);
     Base::deallocate(ptr);
 }
 
-template<typename AllocatorType>
+template<typename Allocator>
 template<typename T>
-__forceinline T* Container<AllocatorType>::constructArray(size_t size)
+__forceinline T* Container<Allocator>::constructArray(size_t size)
 {
-    void* buffer = Base::allocate(sizeof(T) * size);
+    void* buffer = Base::alloc(sizeof(T) * size,__alignof(T));
     return reinterpret_cast<T*>(buffer);
 }
 
-template<typename AllocatorType>
+template<typename Allocator>
 template<typename T>
-__forceinline void Container<AllocatorType>::destructArray(T* ptr, size_t)
+__forceinline void Container<Allocator>::destructArray(T* ptr, size_t)
 {
-    Base::deallocate(ptr);
+    Base::dealloc(ptr);
 }
 
 } // end of korppu
