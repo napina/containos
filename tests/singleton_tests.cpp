@@ -23,10 +23,18 @@ IN THE SOFTWARE.
 =============================================================================*/
 #include "unitos/unitos.h"
 #include "containos/singleton.h"
+#include <memory>
 
 namespace c = containos;
 
-class TestSingleton : public c::Singleton<TestSingleton>
+struct Mallocator
+{
+    static void* alloc(size_t size, size_t align, int flags = 0)    { return ::malloc(size); }
+    static void* realloc(void* ptr, size_t size)                    { return ::realloc(ptr, size); }
+    static void  dealloc(void* ptr)                                 { ::free(ptr); }
+};
+
+class TestSingleton : public c::Singleton<TestSingleton,Mallocator>
 {
 public:
     TestSingleton() : value(1337) {}

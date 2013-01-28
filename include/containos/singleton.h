@@ -29,17 +29,16 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-template<typename T>
-class Singleton
+template<typename T,typename Allocator>
+struct Singleton
 {
-public:
     static void createInstance();
     static void deleteInstance();
     static bool hasInstance();
     static T& getInstance();
 
 private:
-    static T* instance;
+    static T* s_instance;
 };
 
 } // end of containos

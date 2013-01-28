@@ -27,35 +27,36 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-template<typename T>
-T* Singleton<T>::instance = nullptr;
+template<typename T,typename Allocator>
+T* Singleton<T,Allocator>::s_instance = nullptr;
 
-template<typename T>
-__forceinline void Singleton<T>::createInstance()
+template<typename T,typename Allocator>
+__forceinline void Singleton<T,Allocator>::createInstance()
 {
     containos_assert(!hasInstance());
-    Singleton<T>::instance = containos_new(T)();
+    s_instance = containos_placement_new(Allocator::alloc(sizeof(T),4),T);
 }
 
-template<typename T>
-__forceinline void Singleton<T>::deleteInstance()
+template<typename T,typename Allocator>
+__forceinline void Singleton<T,Allocator>::deleteInstance()
 {
     containos_assert(hasInstance());
-    containos_delete(Singleton<T>::instance);
-    Singleton<T>::instance = nullptr;
+    containos_placement_delete(s_instance,T);
+    Allocator::dealloc(s_instance);
+    s_instance = nullptr;
 }
 
-template<typename T>
-__forceinline bool Singleton<T>::hasInstance()
+template<typename T,typename Allocator>
+__forceinline bool Singleton<T,Allocator>::hasInstance()
 {
-    return Singleton<T>::instance != nullptr;
+    return s_instance != nullptr;
 }
 
-template<typename T>
-__forceinline T& Singleton<T>::getInstance()
+template<typename T,typename Allocator>
+__forceinline T& Singleton<T,Allocator>::getInstance()
 {
     containos_assert(hasInstance());
-    return *(Singleton<T>::instance);
+    return *s_instance;
 }
 
 } // end of korppu
