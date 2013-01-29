@@ -25,6 +25,8 @@ IN THE SOFTWARE.
 #ifndef containos_ref_h
 #define containos_ref_h
 
+#include "containos\config.h"
+
 namespace containos {
 
 // add this to class header
@@ -44,13 +46,13 @@ public:
     explicit Ref(T* ptr);
     Ref(Ref<T> const& handle);
 
-    Ref<T>& operator=(T const* ptr);
+    Ref<T>& operator=(T* ptr);
     Ref<T>& operator=(Ref<T> const& handle);
     Ref<T>& operator=(nullptr_t);
     bool operator==(Ref<T> const& other) const;
     bool operator!=(Ref<T> const& other) const;
-    bool operator==(T* other) const;
-    bool operator!=(T* other) const;
+    bool operator==(T const* other) const;
+    bool operator!=(T const* other) const;
     bool operator<(Ref<T> const& other) const;
 
     operator bool() const;
@@ -62,6 +64,7 @@ public:
     T const* operator->() const;
     T const* get() const;
     T* get();
+    bool isValid() const;
 
     template<typename T2> T2* cast();
 

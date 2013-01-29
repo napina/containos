@@ -54,7 +54,7 @@ public:
     T* operator->();
     T const* get() const;
     T* get();
-	bool isValid() const;
+    bool isValid() const;
 
     template<typename T2> T2* cast();
 

@@ -26,10 +26,10 @@ IN THE SOFTWARE.
 #define containos_config_h
 
 #ifndef nullptr_t
-	typedef decltype(nullptr) nullptr_t;
+    typedef decltype(nullptr) nullptr_t;
 #endif
 #ifndef __forceinline
-#	define inline __forceinline
+#   define inline __forceinline
 #endif
 
 #define containos_assert(Test)

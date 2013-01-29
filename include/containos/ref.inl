@@ -52,7 +52,7 @@ __forceinline Ref<T>::Ref(Ref<T> const& handle)
 }
 
 template<typename T>
-__forceinline Ref<T>& Ref<T>::operator=(T const* ptr)
+__forceinline Ref<T>& Ref<T>::operator=(T* ptr)
 {
     reset(ptr);
     return *this;
@@ -85,13 +85,13 @@ __forceinline bool Ref<T>::operator!=(Ref<T> const& other) const
 }
 
 template<typename T>
-__forceinline bool Ref<T>::operator==(T* other) const
+__forceinline bool Ref<T>::operator==(T const* other) const
 {
     return (m_ptr == other);
 }
 
 template<typename T>
-__forceinline bool Ref<T>::operator!=(T* other) const
+__forceinline bool Ref<T>::operator!=(T const* other) const
 {
     return (m_ptr != other);
 }
@@ -148,6 +148,12 @@ template<typename T>
 __forceinline T* Ref<T>::get()
 {
     return m_ptr;
+}
+
+template<typename T>
+__forceinline bool Ref<T>::isValid() const
+{
+    return m_ptr != nullptr;
 }
 
 template<typename T>

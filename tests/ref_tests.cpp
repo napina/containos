@@ -22,7 +22,7 @@ IN THE SOFTWARE.
 
 =============================================================================*/
 #include "unitos/unitos.h"
-#include "containos/ptr.h"
+#include "containos/ref.h"
 #include <memory>
 
 namespace c = containos;
@@ -39,10 +39,14 @@ struct Mallocator
 struct BaseClass
 {
     virtual ~BaseClass() {}
-    BaseClass() : m_value(0) {}
+
+    BaseClass() : m_value(0) {
+        REF_STORAGE_INIT();
+    }
 
 private:
     int m_value;
+    REF_STORAGE(BaseClass,int);
 };
 
 struct DerivedClass : public BaseClass
@@ -51,7 +55,7 @@ struct DerivedClass : public BaseClass
         delete m_ptr;
     }
 
-    DerivedClass() {
+    DerivedClass() : BaseClass() {
         m_ptr = new int(33);
     }
 
@@ -61,11 +65,11 @@ private:
 
 }
 
-TEST_SUITE(Ptr)
+TEST_SUITE(Ref)
 {
     TEST(Invalid)
     {
-        c::Ptr<BaseClass> ptr;
+        c::Ref<BaseClass> ptr;
         EXPECT_FALSE(ptr.isValid());
         EXPECT_TRUE(ptr == nullptr);
         EXPECT_FALSE(ptr != nullptr);
@@ -74,7 +78,7 @@ TEST_SUITE(Ptr)
 
     TEST(CreateAutoDelete)
     {
-        c::Ptr<BaseClass> ptr;
+        c::Ref<BaseClass> ptr;
         ptr = new DerivedClass();
         EXPECT_TRUE(ptr.isValid());
         EXPECT_FALSE(ptr == nullptr);
@@ -84,7 +88,7 @@ TEST_SUITE(Ptr)
 
     TEST(CreateManualDelete)
     {
-        c::Ptr<BaseClass> ptr;
+        c::Ref<BaseClass> ptr;
         ptr = new DerivedClass();
         EXPECT_TRUE(ptr.isValid());
         EXPECT_FALSE(ptr == nullptr);

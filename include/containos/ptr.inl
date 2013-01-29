@@ -71,6 +71,7 @@ template<typename T>
 __forceinline Ptr<T>& Ptr<T>::operator=(nullptr_t)
 {
     containos_delete(m_ptr);
+    m_ptr = nullptr;
     return *this;
 }
 
