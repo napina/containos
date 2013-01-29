@@ -25,6 +25,13 @@ IN THE SOFTWARE.
 #ifndef containos_config_h
 #define containos_config_h
 
+#ifndef nullptr_t
+	typedef decltype(nullptr) nullptr_t;
+#endif
+#ifndef __forceinline
+#	define inline __forceinline
+#endif
+
 #define containos_assert(Test)
 #define containos_cast(Type,Ptr)    static_cast<Type >(Ptr)
 #define containos_new(Type)         new Type

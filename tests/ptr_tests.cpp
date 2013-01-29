@@ -21,53 +21,62 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
 =============================================================================*/
-#pragma once
-#ifndef containos_ptr_h
-#define containos_ptr_h
+#include "unitos/unitos.h"
+#include "containos/ptr.h"
+#include <memory>
 
-#include "containos/config.h"
+namespace c = containos;
 
-namespace containos {
-
-template<typename T>
-class Ptr
+struct Mallocator
 {
-public:
-    ~Ptr();
-    Ptr();
-    explicit Ptr(T* ptr);
-    Ptr(Ptr<T>& other);
-
-    Ptr<T>& operator=(T* ptr);
-    Ptr<T>& operator=(Ptr<T>& handle);
-    Ptr<T>& operator=(nullptr_t);
-    bool operator==(T* other) const;
-    bool operator!=(T* other) const;
-    bool operator<(const Ptr<T>& other) const;
-
-    operator bool() const;
-    operator T*() const;
-    operator T const*() const;
-    T const& operator*() const;
-    T& operator*();
-    T const* operator->() const;
-    T* operator->();
-    T const* get() const;
-    T* get();
-	bool isValid() const;
-
-    template<typename T2> T2* cast();
-
-    void reset(T* ptr = nullptr);
-    /// does not delete! this removes ownership and returns pointer
-    T* release();
-
-private:
-    T* m_ptr;
+	static void* alloc(size_t size, size_t align, int flags = 0)    { return ::malloc(size); }
+	static void* realloc(void* ptr, size_t size)                    { return ::realloc(ptr, size); }
+	static void  dealloc(void* ptr)                                 { ::free(ptr); }
 };
 
-} // end of containos
+struct BaseClass
+{
+	virtual ~BaseClass() {}
+	BaseClass() : m_value(0) {}
 
-#include "containos/ptr.inl"
+private:
+	int m_value;
+};
 
-#endif
+struct DerivedClass : public BaseClass
+{
+	virtual ~DerivedClass() {
+		delete m_ptr;
+	}
+
+	DerivedClass() {
+		m_ptr = new int(33);
+	}
+
+private:
+	int* m_ptr;
+};
+
+TEST_SUITE(Ptr)
+{
+	TEST(Invalid)
+    {
+		c::Ptr<BaseClass> ptr;
+        EXPECT_FALSE(ptr.isValid());
+		EXPECT_TRUE(ptr == nullptr);
+		EXPECT_FALSE(ptr != nullptr);
+		EXPECT_TRUE(ptr.get() == nullptr);
+    }
+
+	TEST(CreateDelete)
+	{
+		c::Ptr<BaseClass> ptr;
+		ptr = new DerivedClass();
+		EXPECT_TRUE(ptr.isValid());
+		EXPECT_FALSE(ptr == nullptr);
+		EXPECT_TRUE(ptr != nullptr);
+		EXPECT_FALSE(ptr.get() == nullptr);
+		ptr = nullptr;
+		EXPECT_FALSE(ptr.isValid());
+	}
+}

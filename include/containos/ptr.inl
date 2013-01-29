@@ -145,6 +145,12 @@ __forceinline T* Ptr<T>::get()
 }
 
 template<typename T>
+__forceinline bool Ptr<T>::isValid() const
+{
+    return m_ptr != nullptr;
+}
+
+template<typename T>
 template<typename T2>
 __forceinline T2* Ptr<T>::cast()
 {
