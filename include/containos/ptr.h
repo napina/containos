@@ -29,6 +29,7 @@ IN THE SOFTWARE.
 
 namespace containos {
 
+// Scoped pointer
 template<typename T>
 class Ptr
 {

@@ -37,6 +37,7 @@ namespace containos {
 #define REF_STORAGE_INIT()\
     m_refCount = 0
 
+// Reference counted scoped pointer
 template<typename T>
 class Ref
 {

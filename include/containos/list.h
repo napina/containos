@@ -25,12 +25,12 @@ IN THE SOFTWARE.
 #ifndef containos_list_h
 #define containos_list_h
 
-#include "containos/config.h"
 #include "containos/container.h"
 
 namespace containos {
 
-// TODO add template specialization for auto grow and value types
+// Simple continuous list of items
+// TODO add template specialization for auto grow
 template<typename T, typename Allocator>// = DefaultAllocator>
 class List : protected Container<Allocator>
 {

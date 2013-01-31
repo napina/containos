@@ -247,6 +247,6 @@ __forceinline size_t List<T,Allocator>::capasity() const
     return m_capasity;
 }
 
-} // end of korppu
+} // end of containos
 
 #endif

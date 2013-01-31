@@ -129,6 +129,6 @@ __forceinline bool FixedList<T,Capasity>::hasSpace() const
     return m_size < Capasity;
 }
 
-} // end of korppu
+} // end of containos
 
 #endif

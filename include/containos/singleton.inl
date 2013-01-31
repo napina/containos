@@ -59,6 +59,6 @@ __forceinline T& Singleton<T,Allocator>::getInstance()
     return *s_instance;
 }
 
-} // end of korppu
+} // end of containos
 
 #endif
