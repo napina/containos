@@ -33,7 +33,7 @@ IN THE SOFTWARE.
 #endif
 
 #define containos_assert(Test)
-#define containos_cast(Type,Ptr)    static_cast<Type >(Ptr)
+#define containos_cast(Type,Ptr)    static_cast<(Type)>(Ptr)
 #define containos_new(Type)         new Type
 #define containos_delete(Ptr)       delete (Ptr)
 //----------------------------------------------------------------------------
@@ -43,6 +43,10 @@ IN THE SOFTWARE.
 #define containos_placement_new2(ptr,t,a,b)             containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b)
 #define containos_placement_new3(ptr,t,a,b,c)           containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c)
 #define containos_placement_new4(ptr,t,a,b,c,d)         containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d)
+#define containos_placement_new5(ptr,t,a,b,c,d,e)       containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d,e)
+#define containos_placement_new6(ptr,t,a,b,c,d,e,f)     containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d,e,f)
+#define containos_placement_new7(ptr,t,a,b,c,d,e,f,g)   containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d,e,f,g)
+#define containos_placement_new8(ptr,t,a,b,c,d,e,f,g,h) containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d,e,f,g,h)
 #define containos_placement_copy(ptr,t,other)           containos::internal::placement_new<t,__is_pod(t)>::copy(ptr,other)
 #define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,__has_trivial_destructor(t)>::destroy(ptr)
 //----------------------------------------------------------------------------
@@ -60,13 +64,21 @@ template<typename T>
 struct placement_new<T,false> {
     static T* create(void* ptr)                                 { return new (ptr) T(); }
     template<typename A>
-    static T* create(void* ptr, A a)                            { return new (ptr) T(a); }
+    static T* create(void* ptr,A a)                             { return new (ptr) T(a); }
     template<typename A, typename B>
-    static T* create(void* ptr, A a, B b)                       { return new (ptr) T(a,b); }
+    static T* create(void* ptr,A a,B b)                         { return new (ptr) T(a,b); }
     template<typename A, typename B, typename C>
-    static T* create(void* ptr, A a, B b, C c)                  { return new (ptr) T(a,b,c); }
+    static T* create(void* ptr,A a,B b,C c)                     { return new (ptr) T(a,b,c); }
     template<typename A, typename B, typename C, typename D>
-    static T* create(void* ptr, A a, B b, C c, D d)             { return new (ptr) T(a,b,c,d); }
+    static T* create(void* ptr,A a,B b,C c,D d)                 { return new (ptr) T(a,b,c,d); }
+	template<typename A, typename B, typename C, typename D, typename E>
+    static T* create(void* ptr,A a,B b,C c,D d,E e)             { return new (ptr) T(a,b,c,d,e); }
+	template<typename A, typename B, typename C, typename D, typename E, typename F>
+    static T* create(void* ptr,A a,B b,C c,D d,E e,F f)         { return new (ptr) T(a,b,c,d,e,f); }
+	template<typename A, typename B, typename C, typename D, typename E, typename F, typename G>
+    static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g)     { return new (ptr) T(a,b,c,d,e,f,g); }
+	template<typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H>
+    static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g,H h) { return new (ptr) T(a,b,c,d,e,f,g,h); }
 
     static T* copy(void* ptr, T const& other)                   { return new (ptr) T(other); }
 };

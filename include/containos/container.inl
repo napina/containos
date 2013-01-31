@@ -92,6 +92,34 @@ __forceinline T* Container<Allocator>::construct(A a, B b, C c, D d)
 }
 
 template<typename Allocator>
+template<typename T,typename A,typename B,typename C,typename D,typename E>
+__forceinline T* Container<Allocator>::construct(A a, B b, C c, D d, E e)
+{
+    return containos_placement_new5(Base::alloc(sizeof(T)), T, a, b, c, d, e);
+}
+
+template<typename Allocator>
+template<typename T,typename A,typename B,typename C,typename D,typename E,typename F>
+__forceinline T* Container<Allocator>::construct(A a, B b, C c, D d, E e, F f)
+{
+    return containos_placement_new6(Base::alloc(sizeof(T)), T, a, b, c, d, e, f);
+}
+
+template<typename Allocator>
+template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G>
+__forceinline T* Container<Allocator>::construct(A a, B b, C c, D d, E e, F f, G g)
+{
+    return containos_placement_new7(Base::alloc(sizeof(T)), T, a, b, c, d, e, f, g);
+}
+
+template<typename Allocator>
+template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G,typename H>
+__forceinline T* Container<Allocator>::construct(A a, B b, C c, D d, E e, F f, G g, H h)
+{
+    return containos_placement_new8(Base::alloc(sizeof(T)), T, a, b, c, d, e, f, g, h);
+}
+
+template<typename Allocator>
 template<typename T>
 __forceinline void Container<Allocator>::destruct(T* ptr)
 {
@@ -114,6 +142,6 @@ __forceinline void Container<Allocator>::destructArray(T* ptr, size_t)
     Base::dealloc(ptr);
 }
 
-} // end of korppu
+} // end of containos
 
 #endif

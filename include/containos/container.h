@@ -25,6 +25,8 @@ IN THE SOFTWARE.
 #ifndef containos_container_h
 #define containos_container_h
 
+#include "containos/config.h"
+
 /*----------------------------------------------------------------------------
 struct Allocator
 {
@@ -55,6 +57,14 @@ protected:
     T* construct(A a, B b, C c);
     template<typename T,typename A,typename B,typename C,typename D>
     T* construct(A a, B b, C c, D d);
+	template<typename T,typename A,typename B,typename C,typename D,typename E>
+    T* construct(A a, B b, C c, D d, E e);
+	template<typename T,typename A,typename B,typename C,typename D,typename E,typename F>
+    T* construct(A a, B b, C c, D d, E e, F f);
+	template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G>
+    T* construct(A a, B b, C c, D d, E e, F f, G g);
+	template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G,typename H>
+    T* construct(A a, B b, C c, D d, E e, F f, G g, H h);
     template<typename T>
     void destruct(T* ptr);
 
