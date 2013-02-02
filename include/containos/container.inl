@@ -60,63 +60,63 @@ template<typename Allocator>
 template<typename T>
 __forceinline T* Container<Allocator>::construct()
 {
-    return containos_placement_new(Base::alloc(sizeof(T)), T);
+    return containos_placement_new(Base::alloc(sizeof(T),__alignof(T)), T);
 }
 
 template<typename Allocator>
 template<typename T, typename A>
 __forceinline T* Container<Allocator>::construct(A a)
 {
-    return containos_placement_new1(Base::alloc(sizeof(T)), T, a);
+    return containos_placement_new1(Base::alloc(sizeof(T),__alignof(T)), T, a);
 }
 
 template<typename Allocator>
 template<typename T, typename A, typename B>
 __forceinline T* Container<Allocator>::construct(A a, B b)
 {
-    return containos_placement_new2(Base::alloc(sizeof(T)), T, a, b);
+    return containos_placement_new2(Base::alloc(sizeof(T),__alignof(T)), T, a, b);
 }
 
 template<typename Allocator>
 template<typename T, typename A, typename B, typename C>
 __forceinline T* Container<Allocator>::construct(A a, B b, C c)
 {
-    return containos_placement_new3(Base::alloc(sizeof(T)), T, a, b, c);
+    return containos_placement_new3(Base::alloc(sizeof(T),__alignof(T)), T, a, b, c);
 }
 
 template<typename Allocator>
 template<typename T, typename A, typename B, typename C, typename D>
 __forceinline T* Container<Allocator>::construct(A a, B b, C c, D d)
 {
-    return containos_placement_new4(Base::alloc(sizeof(T)), T, a, b, c, d);
+    return containos_placement_new4(Base::alloc(sizeof(T),__alignof(T)), T, a, b, c, d);
 }
 
 template<typename Allocator>
 template<typename T,typename A,typename B,typename C,typename D,typename E>
 __forceinline T* Container<Allocator>::construct(A a, B b, C c, D d, E e)
 {
-    return containos_placement_new5(Base::alloc(sizeof(T)), T, a, b, c, d, e);
+    return containos_placement_new5(Base::alloc(sizeof(T),__alignof(T)), T, a, b, c, d, e);
 }
 
 template<typename Allocator>
 template<typename T,typename A,typename B,typename C,typename D,typename E,typename F>
 __forceinline T* Container<Allocator>::construct(A a, B b, C c, D d, E e, F f)
 {
-    return containos_placement_new6(Base::alloc(sizeof(T)), T, a, b, c, d, e, f);
+    return containos_placement_new6(Base::alloc(sizeof(T),__alignof(T)), T, a, b, c, d, e, f);
 }
 
 template<typename Allocator>
 template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G>
 __forceinline T* Container<Allocator>::construct(A a, B b, C c, D d, E e, F f, G g)
 {
-    return containos_placement_new7(Base::alloc(sizeof(T)), T, a, b, c, d, e, f, g);
+    return containos_placement_new7(Base::alloc(sizeof(T),__alignof(T)), T, a, b, c, d, e, f, g);
 }
 
 template<typename Allocator>
 template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G,typename H>
 __forceinline T* Container<Allocator>::construct(A a, B b, C c, D d, E e, F f, G g, H h)
 {
-    return containos_placement_new8(Base::alloc(sizeof(T)), T, a, b, c, d, e, f, g, h);
+    return containos_placement_new8(Base::alloc(sizeof(T),__alignof(T)), T, a, b, c, d, e, f, g, h);
 }
 
 template<typename Allocator>
@@ -124,7 +124,7 @@ template<typename T>
 __forceinline void Container<Allocator>::destruct(T* ptr)
 {
     containos_placement_delete(ptr, T);
-    Base::deallocate(ptr);
+    Base::dealloc(ptr);
 }
 
 template<typename Allocator>
