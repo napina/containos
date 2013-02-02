@@ -28,9 +28,28 @@ IN THE SOFTWARE.
 #ifndef nullptr_t
     typedef decltype(nullptr) nullptr_t;
 #endif
+
 #ifndef __forceinline
-#   define inline __forceinline
+#   if defined(__GNUC__)
+#       define __forceinline inline __attribute__((always_inline))
+#   else
+#       define inline __forceinline
+#   endif
 #endif
+
+#if defined(WIN32) || defined(_WIN32)
+#   define CONTAINOS_WINDOWS
+#   define CONTAINOS_ARCH32
+#   define CONTAINOS_NATIVE_BSR
+//#   define CONTAINOS_NATIVE_CLZ
+#elif defined(WIN64) || defined(_WIN64)
+#   define CONTAINOS_WINDOWS
+#   define CONTAINOS_ARCH64
+#   define CONTAINOS_NATIVE_BSR
+#endif
+
+typedef unsigned long uint32_t;
+typedef unsigned __int64 uint64_t;
 
 #define containos_assert(Test)
 #define containos_cast(Type,Ptr)    static_cast<(Type)>(Ptr)
@@ -71,13 +90,13 @@ struct placement_new<T,false> {
     static T* create(void* ptr,A a,B b,C c)                     { return new (ptr) T(a,b,c); }
     template<typename A, typename B, typename C, typename D>
     static T* create(void* ptr,A a,B b,C c,D d)                 { return new (ptr) T(a,b,c,d); }
-	template<typename A, typename B, typename C, typename D, typename E>
+    template<typename A, typename B, typename C, typename D, typename E>
     static T* create(void* ptr,A a,B b,C c,D d,E e)             { return new (ptr) T(a,b,c,d,e); }
-	template<typename A, typename B, typename C, typename D, typename E, typename F>
+    template<typename A, typename B, typename C, typename D, typename E, typename F>
     static T* create(void* ptr,A a,B b,C c,D d,E e,F f)         { return new (ptr) T(a,b,c,d,e,f); }
-	template<typename A, typename B, typename C, typename D, typename E, typename F, typename G>
+    template<typename A, typename B, typename C, typename D, typename E, typename F, typename G>
     static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g)     { return new (ptr) T(a,b,c,d,e,f,g); }
-	template<typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H>
+    template<typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H>
     static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g,H h) { return new (ptr) T(a,b,c,d,e,f,g,h); }
 
     static T* copy(void* ptr, T const& other)                   { return new (ptr) T(other); }
