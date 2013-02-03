@@ -96,9 +96,9 @@ TEST_SUITE(BitSet)
     TEST(BitCountReverse64)
     {
         EXPECT_EQUAL(c::bsr64(0xFFFFFFFFFFFFFFFF),63);
-        EXPECT_EQUAL(c::bsr64(0x0012000000003100),20);
-        EXPECT_EQUAL(c::bsr64(0x2000000FF00000F8),29);
-        EXPECT_EQUAL(c::bsr64(0x0000001000000000),20);
+        EXPECT_EQUAL(c::bsr64(0x0012000000003100),52);
+        EXPECT_EQUAL(c::bsr64(0x2000000FF00000F8),61);
+        EXPECT_EQUAL(c::bsr64(0x0000001000000000),36);
         EXPECT_EQUAL(c::bsr64(0x8000000000000000),63);
         EXPECT_EQUAL(c::bsr64(0x0000000000000001),0);
     }
@@ -128,7 +128,7 @@ TEST_SUITE(BitSet)
         EXPECT_EQUAL(c::clz64(0xFFFFFFFFFFFFFFFF),0);
         EXPECT_EQUAL(c::clz64(0x0012000000003100),11);
         EXPECT_EQUAL(c::clz64(0x2000000FF00000F8),2);
-        EXPECT_EQUAL(c::clz64(0x0000001000000000),24);
+        EXPECT_EQUAL(c::clz64(0x0000001000000000),27);
         EXPECT_EQUAL(c::clz64(0x8000000000000000),0);
         EXPECT_EQUAL(c::clz64(0x0000000000000001),63);
     }
@@ -137,7 +137,7 @@ TEST_SUITE(BitSet)
     {
         c::bitset64 counter;
         for(int i = 0; i < 64; ++i) {
-            int index = counter.acquire();
+            uint64_t index = counter.acquire();
             EXPECT_EQUAL(index, i^63);
             EXPECT_EQUAL(counter.count(), i+1);
             EXPECT_TRUE(counter.isSet(index));
@@ -147,9 +147,9 @@ TEST_SUITE(BitSet)
     TEST(Remove64)
     {
         c::bitset64 counter;
-        int index0 = counter.acquire();
-        int index1 = counter.acquire();
-        int index3 = counter.acquire();
+        uint64_t index0 = counter.acquire();
+        uint64_t index1 = counter.acquire();
+        uint64_t index3 = counter.acquire();
         EXPECT_EQUAL(counter.count(), 3);
         EXPECT_TRUE(counter.isSet(index1));
         counter.remove(index1);

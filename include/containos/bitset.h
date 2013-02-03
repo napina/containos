@@ -41,11 +41,11 @@ struct bitset32
     bitset32();
     bitset32(const bitset32& other);
 
-    int acquire();
-    void remove(int index);
+    uint32_t acquire();
+    void remove(uint32_t index);
     void clear();
-    int count() const;
-    bool isSet(int index) const;
+	uint32_t count() const;
+	bool isSet(uint32_t index) const;
 
 private:
     uint32_t m_mask;
@@ -58,18 +58,18 @@ static uint32_t bsr64(uint64_t x);
 static uint32_t bsf64(uint64_t x);
 static uint32_t ctz64(uint64_t x);
 static uint32_t clz64(uint64_t x);
-static uint32_t popcnt64(uint64_t x);
+static uint64_t popcnt64(uint64_t x);
 
 struct bitset64
 {
     bitset64();
     bitset64(const bitset64& other);
 
-    int acquire();
-    void remove(int index);
+    uint64_t acquire();
+    void remove(uint64_t index);
     void clear();
-    int count() const;
-    bool isSet(int index) const;
+    uint64_t count() const;
+    bool isSet(uint64_t index) const;
 
 private:
     uint64_t m_mask;

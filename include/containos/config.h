@@ -25,35 +25,35 @@ IN THE SOFTWARE.
 #ifndef containos_config_h
 #define containos_config_h
 
-#ifndef nullptr_t
-    typedef decltype(nullptr) nullptr_t;
-#endif
-
-#ifndef __forceinline
-#   if defined(__GNUC__)
-#       define __forceinline inline __attribute__((always_inline))
-#   else
-#       define inline __forceinline
-#   endif
-#endif
-
-#if defined(WIN32) || defined(_WIN32)
-#   define CONTAINOS_WINDOWS
+#if defined(__linux__) && defined(__ELF__)
+#   define CONTAINOS_LINUX
 #   define CONTAINOS_ARCH32
-#   define CONTAINOS_NATIVE_BSR
-//#   define CONTAINOS_NATIVE_CLZ
+#elif defined(__APPLE__) && defined(__MACH__)
+#   define CONTAINOS_MACOS
+#   define CONTAINOS_ARCH32
 #elif defined(WIN64) || defined(_WIN64)
 #   define CONTAINOS_WINDOWS
 #   define CONTAINOS_ARCH64
-#   define CONTAINOS_NATIVE_BSR
+#elif defined(WIN32) || defined(_WIN32)
+#   define CONTAINOS_WINDOWS
+#   define CONTAINOS_ARCH32
 #endif
 
-typedef unsigned long uint32_t;
+#if defined(__GNUC__)
+#	define __forceinline inline __attribute__((always_inline))
+#elif !defined(_MSC_VER) && !defined(__forceinline)
+#	define inline __forceinline
+#endif
+
+#if !defined(nullptr_t)
+    typedef decltype(nullptr) nullptr_t;
+#endif
+
+typedef unsigned int uint32_t;
 typedef unsigned __int64 uint64_t;
 
 #define containos_assert(Test)
 #define containos_cast(Type,Ptr)    static_cast<(Type)>(Ptr)
-#define containos_new(Type)         new Type
 #define containos_delete(Ptr)       delete (Ptr)
 //----------------------------------------------------------------------------
 
