@@ -35,7 +35,7 @@ __forceinline Ref<T>::~Ref()
 
 template<typename T>
 __forceinline Ref<T>::Ref()
-    : m_ptr(nullptr)
+    : m_mem(nullptr)
 {
 }
 
@@ -48,7 +48,7 @@ __forceinline Ref<T>::Ref(T* ptr)
 template<typename T>
 __forceinline Ref<T>::Ref(Ref<T> const& handle)
 {
-    set(handle.m_ptr);
+    set(handle.m_mem);
 }
 
 template<typename T>
@@ -61,7 +61,7 @@ __forceinline Ref<T>& Ref<T>::operator=(T* ptr)
 template<typename T>
 __forceinline Ref<T>& Ref<T>::operator=(Ref<T> const& handle)
 {
-    reset(handle.m_ptr);
+    reset(handle.m_mem);
     return *this;
 }
 
@@ -75,92 +75,92 @@ __forceinline Ref<T>& Ref<T>::operator=(nullptr_t)
 template<typename T>
 __forceinline bool Ref<T>::operator==(Ref<T> const& other) const
 {
-    return (m_ptr == other.m_ptr);
+    return (m_mem == other.m_mem);
 }
 
 template<typename T>
 __forceinline bool Ref<T>::operator!=(Ref<T> const& other) const
 {
-    return (m_ptr != other.m_ptr);
+    return (m_mem != other.m_mem);
 }
 
 template<typename T>
 __forceinline bool Ref<T>::operator==(T const* other) const
 {
-    return (m_ptr == other);
+    return (m_mem == other);
 }
 
 template<typename T>
 __forceinline bool Ref<T>::operator!=(T const* other) const
 {
-    return (m_ptr != other);
+    return (m_mem != other);
 }
 
 template<typename T>
 __forceinline bool Ref<T>::operator<(Ref<T> const& other) const
 {
-    return m_ptr < other.m_ptr;
+    return m_mem < other.m_mem;
 }
 
 template<typename T>
 __forceinline Ref<T>::operator T*() const
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline Ref<T>::operator T const*() const
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline T const& Ref<T>::operator*() const
 {
-    return *m_ptr;
+    return *m_mem;
 }
 
 template<typename T>
 __forceinline T& Ref<T>::operator*()
 {
-    return *m_ptr;
+    return *m_mem;
 }
 
 template<typename T>
 __forceinline T const* Ref<T>::operator->() const
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline T* Ref<T>::operator->()
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline T const* Ref<T>::get() const
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline T* Ref<T>::get()
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline bool Ref<T>::isValid() const
 {
-    return m_ptr != nullptr;
+    return m_mem != nullptr;
 }
 
 template<typename T>
 template<typename T2>
 __forceinline T2* Ref<T>::cast()
 {
-    return containos_cast(T2*, m_ptr);
+    return containos_cast(T2*, m_mem);
 }
 
 template<typename T>
@@ -173,7 +173,7 @@ __forceinline void Ref<T>::reset(T* ptr)
 template<typename T>
 __forceinline T* Ref<T>::release()
 {
-    T* releasedPtr = m_ptr;
+    T* releasedPtr = m_mem;
     set(nullptr);
     return releasedPtr;
 }
@@ -181,21 +181,21 @@ __forceinline T* Ref<T>::release()
 template<typename T>
 __forceinline void Ref<T>::set(T* ptr)
 {
-    m_ptr = ptr;
-    if(m_ptr) {
-        ++(m_ptr->m_refCount);
+    m_mem = ptr;
+    if(m_mem) {
+        ++(m_mem->m_refCount);
     }
 }
 
 template<typename T>
 __forceinline void Ref<T>::removeRef()
 {
-    if(m_ptr) {
-        --(m_ptr->m_refCount);
-        if(m_ptr->m_refCount == 0) {
-            containos_delete(m_ptr);
+    if(m_mem) {
+        --(m_mem->m_refCount);
+        if(m_mem->m_refCount == 0) {
+            containos_delete(m_mem);
         }
-        m_ptr = nullptr;
+        m_mem = nullptr;
     }
 }
 

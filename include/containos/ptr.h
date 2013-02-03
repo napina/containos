@@ -64,7 +64,7 @@ public:
     T* release();
 
 private:
-    T* m_ptr;
+    T* m_mem;
 };
 
 } // end of containos

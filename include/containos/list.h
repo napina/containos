@@ -64,7 +64,7 @@ public:
 
     T& operator[](size_t index);
     T const& operator[](size_t index) const;
-    T const* ptr() const;
+    T const* mem() const;
     T const& last() const;
     size_t size() const;
     size_t capasity() const;

@@ -30,26 +30,26 @@ namespace containos {
 template<typename T>
 __forceinline Ptr<T>::~Ptr()
 {
-    containos_delete(m_ptr);
+    containos_delete(m_mem);
 }
 
 template<typename T>
 __forceinline Ptr<T>::Ptr()
-    : m_ptr(nullptr)
+    : m_mem(nullptr)
 {
 }
 
 template<typename T>
 __forceinline Ptr<T>::Ptr(T* ptr)
-    : m_ptr(ptr)
+    : m_mem(ptr)
 {
 }
 
 template<typename T>
 __forceinline Ptr<T>::Ptr(Ptr<T>& other)
-    : m_ptr(other.m_ptr)
+    : m_mem(other.m_mem)
 {
-    other.m_ptr = nullptr;
+    other.m_mem = nullptr;
 }
 
 template<typename T>
@@ -62,115 +62,115 @@ __forceinline Ptr<T>& Ptr<T>::operator=(T* ptr)
 template<typename T>
 __forceinline Ptr<T>& Ptr<T>::operator=(Ptr<T>& other)
 {
-    reset(other.m_ptr);
-    other.m_ptr = nullptr;
+    reset(other.m_mem);
+    other.m_mem = nullptr;
     return *this;
 }
 
 template<typename T>
 __forceinline Ptr<T>& Ptr<T>::operator=(nullptr_t)
 {
-    containos_delete(m_ptr);
-    m_ptr = nullptr;
+    containos_delete(m_mem);
+    m_mem = nullptr;
     return *this;
 }
 
 template<typename T>
 __forceinline bool Ptr<T>::operator==(T* other) const
 {
-    return (m_ptr == other);
+    return (m_mem == other);
 }
 
 template<typename T>
 __forceinline bool Ptr<T>::operator!=(T* other) const
 {
-    return (m_ptr != other);
+    return (m_mem != other);
 }
 
 template<typename T>
-__forceinline bool Ptr<T>::operator<(const Ptr<T>& other) const
+__forceinline bool Ptr<T>::operator<(Ptr<T> const& other) const
 {
-    return m_ptr < other.m_ptr;
+    return m_mem < other.m_mem;
 }
 
 template<typename T>
 __forceinline Ptr<T>::operator T*() const
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline Ptr<T>::operator const T*() const
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline T const& Ptr<T>::operator*() const
 {
-    containos_assert(m_ptr != nullptr);
-    return *m_ptr;
+    containos_assert(m_mem != nullptr);
+    return *m_mem;
 }
 
 template<typename T>
 __forceinline T& Ptr<T>::operator*()
 {
-    containos_assert(m_ptr != nullptr);
-    return *m_ptr;
+    containos_assert(m_mem != nullptr);
+    return *m_mem;
 }
 
 template<typename T>
 __forceinline T const* Ptr<T>::operator->() const
 {
-    containos_assert(m_ptr != nullptr);
-    return m_ptr;
+    containos_assert(m_mem != nullptr);
+    return m_mem;
 }
 
 template<typename T>
 __forceinline T* Ptr<T>::operator->()
 {
-    containos_assert(m_ptr != nullptr);
-    return m_ptr;
+    containos_assert(m_mem != nullptr);
+    return m_mem;
 }
 
 template<typename T>
 __forceinline T const* Ptr<T>::get() const
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline T* Ptr<T>::get()
 {
-    return m_ptr;
+    return m_mem;
 }
 
 template<typename T>
 __forceinline bool Ptr<T>::isValid() const
 {
-    return m_ptr != nullptr;
+    return m_mem != nullptr;
 }
 
 template<typename T>
 template<typename T2>
 __forceinline T2* Ptr<T>::cast()
 {
-    return containos_cast(T2*, m_ptr);
+    return containos_cast(T2*, m_mem);
 }
 
 template<typename T>
 __forceinline void Ptr<T>::reset(T* ptr)
 {
-    containos_delete(m_ptr);
-    m_ptr = ptr;
+    containos_delete(m_mem);
+    m_mem = ptr;
 }
 
 template<typename T>
 __forceinline T* Ptr<T>::release()
 {
-    T* releasedPtr = m_ptr;
-    m_ptr = nullptr;
-    return releasedPtr;
+    T* releasedptr = m_mem;
+    m_mem = nullptr;
+    return releasedptr;
 }
 
 } // end of containos

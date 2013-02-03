@@ -223,7 +223,7 @@ __forceinline T const& List<T,Allocator>::operator[](size_t index) const
 }
 
 template<typename T, typename Allocator>
-__forceinline T const* List<T,Allocator>::ptr() const
+__forceinline T const* List<T,Allocator>::mem() const
 {
     return m_mem;
 }
