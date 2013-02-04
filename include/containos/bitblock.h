@@ -29,26 +29,31 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-// Fast memory block with 32 elements
+// Fast memory block with 32/64 elements depending on platform
 template<typename T>
-struct BitBlock32
+struct BitBlock
 {
-    ~BitBlock32();
-    BitBlock32();
-    BitBlock32(BitBlock32 const& other);
+    ~BitBlock();
+    BitBlock();
+    BitBlock(BitBlock const& other);
 
     T& acquire();
     void insert(T& item);
     void insert(T const& item);
-	void insert(BitBlock32 const& other);
+	void insert(BitBlock const& other);
     void remove(size_t index);
     void clear();
 	size_t size() const;
 	size_t capasity() const;
 
 private:
-    bitset32 m_free;
+#if defined(CONTAINOS_ARCH64)
+    bitset64 m_free;
+    T m_data[64];
+#else
+	bitset32 m_free;
     T m_data[32];
+#endif
 };
 
 } // end of containos

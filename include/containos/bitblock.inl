@@ -28,70 +28,75 @@ IN THE SOFTWARE.
 namespace containos {
 
 template<typename T>
-inline BitBlock32<T>::~BitBlock32()
+inline BitBlock<T>::~BitBlock()
 {
 	clear();
 }
 
 template<typename T>
-inline BitBlock32<T>::BitBlock32()
+inline BitBlock<T>::BitBlock()
 {
 }
 
 template<typename T>
-inline BitBlock32<T>::BitBlock32(const BitBlock32& other)
+inline BitBlock<T>::BitBlock(const BitBlock& other)
 {
 	// TODO
 }
 
 template<typename T>
-inline T& BitBlock32<T>::acquire()
+inline T& BitBlock<T>::acquire()
 {
-	return m_data[m_free.acquire()];
+	T* ptr = &m_data[m_free.acquire()];
+	containos_placement_new(ptr, T);
+	return *ptr;
 }
 
 template<typename T>
-inline void BitBlock32<T>::insert(T& item)
+inline void BitBlock<T>::insert(T& item)
 {
-	m_data[m_free.acquire()] = item;
+	containos_placement_copy(&m_data[m_free.acquire()], T, item);
 }
 
 template<typename T>
-inline void BitBlock32<T>::insert(T const& item)
+inline void BitBlock<T>::insert(T const& item)
 {
-	m_data[m_free.acquire()] = item;
+	containos_placement_copy(&m_data[m_free.acquire()], T, item);
 }
 
 template<typename T>
-inline void BitBlock32<T>::insert(const BitBlock32& other)
+inline void BitBlock<T>::insert(const BitBlock& other)
 {
 	// TODO
 }
 
 template<typename T>
-inline void BitBlock32<T>::remove(size_t index)
+inline void BitBlock<T>::remove(size_t index)
 {
+	containos_assert(m_free.isSet(index));
+	containos_placement_delete(&m_data[index], T);
+	m_free.remove(index);
 }
 
 template<typename T>
-inline void BitBlock32<T>::clear()
+inline void BitBlock<T>::clear()
 {
-	uint32_t mask = m_free;
+	uint32_t mask = 0;//m_free;
 	while(mask != 0) {
-		if(mask & 1 == 0)
+		if((mask & 1) == 0)
 			continue;
-		containos_placement_delete(m_data[0]);
+		//containos_placement_delete(m_data[0]);
 	}
 }
 
 template<typename T>
-__forceinline size_t BitBlock32<T>::size() const
+__forceinline size_t BitBlock<T>::size() const
 {
 	return m_free.count();
 }
 
 template<typename T>
-__forceinline size_t BitBlock32<T>::capasity() const
+__forceinline size_t BitBlock<T>::capasity() const
 {
 	return 32;
 }

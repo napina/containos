@@ -24,20 +24,22 @@ IN THE SOFTWARE.
 #include "unitos/unitos.h"
 #include "containos/bitblock.h"
 
+#include "type_traits"
+
 namespace c = containos;
 
-TEST_SUITE(BitBlock32)
+TEST_SUITE(BitBlock)
 {
     TEST(Empty)
     {
-		c::BitBlock32<int> block;
+		c::BitBlock<int> block;
         EXPECT_EQUAL(block.size(), 0);
         EXPECT_EQUAL(block.capasity(), 32);
     }
 
     TEST(Insert)
     {
-        c::BitBlock32<int> block;
+        c::BitBlock<int> block;
         block.insert(3);
         EXPECT_EQUAL(block.size(), 1);
         //EXPECT_EQUAL(block[0], 3);
@@ -48,10 +50,10 @@ TEST_SUITE(BitBlock32)
 
     TEST(InsertOther)
     {
-        c::BitBlock32<int> block;
+        c::BitBlock<int> block;
         block.insert(3);
         block.insert(5);
-        c::BitBlock32<int> block2;
+        c::BitBlock<int> block2;
         block2.insert(9);
         block2.insert(block);
         block2.insert(13);
@@ -64,7 +66,7 @@ TEST_SUITE(BitBlock32)
 
     TEST(Acquire)
     {
-        c::BitBlock32<int> block;
+        c::BitBlock<int> block;
         block.acquire() = 3;
         EXPECT_EQUAL(block.size(), 1);
         //EXPECT_EQUAL(block[0], 3);
@@ -75,16 +77,16 @@ TEST_SUITE(BitBlock32)
 
     TEST(Remove)
     {
-        c::BitBlock32<int> block;
+        c::BitBlock<int> block;
         block.insert(3);
         EXPECT_EQUAL(block.size(), 1);
-        block.remove(0);
+        block.remove(31);
         EXPECT_EQUAL(block.size(), 0);
     }
 
     TEST(Clear)
     {
-        c::BitBlock32<int> block;
+        c::BitBlock<int> block;
         block.insert(3);
         block.insert(7);
         block.insert(4);
