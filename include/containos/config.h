@@ -25,6 +25,8 @@ IN THE SOFTWARE.
 #ifndef containos_config_h
 #define containos_config_h
 
+#include <type_traits>
+
 #if defined(__linux__) && defined(__ELF__)
 #   define CONTAINOS_LINUX
 #   define CONTAINOS_ARCH32
@@ -57,17 +59,17 @@ typedef unsigned __int64 uint64_t;
 #define containos_delete(Ptr)       delete (Ptr)
 //----------------------------------------------------------------------------
 
-#define containos_placement_new(ptr,t)                  containos::internal::placement_new<t,__is_pod(t)>::create(ptr)
-#define containos_placement_new1(ptr,t,a)               containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a)
-#define containos_placement_new2(ptr,t,a,b)             containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b)
-#define containos_placement_new3(ptr,t,a,b,c)           containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c)
-#define containos_placement_new4(ptr,t,a,b,c,d)         containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d)
-#define containos_placement_new5(ptr,t,a,b,c,d,e)       containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d,e)
-#define containos_placement_new6(ptr,t,a,b,c,d,e,f)     containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d,e,f)
-#define containos_placement_new7(ptr,t,a,b,c,d,e,f,g)   containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d,e,f,g)
-#define containos_placement_new8(ptr,t,a,b,c,d,e,f,g,h) containos::internal::placement_new<t,__is_pod(t)>::create(ptr,a,b,c,d,e,f,g,h)
-#define containos_placement_copy(ptr,t,other)           containos::internal::placement_new<t,__is_pod(t)>::copy(ptr,other)
-#define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,__has_trivial_destructor(t)>::destroy(ptr)
+#define containos_placement_new(ptr,t)                  containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr)
+#define containos_placement_new1(ptr,t,a)               containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a)
+#define containos_placement_new2(ptr,t,a,b)             containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b)
+#define containos_placement_new3(ptr,t,a,b,c)           containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c)
+#define containos_placement_new4(ptr,t,a,b,c,d)         containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d)
+#define containos_placement_new5(ptr,t,a,b,c,d,e)       containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e)
+#define containos_placement_new6(ptr,t,a,b,c,d,e,f)     containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f)
+#define containos_placement_new7(ptr,t,a,b,c,d,e,f,g)   containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f,g)
+#define containos_placement_new8(ptr,t,a,b,c,d,e,f,g,h) containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f,g,h)
+#define containos_placement_copy(ptr,t,other)           containos::internal::placement_new<t,std::is_pod<t>::value>::copy(ptr,other)
+#define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,std::has_trivial_destructor<t>::value>::destroy(ptr)
 //----------------------------------------------------------------------------
 
 namespace containos {
