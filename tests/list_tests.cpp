@@ -27,6 +27,8 @@ IN THE SOFTWARE.
 
 namespace c = containos;
 
+namespace {
+
 struct Mallocator
 {
     static void* alloc(size_t size, size_t align, int flags = 0)    { return ::malloc(size); }
@@ -46,6 +48,8 @@ struct IntWrap
 private:
     int* m_mem; 
 };
+
+}
 
 TEST_SUITE(List)
 {
