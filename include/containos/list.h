@@ -54,6 +54,7 @@ public:
     void clear();
 
     void resize(size_t newSize);
+    void resizeNoCopy(size_t newSize);
     void reserve(size_t capasity);
     void clearAndFree();
 

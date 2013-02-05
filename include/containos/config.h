@@ -26,6 +26,7 @@ IN THE SOFTWARE.
 #define containos_config_h
 
 #include <type_traits>
+#include <new>
 
 #if defined(__linux__) && defined(__ELF__)
 #   define CONTAINOS_LINUX
@@ -42,9 +43,9 @@ IN THE SOFTWARE.
 #endif
 
 #if defined(__GNUC__)
-#	define __forceinline inline __attribute__((always_inline))
+#   define __forceinline inline __attribute__((always_inline))
 #elif !defined(_MSC_VER) && !defined(__forceinline)
-#	define inline __forceinline
+#   define inline __forceinline
 #endif
 
 #if !defined(nullptr_t)
@@ -78,30 +79,32 @@ namespace internal {
 template<typename T, bool IsPod>
 struct placement_new {
     static T* create(void* ptr)                                 { return static_cast<T*>(ptr); }
-    static void copy(T* ptr, T const& other)                    { (*ptr) = other; }
+    static T* copy(void* ptr, T& other)                         { return &(*static_cast<T*>(ptr) = other); }
+    static T* copy(void* ptr, T const& other)                   { return &(*static_cast<T*>(ptr) = other); }
 };
 
 template<typename T>
 struct placement_new<T,false> {
-    static T* create(void* ptr)                                 { return new (ptr) T(); }
+    static T* create(void* ptr)                                 { return ::new (ptr) T(); }
     template<typename A>
-    static T* create(void* ptr,A a)                             { return new (ptr) T(a); }
+    static T* create(void* ptr,A a)                             { return ::new (ptr) T(a); }
     template<typename A, typename B>
-    static T* create(void* ptr,A a,B b)                         { return new (ptr) T(a,b); }
+    static T* create(void* ptr,A a,B b)                         { return ::new (ptr) T(a,b); }
     template<typename A, typename B, typename C>
-    static T* create(void* ptr,A a,B b,C c)                     { return new (ptr) T(a,b,c); }
+    static T* create(void* ptr,A a,B b,C c)                     { return ::new (ptr) T(a,b,c); }
     template<typename A, typename B, typename C, typename D>
-    static T* create(void* ptr,A a,B b,C c,D d)                 { return new (ptr) T(a,b,c,d); }
+    static T* create(void* ptr,A a,B b,C c,D d)                 { return ::new (ptr) T(a,b,c,d); }
     template<typename A, typename B, typename C, typename D, typename E>
-    static T* create(void* ptr,A a,B b,C c,D d,E e)             { return new (ptr) T(a,b,c,d,e); }
+    static T* create(void* ptr,A a,B b,C c,D d,E e)             { return ::new (ptr) T(a,b,c,d,e); }
     template<typename A, typename B, typename C, typename D, typename E, typename F>
-    static T* create(void* ptr,A a,B b,C c,D d,E e,F f)         { return new (ptr) T(a,b,c,d,e,f); }
+    static T* create(void* ptr,A a,B b,C c,D d,E e,F f)         { return ::new (ptr) T(a,b,c,d,e,f); }
     template<typename A, typename B, typename C, typename D, typename E, typename F, typename G>
-    static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g)     { return new (ptr) T(a,b,c,d,e,f,g); }
+    static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g)     { return ::new (ptr) T(a,b,c,d,e,f,g); }
     template<typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H>
-    static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g,H h) { return new (ptr) T(a,b,c,d,e,f,g,h); }
+    static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g,H h) { return ::new (ptr) T(a,b,c,d,e,f,g,h); }
 
-    static T* copy(void* ptr, T const& other)                   { return new (ptr) T(other); }
+    static T* copy(void* ptr, T& other)                         { return ::new (ptr) T(other); }
+    static T* copy(void* ptr, T const& other)                   { return ::new (ptr) T(other); }
 };
 //----------------------------------------------------------------------------
 

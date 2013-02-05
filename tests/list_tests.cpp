@@ -36,15 +36,15 @@ struct Mallocator
 
 struct IntWrap
 {
-	IntWrap()						{ m_mem = new int(0); }
-	IntWrap(int i)					{ m_mem = new int(i); }
-	IntWrap(IntWrap const& other)	{ m_mem = new int(*other.m_mem); }
-	~IntWrap()						{ delete m_mem; }
-	operator int() const			{ return *m_mem; }
-	int& operator=(int i)			{ (*m_mem) = i; return *m_mem; }
-	bool operator==(int i) const	{ return *m_mem == i; }
+    IntWrap()                       { m_mem = new int(33); }
+    IntWrap(int i)                  { m_mem = new int(i); }
+    IntWrap(IntWrap const& other)   { m_mem = new int(*other.m_mem); }
+    ~IntWrap()                      { delete m_mem; }
+    operator int() const            { return *m_mem; }
+    int& operator=(int i)           { (*m_mem) = i; return *m_mem; }
+    bool operator==(int i) const    { return *m_mem == i; }
 private:
-	int* m_mem; 
+    int* m_mem; 
 };
 
 TEST_SUITE(List)
@@ -130,6 +130,47 @@ TEST_SUITE(List)
         EXPECT_EQUAL(list.size(), 0);
     }
 
+    TEST(ResizeToSmaller)
+    {
+        c::List<IntWrap,Mallocator> list;
+        list.reserve(2);
+        list.insert(3);
+        list.insert(5);
+        EXPECT_EQUAL(list.size(), 2);
+        list.resize(1);
+        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list[0], 3);
+    }
+
+    TEST(ResizeToBigger)
+    {
+        c::List<IntWrap,Mallocator> list;
+        list.reserve(2);
+        list.insert(3);
+        list.insert(5);
+        EXPECT_EQUAL(list.size(), 2);
+        list.resize(3);
+        EXPECT_EQUAL(list.size(), 3);
+        EXPECT_EQUAL(list[0], 3);
+        EXPECT_EQUAL(list[1], 5);
+        EXPECT_EQUAL(list[2], 33);
+    }
+
+    TEST(ResizeNoCopy)
+    {
+        c::List<IntWrap,Mallocator> list;
+        list.reserve(2);
+        list.insert(3);
+        list.insert(5);
+        EXPECT_EQUAL(list.size(), 2);
+        list.resizeNoCopy(4);
+        EXPECT_EQUAL(list.size(), 4);
+        EXPECT_EQUAL(list[0], 33);
+        EXPECT_EQUAL(list[1], 33);
+        EXPECT_EQUAL(list[2], 33);
+        EXPECT_EQUAL(list[3], 33);
+    }
+
     TEST(Iterate)
     {
         c::List<IntWrap,Mallocator> list;
@@ -173,5 +214,7 @@ TEST_SUITE(List)
         ++it;
         list.remove(it);
         EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list[0], 0);
+        EXPECT_EQUAL(list[1], 2);
     }
 }

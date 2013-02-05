@@ -64,7 +64,7 @@ __forceinline List<T,Allocator>::List(const List& other)
         m_capasity = other.m_size;
         m_size = other.m_size;
         for(size_t i = 0; i < m_size; ++i) {
-            containos_placement_new1(&m_mem[i], T, other.m_mem[i]);
+            containos_placement_copy(&m_mem[i], T, other.m_mem[i]);
         }
     }
 }
@@ -144,15 +144,35 @@ __forceinline void List<T,Allocator>::clear()
 template<typename T, typename Allocator>
 inline void List<T,Allocator>::resize(size_t newSize)
 {
+    T* newMem = Base::template constructArray<T>(newSize);
+
+    size_t copyCount = m_size < newSize ? m_size : newSize;
+    for(size_t i = 0; i < copyCount; ++i) {
+        containos_placement_copy(&newMem[i], T, m_mem[i]);
+    }
+    for(size_t i = copyCount; i < newSize; ++i) {
+        containos_placement_new(&newMem[i], T);
+    }
+
+    Base::template destructArray<T>(m_mem, m_capasity);
+
+    m_mem = newMem;
+    m_capasity = newSize;
+    m_size = newSize;
+}
+
+template<typename T, typename Allocator>
+inline void List<T,Allocator>::resizeNoCopy(size_t newSize)
+{
     clearAndFree();
 
     if(newSize == 0)
         return;
 
-    m_mem = Base::template constructArray<T>(newSize);
+    m_mem = Base::template constructArray<T>(newSize);;
     m_capasity = newSize;
     m_size = newSize;
-    for(size_t i = 0; i < m_size; ++i) {
+    for(size_t i = 0; i < newSize; ++i) {
         containos_placement_new(&m_mem[i], T);
     }
 }
@@ -171,7 +191,7 @@ inline void List<T,Allocator>::reserve(size_t capasity)
 }
 
 template<typename T, typename Allocator>
-__forceinline void List<T,Allocator>::clearAndFree()
+inline void List<T,Allocator>::clearAndFree()
 {
     if(m_mem == nullptr)
         return;

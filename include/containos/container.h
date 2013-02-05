@@ -43,9 +43,9 @@ namespace internal {
 }
 
 template<typename Allocator>
-class Container : protected internal::ContainerBase<Allocator,__is_pod(Allocator)>
+class Container : protected internal::ContainerBase<Allocator,std::is_pod<Allocator>::value>
 {
-    typedef internal::ContainerBase<Allocator,__is_pod(Allocator)> Base;
+    typedef internal::ContainerBase<Allocator,std::is_pod<Allocator>::value> Base;
 protected:
     template<typename T>
     T* construct();
@@ -57,13 +57,13 @@ protected:
     T* construct(A a, B b, C c);
     template<typename T,typename A,typename B,typename C,typename D>
     T* construct(A a, B b, C c, D d);
-	template<typename T,typename A,typename B,typename C,typename D,typename E>
+    template<typename T,typename A,typename B,typename C,typename D,typename E>
     T* construct(A a, B b, C c, D d, E e);
-	template<typename T,typename A,typename B,typename C,typename D,typename E,typename F>
+    template<typename T,typename A,typename B,typename C,typename D,typename E,typename F>
     T* construct(A a, B b, C c, D d, E e, F f);
-	template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G>
+    template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G>
     T* construct(A a, B b, C c, D d, E e, F f, G g);
-	template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G,typename H>
+    template<typename T,typename A,typename B,typename C,typename D,typename E,typename F,typename G,typename H>
     T* construct(A a, B b, C c, D d, E e, F f, G g, H h);
     template<typename T>
     void destruct(T* ptr);
