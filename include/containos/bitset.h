@@ -38,6 +38,9 @@ static uint32_t popcnt32(uint32_t x);
 
 struct bitset32
 {
+	enum { num_bits = 32 };
+	enum { index_bits = 5 };
+
     bitset32();
     bitset32(const bitset32& other);
 
@@ -62,6 +65,9 @@ static uint64_t popcnt64(uint64_t x);
 
 struct bitset64
 {
+	enum { num_bits = 32 };
+	enum { index_bits = 6 };
+
     bitset64();
     bitset64(const bitset64& other);
 
