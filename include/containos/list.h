@@ -51,12 +51,12 @@ public:
     void remove(int index);
     void remove(iterator ite);
     void removeLast();
-    void clear();
 
     void resize(size_t newSize);
     void resizeNoCopy(size_t newSize);
     void reserve(size_t capasity);
     void clearAndFree();
+    void clear();
 
     iterator begin();
     iterator end();

@@ -133,27 +133,32 @@ __forceinline void List<T,Allocator>::removeLast()
 }
 
 template<typename T, typename Allocator>
-__forceinline void List<T,Allocator>::clear()
-{
-    for(size_t i = 0; i < m_size; ++i) {
-        containos_placement_delete(&m_mem[i], T);
-    }
-    m_size = 0;
-}
-
-template<typename T, typename Allocator>
 inline void List<T,Allocator>::resize(size_t newSize)
 {
-    T* newMem = Base::template constructArray<T>(newSize);
-
+    T* newMem = nullptr;
     size_t copyCount = m_size < newSize ? m_size : newSize;
-    for(size_t i = 0; i < copyCount; ++i) {
-        containos_placement_copy(&newMem[i], T, m_mem[i]);
-    }
-    for(size_t i = copyCount; i < newSize; ++i) {
-        containos_placement_new(&newMem[i], T);
+    if(newSize > 0) {
+        newMem = Base::template constructArray<T>(newSize);
+#if 1
+        // might not be safe if T cannot be moved
+        // TODO how to detect that?
+        ::memcpy(newMem, m_mem, copyCount * sizeof(T));
+        for(size_t i = copyCount; i < newSize; ++i) {
+            containos_placement_new(&newMem[i], T);
+        }
+#else
+        for(size_t i = 0; i < copyCount; ++i) {
+            containos_placement_copy(&newMem[i], T, m_mem[i]);
+        }
+        for(size_t i = copyCount; i < newSize; ++i) {
+            containos_placement_new(&newMem[i], T);
+        }
+#endif
     }
 
+    for(size_t i = copyCount; i < m_size; ++i) {
+        containos_placement_delete(&m_mem[i], T);
+    }
     Base::template destructArray<T>(m_mem, m_capasity);
 
     m_mem = newMem;
@@ -203,6 +208,15 @@ inline void List<T,Allocator>::clearAndFree()
     m_mem = nullptr;
     m_size = 0;
     m_capasity = 0;
+}
+
+template<typename T, typename Allocator>
+__forceinline void List<T,Allocator>::clear()
+{
+    for(size_t i = 0; i < m_size; ++i) {
+        containos_placement_delete(&m_mem[i], T);
+    }
+    m_size = 0;
 }
 
 template<typename T, typename Allocator>
