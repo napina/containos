@@ -30,7 +30,7 @@ namespace containos {
 template<typename T>
 inline BitBlock<T>::~BitBlock()
 {
-	clear();
+    clear();
 }
 
 template<typename T>
@@ -41,76 +41,77 @@ inline BitBlock<T>::BitBlock()
 template<typename T>
 inline BitBlock<T>::BitBlock(const BitBlock& other)
 {
-	// TODO
+    // TODO
 }
 
 template<typename T>
 inline T& BitBlock<T>::acquire(size_t& index)
 {
-	index = m_mask.acquire();
-	containos_placement_new(&m_data[index], T);
-	return m_data[index];
+    index = m_mask.acquire();
+    containos_placement_new(&m_data[index*sizeof(T)], T);
+    return *reinterpret_cast<T*>(&m_data[index]);
 }
 
 template<typename T>
 inline size_t BitBlock<T>::insert(T& item)
 {
-	size_t index = m_mask.acquire();
-	containos_placement_copy(&m_data[index], T, item);
-	return index;
+    size_t index = m_mask.acquire();
+    containos_placement_copy(&m_data[index*sizeof(T)], T, item);
+    return index;
 }
 
 template<typename T>
 inline size_t BitBlock<T>::insert(T const& item)
 {
-	size_t index = m_mask.acquire();
-	containos_placement_copy(&m_data[index], T, item);
-	return index;
+    size_t index = m_mask.acquire();
+    void* ptr = &m_data[index*sizeof(T)];
+    containos_placement_copy(ptr, T, item);
+    return index;
 }
 
 template<typename T>
 inline void BitBlock<T>::remove(size_t index)
 {
-	containos_assert(m_mask.isSet(index));
-	containos_placement_delete(&m_data[index], T);
-	m_mask.remove(index);
+    containos_assert(m_mask.isSet(index));
+    containos_placement_delete(reinterpret_cast<T*>(&m_data[index*sizeof(T)]), T);
+    m_mask.remove(index);
 }
 
 template<typename T>
 inline void BitBlock<T>::clear()
 {
-	uint32_t mask = 0;//m_mask;
-	while(mask != 0) {
-		if((mask & 1) == 0)
-			continue;
-		//containos_placement_delete(m_data[0]);
-	}
+    uint32_t mask = 0;//m_mask;
+    while(mask != 0) {
+        if((mask & 1) == 0)
+            continue;
+        //containos_placement_delete(m_data[0]);
+    }
 }
 
 template<typename T>
 T& BitBlock<T>::operator[](size_t index)
 {
-	containos_assert(m_mask.isSet(index));
-	return m_data[index];
+    containos_assert(m_mask.isSet(index));
+    return *reinterpret_cast<T*>(&m_data[index*sizeof(T)]);
 }
 
 template<typename T>
 T const& BitBlock<T>::operator[](size_t index) const
 {
-	containos_assert(m_mask.isSet(index));
-	return m_data[index];
+    containos_assert(m_mask.isSet(index));
+    return *reinterpret_cast<T*>(&m_data[index*sizeof(T)]);
 }
 
 template<typename T>
 __forceinline size_t BitBlock<T>::size() const
 {
-	return m_mask.count();
+    return m_mask.count();
 }
 
 template<typename T>
 __forceinline size_t BitBlock<T>::capasity() const
 {
-	return bitset::num_bits;
+    return bitset::num_bits;
 }
 
 } // end of containos

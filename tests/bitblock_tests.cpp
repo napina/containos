@@ -26,26 +26,29 @@ IN THE SOFTWARE.
 
 namespace c = containos;
 
+namespace {
+
 struct IntWrap
 {
-	IntWrap()						{ m_mem = new int(0); }
-	IntWrap(int i)					{ m_mem = new int(i); }
-	IntWrap(IntWrap const& other)	{ m_mem = new int(*other.m_mem); }
-	~IntWrap()						{ delete m_mem; }
-	operator int() const			{ return *m_mem; }
-	int& operator=(int i)			{ (*m_mem) = i; return *m_mem; }
-	bool operator==(int i) const	{ return *m_mem == i; }
+    IntWrap()                       { m_mem = new int(33); }
+    IntWrap(int i)                  { m_mem = new int(i); }
+    IntWrap(IntWrap const& other)   { m_mem = new int(*other.m_mem); }
+    ~IntWrap()                      { delete m_mem; }
+    operator int() const            { return *m_mem; }
+    int& operator=(int i)           { (*m_mem) = i; return *m_mem; }
+    bool operator==(int i) const    { return *m_mem == i; }
 private:
-	int* m_mem; 
+    int* m_mem; 
 };
+
+}
 
 TEST_SUITE(BitBlock)
 {
     TEST(Empty)
     {
-		c::BitBlock<IntWrap> block;
+        c::BitBlock<IntWrap> block;
         EXPECT_EQUAL(block.size(), 0);
-        EXPECT_EQUAL(block.capasity(), 32);
     }
 
     TEST(Insert)
@@ -75,17 +78,17 @@ TEST_SUITE(BitBlock)
         //EXPECT_EQUAL(block2[3], 13);
     }*/
 
-    TEST(Acquire)
+    /*TEST(Acquire)
     {
         c::BitBlock<IntWrap> block;
-		size_t index;
+        size_t index;
         block.acquire(index) = 3;
         EXPECT_EQUAL(block.size(), 1);
         EXPECT_EQUAL(block[index], 3);
         block.acquire(index) = 7;
         EXPECT_EQUAL(block.size(), 2);
         EXPECT_EQUAL(block[index], 7);
-    }
+    }*/
 
     TEST(Remove)
     {
@@ -96,7 +99,7 @@ TEST_SUITE(BitBlock)
         EXPECT_EQUAL(block.size(), 0);
     }
 
-    /*TEST(Clear)
+    TEST(Clear)
     {
         c::BitBlock<IntWrap> block;
         block.insert(3);
@@ -105,5 +108,5 @@ TEST_SUITE(BitBlock)
         EXPECT_EQUAL(block.size(), 3);
         block.clear();
         EXPECT_EQUAL(block.size(), 0);
-    }*/
+    }
 }

@@ -36,10 +36,10 @@ struct BitBlock
 #if defined(CONTAINOS_ARCH64)
     typedef bitset64 bitset;
 #else
-	typedef bitset32 bitset;
+    typedef bitset32 bitset;
 #endif
-	typedef T* iterator;
-	typedef T const* const_iterator;
+    typedef T* iterator;
+    typedef T const* const_iterator;
 
     ~BitBlock();
     BitBlock();
@@ -51,19 +51,19 @@ struct BitBlock
     void remove(size_t index);
     void clear();
 
-	iterator begin();
+    iterator begin();
     iterator end();
     const_iterator begin() const;
     const_iterator end() const;
 
-	T& operator[](size_t index);
+    T& operator[](size_t index);
     T const& operator[](size_t index) const;
-	size_t size() const;
-	size_t capasity() const;
+    size_t size() const;
+    size_t capasity() const;
 
 private:
     bitset m_mask;
-    T m_data[bitset::num_bits];
+    char m_data[bitset::num_bits*sizeof(T)];
 };
 
 } // end of containos
