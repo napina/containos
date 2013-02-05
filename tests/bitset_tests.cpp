@@ -68,10 +68,10 @@ TEST_SUITE(BitSet)
         EXPECT_EQUAL(c::clz32(0x00000001),31);
     }
 
-	TEST(Empty32)
+    TEST(Empty32)
     {
         c::bitset32 counter;
-		EXPECT_EQUAL(c::bitset32::num_bits, 32);
+        EXPECT_EQUAL(c::bitset32::num_bits, 32);
         for(uint32_t i = 0; i < 32; ++i) {
             EXPECT_FALSE(counter.isSet(i));
         }
@@ -142,10 +142,10 @@ TEST_SUITE(BitSet)
         EXPECT_EQUAL(c::clz64(0x0000000000000001),63);
     }
 
-	TEST(Empty64)
+    TEST(Empty64)
     {
         c::bitset64 counter;
-		EXPECT_EQUAL(c::bitset64::num_bits, 64);
+        EXPECT_EQUAL(c::bitset64::num_bits, 64);
         for(uint64_t i = 0; i < 64; ++i) {
             EXPECT_FALSE(counter.isSet(i));
         }

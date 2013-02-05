@@ -38,8 +38,8 @@ static uint32_t popcnt32(uint32_t x);
 
 struct bitset32
 {
-	enum { num_bits = 32 };
-	enum { index_bits = 5 };
+    enum { num_bits = 32 };
+    enum { index_bits = 5 };
 
     bitset32();
     bitset32(const bitset32& other);
@@ -47,8 +47,8 @@ struct bitset32
     uint32_t acquire();
     void remove(uint32_t index);
     void clear();
-	uint32_t count() const;
-	bool isSet(uint32_t index) const;
+    uint32_t count() const;
+    bool isSet(uint32_t index) const;
 
 private:
     uint32_t m_mask;
@@ -65,8 +65,8 @@ static uint64_t popcnt64(uint64_t x);
 
 struct bitset64
 {
-	enum { num_bits = 32 };
-	enum { index_bits = 6 };
+    enum { num_bits = 64 };
+    enum { index_bits = 6 };
 
     bitset64();
     bitset64(const bitset64& other);
