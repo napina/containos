@@ -34,18 +34,31 @@ struct Mallocator
     static void  dealloc(void* ptr)                                 { ::free(ptr); }
 };
 
+struct IntWrap
+{
+	IntWrap()						{ m_mem = new int(0); }
+	IntWrap(int i)					{ m_mem = new int(i); }
+	IntWrap(IntWrap const& other)	{ m_mem = new int(*other.m_mem); }
+	~IntWrap()						{ delete m_mem; }
+	operator int() const			{ return *m_mem; }
+	int& operator=(int i)			{ (*m_mem) = i; return *m_mem; }
+	bool operator==(int i) const	{ return *m_mem == i; }
+private:
+	int* m_mem; 
+};
+
 TEST_SUITE(List)
 {
     TEST(Empty)
     {
-        c::List<int,Mallocator> list;
+        c::List<IntWrap,Mallocator> list;
         EXPECT_EQUAL(list.size(), 0);
         EXPECT_EQUAL(list.capasity(), 0);
     }
     
     TEST(Reserve)
     {
-        c::List<int,Mallocator> list;
+        c::List<IntWrap,Mallocator> list;
         EXPECT_EQUAL(list.size(), 0);
         EXPECT_EQUAL(list.capasity(), 0);
         list.reserve(10);
@@ -55,7 +68,7 @@ TEST_SUITE(List)
 
     TEST(Insert)
     {
-        c::List<int,Mallocator> list;
+        c::List<IntWrap,Mallocator> list;
         list.reserve(2);
         list.insert(3);
         EXPECT_EQUAL(list.size(), 1);
@@ -67,11 +80,11 @@ TEST_SUITE(List)
 
     TEST(InsertOther)
     {
-        c::List<int,Mallocator> list;
+        c::List<IntWrap,Mallocator> list;
         list.reserve(3);
         list.insert(3);
         list.insert(5);
-        c::List<int,Mallocator> list2;
+        c::List<IntWrap,Mallocator> list2;
         list2.reserve(4);
         list2.insert(9);
         list2.insert(list);
@@ -85,7 +98,7 @@ TEST_SUITE(List)
 
     TEST(Acquire)
     {
-        c::List<int,Mallocator> list;
+        c::List<IntWrap,Mallocator> list;
         list.reserve(2);
         list.acquire() = 3;
         EXPECT_EQUAL(list.size(), 1);
@@ -97,7 +110,7 @@ TEST_SUITE(List)
 
     TEST(Remove)
     {
-        c::List<int,Mallocator> list;
+        c::List<IntWrap,Mallocator> list;
         list.reserve(2);
         list.insert(3);
         EXPECT_EQUAL(list.size(), 1);
@@ -107,7 +120,7 @@ TEST_SUITE(List)
 
     TEST(Clear)
     {
-        c::List<int,Mallocator> list;
+        c::List<IntWrap,Mallocator> list;
         list.reserve(3);
         list.insert(3);
         list.insert(7);
@@ -115,5 +128,50 @@ TEST_SUITE(List)
         EXPECT_EQUAL(list.size(), 3);
         list.clear();
         EXPECT_EQUAL(list.size(), 0);
+    }
+
+    TEST(Iterate)
+    {
+        c::List<IntWrap,Mallocator> list;
+        list.reserve(3);
+        list.insert(0);
+        list.insert(1);
+        list.insert(2);
+        c::List<IntWrap,Mallocator>::iterator it = list.begin();
+        c::List<IntWrap,Mallocator>::iterator end = list.end();
+        int i = 0;
+        for( ; it != end; ++it, ++i ) {
+            EXPECT_EQUAL(*it, i);
+        }
+        EXPECT_EQUAL(i, 3);
+    }
+
+    TEST(ConstIterate)
+    {
+        c::List<IntWrap,Mallocator> list;
+        list.reserve(3);
+        list.insert(0);
+        list.insert(1);
+        list.insert(2);
+        c::List<IntWrap,Mallocator>::const_iterator it = list.begin();
+        c::List<IntWrap,Mallocator>::const_iterator end = list.end();
+        int i = 0;
+        for( ; it != end; ++it, ++i ) {
+            EXPECT_EQUAL(*it, i);
+        }
+        EXPECT_EQUAL(i, 3);
+    }
+
+    TEST(DeleteIterator)
+    {
+        c::List<IntWrap,Mallocator> list;
+        list.reserve(3);
+        list.insert(0);
+        list.insert(1);
+        list.insert(2);
+        c::List<IntWrap,Mallocator>::iterator it = list.begin();
+        ++it;
+        list.remove(it);
+        EXPECT_EQUAL(list.size(), 2);
     }
 }

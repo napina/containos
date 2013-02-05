@@ -33,10 +33,10 @@ IN THE SOFTWARE.
 #elif defined(__APPLE__) && defined(__MACH__)
 #   define CONTAINOS_MACOS
 #   define CONTAINOS_ARCH32
-#elif defined(WIN64) || defined(_WIN64)
+#elif defined(_WIN64) || defined(_M_X64)
 #   define CONTAINOS_WINDOWS
 #   define CONTAINOS_ARCH64
-#elif defined(WIN32) || defined(_WIN32)
+#elif defined(_WIN32) || defined(_M_IX86)
 #   define CONTAINOS_WINDOWS
 #   define CONTAINOS_ARCH32
 #endif
