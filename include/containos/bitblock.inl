@@ -45,43 +45,41 @@ inline BitBlock<T>::BitBlock(const BitBlock& other)
 }
 
 template<typename T>
-inline T& BitBlock<T>::acquire()
+inline T& BitBlock<T>::acquire(size_t& index)
 {
-	T* ptr = &m_data[m_free.acquire()];
-	containos_placement_new(ptr, T);
-	return *ptr;
+	index = m_mask.acquire();
+	containos_placement_new(&m_data[index], T);
+	return m_data[index];
 }
 
 template<typename T>
-inline void BitBlock<T>::insert(T& item)
+inline size_t BitBlock<T>::insert(T& item)
 {
-	containos_placement_copy(&m_data[m_free.acquire()], T, item);
+	size_t index = m_mask.acquire();
+	containos_placement_copy(&m_data[index], T, item);
+	return index;
 }
 
 template<typename T>
-inline void BitBlock<T>::insert(T const& item)
+inline size_t BitBlock<T>::insert(T const& item)
 {
-	containos_placement_copy(&m_data[m_free.acquire()], T, item);
-}
-
-template<typename T>
-inline void BitBlock<T>::insert(const BitBlock& other)
-{
-	// TODO
+	size_t index = m_mask.acquire();
+	containos_placement_copy(&m_data[index], T, item);
+	return index;
 }
 
 template<typename T>
 inline void BitBlock<T>::remove(size_t index)
 {
-	containos_assert(m_free.isSet(index));
+	containos_assert(m_mask.isSet(index));
 	containos_placement_delete(&m_data[index], T);
-	m_free.remove(index);
+	m_mask.remove(index);
 }
 
 template<typename T>
 inline void BitBlock<T>::clear()
 {
-	uint32_t mask = 0;//m_free;
+	uint32_t mask = 0;//m_mask;
 	while(mask != 0) {
 		if((mask & 1) == 0)
 			continue;
@@ -90,15 +88,29 @@ inline void BitBlock<T>::clear()
 }
 
 template<typename T>
+T& BitBlock<T>::operator[](size_t index)
+{
+	containos_assert(m_mask.isSet(index));
+	return m_data[index];
+}
+
+template<typename T>
+T const& BitBlock<T>::operator[](size_t index) const
+{
+	containos_assert(m_mask.isSet(index));
+	return m_data[index];
+}
+
+template<typename T>
 __forceinline size_t BitBlock<T>::size() const
 {
-	return m_free.count();
+	return m_mask.count();
 }
 
 template<typename T>
 __forceinline size_t BitBlock<T>::capasity() const
 {
-	return 32;
+	return bitset::num_bits;
 }
 
 } // end of containos

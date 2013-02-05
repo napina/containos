@@ -33,27 +33,37 @@ namespace containos {
 template<typename T>
 struct BitBlock
 {
+#if defined(CONTAINOS_ARCH64)
+    typedef bitset64 bitset;
+#else
+	typedef bitset32 bitset;
+#endif
+	typedef T* iterator;
+	typedef T const* const_iterator;
+
     ~BitBlock();
     BitBlock();
     BitBlock(BitBlock const& other);
 
-    T& acquire();
-    void insert(T& item);
-    void insert(T const& item);
-	void insert(BitBlock const& other);
+    T& acquire(size_t& index);
+    size_t insert(T& item);
+    size_t insert(T const& item);
     void remove(size_t index);
     void clear();
+
+	iterator begin();
+    iterator end();
+    const_iterator begin() const;
+    const_iterator end() const;
+
+	T& operator[](size_t index);
+    T const& operator[](size_t index) const;
 	size_t size() const;
 	size_t capasity() const;
 
 private:
-#if defined(CONTAINOS_ARCH64)
-    bitset64 m_free;
-    T m_data[64];
-#else
-	bitset32 m_free;
-    T m_data[32];
-#endif
+    bitset m_mask;
+    T m_data[bitset::num_bits];
 };
 
 } // end of containos
