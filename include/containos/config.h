@@ -110,12 +110,12 @@ struct placement_new<T,false> {
 
 template<typename T, bool HasTrivialDestructor>
 struct placement_delete {
-    static void destroy(T*)                                     {}
+    static void destroy(void*)									{}
 };
 
 template<typename T>
 struct placement_delete<T,false> {
-    static void destroy(T* ptr)                                 { (ptr)->~T(); }
+    static void destroy(void* ptr)                              { reinterpret_cast<T*>(ptr)->~T(); }
 };
 
 } // end of internal

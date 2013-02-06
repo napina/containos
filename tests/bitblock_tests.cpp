@@ -78,7 +78,7 @@ TEST_SUITE(BitBlock)
         //EXPECT_EQUAL(block2[3], 13);
     }*/
 
-    /*TEST(Acquire)
+    TEST(Acquire)
     {
         c::BitBlock<IntWrap> block;
         size_t index;
@@ -88,7 +88,7 @@ TEST_SUITE(BitBlock)
         block.acquire(index) = 7;
         EXPECT_EQUAL(block.size(), 2);
         EXPECT_EQUAL(block[index], 7);
-    }*/
+    }
 
     TEST(Remove)
     {

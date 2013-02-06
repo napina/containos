@@ -40,6 +40,7 @@ inline BitBlock<T>::BitBlock()
 
 template<typename T>
 inline BitBlock<T>::BitBlock(const BitBlock& other)
+	: m_mask(other.mask)
 {
     // TODO
 }
@@ -48,8 +49,7 @@ template<typename T>
 inline T& BitBlock<T>::acquire(size_t& index)
 {
     index = m_mask.acquire();
-    containos_placement_new(&m_data[index*sizeof(T)], T);
-    return *reinterpret_cast<T*>(&m_data[index]);
+    return *containos_placement_new(&m_data[index*sizeof(T)], T);
 }
 
 template<typename T>
@@ -64,8 +64,7 @@ template<typename T>
 inline size_t BitBlock<T>::insert(T const& item)
 {
     size_t index = m_mask.acquire();
-    void* ptr = &m_data[index*sizeof(T)];
-    containos_placement_copy(ptr, T, item);
+    containos_placement_copy(&m_data[index*sizeof(T)], T, item);
     return index;
 }
 
@@ -73,18 +72,17 @@ template<typename T>
 inline void BitBlock<T>::remove(size_t index)
 {
     containos_assert(m_mask.isSet(index));
-    containos_placement_delete(reinterpret_cast<T*>(&m_data[index*sizeof(T)]), T);
+    containos_placement_delete(&m_data[index*sizeof(T)], T);
     m_mask.remove(index);
 }
 
 template<typename T>
 inline void BitBlock<T>::clear()
 {
-    uint32_t mask = 0;//m_mask;
-    while(mask != 0) {
-        if((mask & 1) == 0)
-            continue;
-        //containos_placement_delete(m_data[0]);
+    while(m_mask != 0) {
+		size_t index = m_mask.highest();
+        containos_placement_delete(&m_data[index*sizeof(T)],T);
+		m_mask.remove(index);
     }
 }
 
