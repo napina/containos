@@ -88,6 +88,15 @@ TEST_SUITE(BitSet)
         }
     }
 
+	TEST(Set32)
+    {
+        c::bitset32 counter;
+		counter.set(22);
+        EXPECT_EQUAL(counter.count(), 1);
+        EXPECT_TRUE(counter.isSet(22));
+		EXPECT_EQUAL(counter.mask(), 0x00400000);
+    }
+
     TEST(Remove32)
     {
         c::bitset32 counter;
@@ -99,6 +108,24 @@ TEST_SUITE(BitSet)
         counter.remove(index1);
         EXPECT_EQUAL(counter.count(), 2);
         EXPECT_FALSE(counter.isSet(index1));
+    }
+
+	TEST(Mask32)
+    {
+        c::bitset32 counter;
+		counter.set(4);
+		counter.set(27);
+		counter.set(10);
+		EXPECT_EQUAL(counter.mask(), 0x08000410);
+    }
+
+	TEST(Highest32)
+    {
+        c::bitset32 counter;
+		counter.set(4);
+		counter.set(27);
+		counter.set(10);
+		EXPECT_EQUAL(counter.highest(), 27);
     }
 
 #if defined(CONTAINOS_ARCH64)
@@ -162,6 +189,15 @@ TEST_SUITE(BitSet)
         }
     }
 
+	TEST(Set64)
+    {
+        c::bitset64 counter;
+		counter.set(42);
+        EXPECT_EQUAL(counter.count(), 1);
+        EXPECT_TRUE(counter.isSet(42));
+		EXPECT_EQUAL(counter.mask(), 0x0000040000000000);
+    }
+
     TEST(Remove64)
     {
         c::bitset64 counter;
@@ -173,6 +209,24 @@ TEST_SUITE(BitSet)
         counter.remove(index1);
         EXPECT_EQUAL(counter.count(), 2);
         EXPECT_FALSE(counter.isSet(index1));
+    }
+
+	TEST(Mask64)
+    {
+        c::bitset64 counter;
+		counter.set(4);
+		counter.set(47);
+		counter.set(30);
+		EXPECT_EQUAL(counter.mask(), 0x0000800040000010);
+    }
+
+	TEST(Highest64)
+    {
+        c::bitset64 counter;
+		counter.set(4);
+		counter.set(47);
+		counter.set(30);
+		EXPECT_EQUAL(counter.highest(), 47);
     }
 #endif
 }

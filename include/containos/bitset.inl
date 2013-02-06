@@ -85,6 +85,12 @@ __forceinline uint32_t bitset32::acquire()
     return index;
 }
 
+__forceinline void bitset32::set(uint32_t index)
+{
+    containos_assert(index < 64);
+    m_mask &= ~(1U << index);
+}
+
 __forceinline void bitset32::remove(uint32_t index)
 {
     containos_assert(index < 32);
@@ -99,6 +105,20 @@ __forceinline void bitset32::clear()
 __forceinline uint32_t bitset32::count() const
 {
     return containos::popcnt32(~m_mask);
+}
+
+__forceinline uint32_t bitset32::highest() const
+{
+#if defined(CONTAINOS_NATIVE_BSR)
+    return containos::bsr32(~m_mask);
+#elif defined(CONTAINOS_NATIVE_CLZ)
+    return containos::clz32(~m_mask) ^ 31;
+#endif
+}
+
+__forceinline uint32_t bitset32::mask() const
+{
+    return ~m_mask;
 }
 
 __forceinline bool bitset32::isSet(uint32_t index) const
@@ -131,6 +151,12 @@ __forceinline uint64_t bitset64::acquire()
     return index;
 }
 
+__forceinline void bitset64::set(uint64_t index)
+{
+    containos_assert(index < 64);
+    m_mask &= ~(1ULL << index);
+}
+
 __forceinline void bitset64::remove(uint64_t index)
 {
     containos_assert(index < 64);
@@ -145,6 +171,20 @@ __forceinline void bitset64::clear()
 __forceinline uint64_t bitset64::count() const
 {
     return containos::popcnt64(~m_mask);
+}
+
+__forceinline uint64_t bitset64::highest() const
+{
+#if defined(CONTAINOS_NATIVE_BSR)
+    return containos::bsr64(~m_mask);
+#elif defined(CONTAINOS_NATIVE_CLZ)
+    return containos::clz64(~m_mask) ^ 63;
+#endif
+}
+
+__forceinline uint64_t bitset64::mask() const
+{
+    return ~m_mask;
 }
 
 __forceinline bool bitset64::isSet(uint64_t index) const

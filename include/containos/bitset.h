@@ -45,9 +45,12 @@ struct bitset32
     bitset32(const bitset32& other);
 
     uint32_t acquire();
+	void set(uint32_t index);
     void remove(uint32_t index);
     void clear();
     uint32_t count() const;
+	uint32_t highest() const;
+	uint32_t mask() const;
     bool isSet(uint32_t index) const;
 
 private:
@@ -72,9 +75,12 @@ struct bitset64
     bitset64(const bitset64& other);
 
     uint64_t acquire();
-    void remove(uint64_t index);
+    void set(uint64_t index);
+	void remove(uint64_t index);
     void clear();
     uint64_t count() const;
+	uint64_t highest() const;
+	uint64_t mask() const;
     bool isSet(uint64_t index) const;
 
 private:
