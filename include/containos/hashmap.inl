@@ -298,7 +298,7 @@ inline bool HashMapBase<Key,T,ToBucket,Allocator>::insert(Key const& key, T& val
         return false;
     } else {
         // insert as first in the linked list
-        uint32 bucketIndex = KeyToBucket(key, m_bucketCount);
+        uint32 bucketIndex = ToBucket::get(key, m_bucketCount);
         m_buckets[bucketIndex] = CreateHashNode(key, value, m_buckets[bucketIndex]);
         ++(m_size);
         return true;
