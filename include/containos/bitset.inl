@@ -112,7 +112,7 @@ __forceinline uint32_t bitset32::highest() const
 #if defined(CONTAINOS_NATIVE_BSR)
     return containos::bsr32(~m_mask);
 #elif defined(CONTAINOS_NATIVE_CLZ)
-    return containos::clz32(~m_mask) ^ 31;
+    return containos::clz32(m_mask) ^ 31;
 #endif
 }
 
@@ -125,6 +125,26 @@ __forceinline bool bitset32::isSet(uint32_t index) const
 {
     containos_assert(index < 32);
     return (m_mask & (1U << index)) == 0;
+}
+
+__forceinline bool bitset32::operator==(uint32_t mask) const
+{
+	return ~m_mask == mask;
+}
+
+__forceinline bool bitset32::operator==(bitset32 const& other) const
+{
+	return m_mask == other.m_mask;
+}
+
+__forceinline bool bitset32::operator!=(uint32_t mask) const
+{
+	return ~m_mask != mask;
+}
+
+__forceinline bool bitset32::operator!=(bitset32 const& other) const
+{
+	return m_mask != other.m_mask;
 }
 //-----------------------------------------------------------------------------
 
@@ -168,6 +188,11 @@ __forceinline void bitset64::clear()
     m_mask = 0xffffffffffffffff;
 }
 
+__forceinline bool bitset64::isSet(uint64_t index) const
+{
+    return (m_mask & (1ULL << index)) == 0;
+}
+
 __forceinline uint64_t bitset64::count() const
 {
     return containos::popcnt64(~m_mask);
@@ -187,10 +212,26 @@ __forceinline uint64_t bitset64::mask() const
     return ~m_mask;
 }
 
-__forceinline bool bitset64::isSet(uint64_t index) const
+__forceinline bool bitset64::operator==(uint64_t mask) const
 {
-    return (m_mask & (1ULL << index)) == 0;
+	return ~m_mask == mask;
 }
+
+__forceinline bool bitset64::operator==(bitset64 const& other) const
+{
+	return m_mask == other.m_mask;
+}
+
+__forceinline bool bitset64::operator!=(uint64_t mask) const
+{
+	return ~m_mask != mask;
+}
+
+__forceinline bool bitset64::operator!=(bitset64 const& other) const
+{
+	return m_mask != other.m_mask;
+}
+
 #endif
 //-----------------------------------------------------------------------------
 

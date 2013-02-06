@@ -75,13 +75,15 @@ TEST_SUITE(BitSet)
         for(uint32_t i = 0; i < 32; ++i) {
             EXPECT_FALSE(counter.isSet(i));
         }
+		EXPECT_TRUE(counter == 0);
+		EXPECT_FALSE(counter != 0);
     }
 
     TEST(Acquire32)
     {
         c::bitset32 counter;
         for(int i = 0; i < 32; ++i) {
-            int index = counter.acquire();
+            uint32_t index = counter.acquire();
             EXPECT_EQUAL(index, i^31);
             EXPECT_EQUAL(counter.count(), i+1);
             EXPECT_TRUE(counter.isSet(index));
@@ -95,14 +97,16 @@ TEST_SUITE(BitSet)
         EXPECT_EQUAL(counter.count(), 1);
         EXPECT_TRUE(counter.isSet(22));
 		EXPECT_EQUAL(counter.mask(), 0x00400000);
+		EXPECT_TRUE(counter == 0x00400000);
+		EXPECT_TRUE(counter != 0);
     }
 
     TEST(Remove32)
     {
         c::bitset32 counter;
-        int index0 = counter.acquire();
-        int index1 = counter.acquire();
-        int index3 = counter.acquire();
+        uint32_t index0 = counter.acquire();
+        uint32_t index1 = counter.acquire();
+        uint32_t index3 = counter.acquire();
         EXPECT_EQUAL(counter.count(), 3);
         EXPECT_TRUE(counter.isSet(index1));
         counter.remove(index1);
@@ -176,6 +180,8 @@ TEST_SUITE(BitSet)
         for(uint64_t i = 0; i < 64; ++i) {
             EXPECT_FALSE(counter.isSet(i));
         }
+		EXPECT_TRUE(counter == 0);
+		EXPECT_FALSE(counter != 0);
     }
 
     TEST(Acquire64)
