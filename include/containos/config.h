@@ -56,7 +56,7 @@ typedef unsigned int uint32_t;
 typedef unsigned __int64 uint64_t;
 
 #define containos_assert(Test)
-#define containos_cast(Type,Ptr)    static_cast<(Type)>(Ptr)
+#define containos_cast(Type,Ptr)    static_cast<Type >(Ptr)
 #define containos_delete(Ptr)       delete (Ptr)
 //----------------------------------------------------------------------------
 

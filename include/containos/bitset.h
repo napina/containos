@@ -45,18 +45,18 @@ struct bitset32
     bitset32(const bitset32& other);
 
     uint32_t acquire();
-	void set(uint32_t index);
+    void set(uint32_t index);
     void remove(uint32_t index);
     void clear();
-	bool isSet(uint32_t index) const;
+    bool isSet(uint32_t index) const;
     uint32_t count() const;
-	uint32_t highest() const;
-	uint32_t mask() const;
+    uint32_t highest() const;
+    uint32_t mask() const;
 
-	bool operator==(uint32_t other) const;
-	bool operator==(bitset32 const& other) const;
-	bool operator!=(uint32_t other) const;
-	bool operator!=(bitset32 const& other) const;
+    bool operator==(uint32_t other) const;
+    bool operator==(bitset32 const& other) const;
+    bool operator!=(uint32_t other) const;
+    bool operator!=(bitset32 const& other) const;
 
 private:
     uint32_t m_mask;
@@ -81,17 +81,17 @@ struct bitset64
 
     uint64_t acquire();
     void set(uint64_t index);
-	void remove(uint64_t index);
+    void remove(uint64_t index);
     void clear();
-	bool isSet(uint64_t index) const;
+    bool isSet(uint64_t index) const;
     uint64_t count() const;
-	uint64_t highest() const;
-	uint64_t mask() const;
+    uint64_t highest() const;
+    uint64_t mask() const;
 
-	bool operator==(uint64_t mask) const;
-	bool operator==(bitset64 const& other) const;
-	bool operator!=(uint64_t mask) const;
-	bool operator!=(bitset64 const& other) const;
+    bool operator==(uint64_t mask) const;
+    bool operator==(bitset64 const& other) const;
+    bool operator!=(uint64_t mask) const;
+    bool operator!=(bitset64 const& other) const;
 
 private:
     uint64_t m_mask;

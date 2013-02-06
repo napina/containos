@@ -40,7 +40,7 @@ inline BitBlock<T>::BitBlock()
 
 template<typename T>
 inline BitBlock<T>::BitBlock(const BitBlock& other)
-	: m_mask(other.mask)
+    : m_mask(other.mask)
 {
     // TODO
 }
@@ -80,9 +80,9 @@ template<typename T>
 inline void BitBlock<T>::clear()
 {
     while(m_mask != 0) {
-		size_t index = m_mask.highest();
+        size_t index = m_mask.highest();
         containos_placement_delete(&m_data[index*sizeof(T)],T);
-		m_mask.remove(index);
+        m_mask.remove(index);
     }
 }
 

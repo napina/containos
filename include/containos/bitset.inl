@@ -129,22 +129,22 @@ __forceinline bool bitset32::isSet(uint32_t index) const
 
 __forceinline bool bitset32::operator==(uint32_t mask) const
 {
-	return ~m_mask == mask;
+    return ~m_mask == mask;
 }
 
 __forceinline bool bitset32::operator==(bitset32 const& other) const
 {
-	return m_mask == other.m_mask;
+    return m_mask == other.m_mask;
 }
 
 __forceinline bool bitset32::operator!=(uint32_t mask) const
 {
-	return ~m_mask != mask;
+    return ~m_mask != mask;
 }
 
 __forceinline bool bitset32::operator!=(bitset32 const& other) const
 {
-	return m_mask != other.m_mask;
+    return m_mask != other.m_mask;
 }
 //-----------------------------------------------------------------------------
 
@@ -214,22 +214,22 @@ __forceinline uint64_t bitset64::mask() const
 
 __forceinline bool bitset64::operator==(uint64_t mask) const
 {
-	return ~m_mask == mask;
+    return ~m_mask == mask;
 }
 
 __forceinline bool bitset64::operator==(bitset64 const& other) const
 {
-	return m_mask == other.m_mask;
+    return m_mask == other.m_mask;
 }
 
 __forceinline bool bitset64::operator!=(uint64_t mask) const
 {
-	return ~m_mask != mask;
+    return ~m_mask != mask;
 }
 
 __forceinline bool bitset64::operator!=(bitset64 const& other) const
 {
-	return m_mask != other.m_mask;
+    return m_mask != other.m_mask;
 }
 
 #endif

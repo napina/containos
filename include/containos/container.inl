@@ -35,7 +35,7 @@ struct ContainerBase
 {
 protected:
     void* alloc(size_t size, size_t align, int flags = 0)   { return Allocator::alloc(size, align, flags); }
-    void* realloc(void* ptr, size_t size)                   { return Allocator::realloc(ptr, size); }
+    //void* realloc(void* ptr, size_t size)                   { return Allocator::realloc(ptr, size); }
     void  dealloc(void* ptr)                                { Allocator::dealloc(ptr); }
 };
 
@@ -46,7 +46,7 @@ struct ContainerBase<Allocator,false>
 
 protected:
     void* alloc(size_t size, size_t align, int flags = 0)   { return m_allocator->alloc(size, align, flags); }
-    void* realloc(void* ptr, size_t size)                   { return m_allocator->realloc(ptr, size); }
+    //void* realloc(void* ptr, size_t size)                   { return m_allocator->realloc(ptr, size); }
     void  dealloc(void* ptr)                                { m_allocator->dealloc(ptr); }
 
 private:
