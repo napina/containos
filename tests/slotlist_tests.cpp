@@ -30,10 +30,9 @@ namespace c = containos;
 struct Mallocator
 {
     static void* alloc(size_t size, size_t align, int flags = 0)    { return ::malloc(size); }
-    static void* realloc(void* ptr, size_t size)                    { return ::realloc(ptr, size); }
     static void  dealloc(void* ptr)                                 { ::free(ptr); }
 };
-#if 0
+
 TEST_SUITE(SlotList)
 {
     TEST(Empty)
@@ -41,7 +40,7 @@ TEST_SUITE(SlotList)
         c::SlotList<int,Mallocator> list;
         EXPECT_EQUAL(list.size(), 0);
     }
-
+#if 0
     TEST(Insert)
     {
         c::SlotList<int,Mallocator> list;
@@ -102,5 +101,5 @@ TEST_SUITE(SlotList)
         list.clear();
         EXPECT_EQUAL(list.size(), 0);
     }
-}
 #endif
+}

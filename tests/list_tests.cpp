@@ -32,7 +32,6 @@ namespace {
 struct Mallocator
 {
     static void* alloc(size_t size, size_t align, int flags = 0)    { return ::malloc(size); }
-    static void* realloc(void* ptr, size_t size)                    { return ::realloc(ptr, size); }
     static void  dealloc(void* ptr)                                 { ::free(ptr); }
 };
 

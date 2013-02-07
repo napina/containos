@@ -36,18 +36,17 @@ class SlotList : protected Container<Allocator>
 {
 	typedef Container<Allocator> Base;
 public:
-	typedef __int64 id_t;
-
     ~SlotList();
     SlotList();
     SlotList(SlotList const& other);
 
-	id_t create();
-    void remove(id_t id);
-    void clear();
+	uint64_t acquire();
+    void remove(uint64_t id);
+    void clearAndFree();
+	void clear();
 
-    T& operator[](id_t id);
-    T const& operator[](id_t id) const;
+    T* operator[](uint64_t id);
+    T const* operator[](uint64_t id) const;
     int size() const;
     bool isEmpty() const;
 

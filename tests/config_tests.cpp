@@ -27,6 +27,7 @@ IN THE SOFTWARE.
 namespace c = containos;
 
 namespace {
+
 struct IntWrap
 {
     IntWrap()                      { m_mem = new int(0); }
@@ -39,6 +40,7 @@ struct IntWrap
 private:
     int* m_mem; 
 };
+
 }
 
 TEST_SUITE(Config)

@@ -30,13 +30,13 @@ namespace containos {
 template<typename T,typename Allocator>
 inline SlotList<T,Allocator>::~SlotList()
 {
-    clear();
+    clearAndFree();
 }
 
 template<typename T,typename Allocator>
 inline SlotList<T,Allocator>::SlotList()
-    : m_chunkList(100)
-    , m_freeList(100)
+    : m_chunkList(128)
+    , m_freeList(128)
 {
 }
 
@@ -47,13 +47,13 @@ inline SlotList<T,Allocator>::SlotList(SlotList const& other)
 }
 
 template<typename T,typename Allocator>
-__forceinline typename SlotList<T,Allocator>::id_t SlotList<T,Allocator>::create()
+__forceinline uint64_t SlotList<T,Allocator>::acquire()
 {
     if(m_freeList.empty()) {
         T* chunk = Base::constructArray(chunk_size);
         for(int i = chunk_size - 1; i >= 0; --i) {
             //chunk[i].id = object_table.size() * chunk_size + i;
-            m_freeList.push_back(m_chunkList.size() * chunk_size + i);
+            m_freeList.insert(m_chunkList.size() * chunk_size + i);
         }
         m_chunkList.insert(chunk);
     }
@@ -64,11 +64,17 @@ __forceinline typename SlotList<T,Allocator>::id_t SlotList<T,Allocator>::create
 }
 
 template<typename T,typename Allocator>
-inline void SlotList<T,Allocator>::remove(id_t id)
+inline void SlotList<T,Allocator>::remove(uint64_t id)
 {
     T* obj = operator[](id);
     obj->id = (obj->id & 0xFFFFFFFF) | (((obj->id >> 32) + 1) << 32);
-    m_freeList.push_back(id & 0xFFFFFFFF);
+    m_freeList.insert(id & 0xFFFFFFFF);
+}
+
+template<typename T,typename Allocator>
+__forceinline void SlotList<T,Allocator>::clearAndFree()
+{
+//    m_size = 0;
 }
 
 template<typename T,typename Allocator>
@@ -78,14 +84,14 @@ __forceinline void SlotList<T,Allocator>::clear()
 }
 
 template<typename T,typename Allocator>
-__forceinline T& SlotList<T,Allocator>::operator[](id_t id)
+__forceinline T* SlotList<T,Allocator>::operator[](uint64_t id)
 {
     T* obj = m_chunkList[(id & 0xFFFFFFFF) / chunk_size] + ((id & 0xFFFFFFFF) % chunk_size);
     return &obj;// TODO obj->id != id ? nullptr : obj;
 }
 
 template<typename T,typename Allocator>
-__forceinline T const& SlotList<T,Allocator>::operator[](id_t id) const
+__forceinline T const* SlotList<T,Allocator>::operator[](uint64_t id) const
 {
     T* obj = m_chunkList[(id & 0xFFFFFFFF) / chunk_size] + ((id & 0xFFFFFFFF) % chunk_size);
     return &obj;// TODO obj->id != id ? nullptr : obj;
