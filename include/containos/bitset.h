@@ -1,6 +1,6 @@
 /*=============================================================================
 
-Copyright (c) 2007-2013 Ville Ruusutie
+Copyright (c) 2013 Ville Ruusutie
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -96,6 +96,13 @@ struct bitset64
 private:
     uint64_t m_mask;
 };
+#endif
+//-----------------------------------------------------------------------------
+
+#if defined(CONTAINOS_ARCH64)
+    typedef bitset64 bitset;
+#else
+    typedef bitset32 bitset;
 #endif
 //-----------------------------------------------------------------------------
 

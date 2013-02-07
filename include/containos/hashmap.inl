@@ -1,5 +1,26 @@
-// Copyright (C) Ville Ruusutie, 2009
+/*=============================================================================
 
+Copyright (c) 2013 Ville Ruusutie
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is furnished
+to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+
+=============================================================================*/
 #pragma once
 #ifndef containos_hashmap_inl
 #define containos_hashmap_inl
@@ -37,10 +58,6 @@ public:
     Key m_key;
     T m_value;
 };
-
-
-
-
 
 template<typename Key>
 __forceinline uint32 HashedKeyToBucket<Key>::get(Key const& key, uint32 bucketCount)
@@ -247,7 +264,7 @@ __forceinline T const* HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::op
 template<typename Key,typename T,typename ToBucket,typename Allocator>
 __forceinline typename HashMapBase<Key,T,ToBucket,Allocator>::const_iterator& HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::operator++()
 {
-    Next();
+    next();
     return *this;
 }
 
@@ -255,7 +272,7 @@ template<typename Key,typename T,typename ToBucket,typename Allocator>
 __forceinline typename HashMapBase<Key,T,ToBucket,Allocator>::const_iterator HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::operator++(int)
 {
     const_iterator temp(*this);
-    Next();
+    next();
     return temp;
 }
 
@@ -401,7 +418,7 @@ __forceinline typename HashMapBase<Key,T,ToBucket,Allocator>::const_iterator Has
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
-__forceinline HashMapNode<Key,T>* HashMapBase<Key,T,ToBucket,Allocator>::CreateHashNode(Key const& key, T& value, HashMapNode<Key,T>* next)
+__forceinline HashMapNode<Key,T>* HashMapBase<Key,T,ToBucket,Allocator>::createHashNode(Key const& key, T& value, HashMapNode<Key,T>* next)
 {
     return Base::template construct<
         HashMapNode<Key,T>, Key const&, T&, HashMapNode<Key,T>*>(
@@ -409,7 +426,7 @@ __forceinline HashMapNode<Key,T>* HashMapBase<Key,T,ToBucket,Allocator>::CreateH
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
-__forceinline HashMapNode<Key,T>* HashMapBase<Key,T,ToBucket,Allocator>::CreateHashNode(Key const& key, T const& value, HashMapNode<Key,T>* next)
+__forceinline HashMapNode<Key,T>* HashMapBase<Key,T,ToBucket,Allocator>::createHashNode(Key const& key, T const& value, HashMapNode<Key,T>* next)
 {
     return Base::template construct<
         HashMapNode<Key,T>, Key const&, T const&, HashMapNode<Key,T>*>(
@@ -454,6 +471,6 @@ __forceinline HashMap<uint32,T,Allocator>::HashMap(uint32 bucketCount)
 {
 }
 
-} // end of korppu
+} // end of containos
 
 #endif

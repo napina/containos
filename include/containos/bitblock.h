@@ -1,6 +1,6 @@
 /*=============================================================================
 
-Copyright (c) 2007-2013 Ville Ruusutie
+Copyright (c) 2013 Ville Ruusutie
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,15 +29,10 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-// Fast memory block with 32/64 elements depending on platform
+// Fast memory block with 32/64 elements depending which is native
 template<typename T>
 struct BitBlock
 {
-#if defined(CONTAINOS_ARCH64)
-    typedef bitset64 bitset;
-#else
-    typedef bitset32 bitset;
-#endif
     typedef T* iterator;
     typedef T const* const_iterator;
 

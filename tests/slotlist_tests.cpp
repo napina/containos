@@ -1,6 +1,6 @@
 /*=============================================================================
 
-Copyright (c) 2007-2013 Ville Ruusutie
+Copyright (c) 2013 Ville Ruusutie
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ struct Mallocator
     static void* realloc(void* ptr, size_t size)                    { return ::realloc(ptr, size); }
     static void  dealloc(void* ptr)                                 { ::free(ptr); }
 };
-
+#if 0
 TEST_SUITE(SlotList)
 {
     TEST(Empty)
@@ -103,3 +103,4 @@ TEST_SUITE(SlotList)
         EXPECT_EQUAL(list.size(), 0);
     }
 }
+#endif

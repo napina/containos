@@ -30,3 +30,7 @@
 *.idb
 *.manifest
 *.opensdf
+
+# Filter forders
+build/vc10
+build/vc11

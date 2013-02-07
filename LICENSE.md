@@ -1,6 +1,6 @@
 /*=============================================================================
 
-Copyright (c) 2010-2013 Ville Ruusutie
+Copyright (c) 2013 Ville Ruusutie
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

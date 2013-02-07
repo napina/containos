@@ -1,6 +1,6 @@
 /*=============================================================================
 
-Copyright (c) 2007-2013 Ville Ruusutie
+Copyright (c) 2013 Ville Ruusutie
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -126,8 +126,8 @@ public:
     T* find(Key const& key) const;
 
 private:
-    NodeType* CreateHashNode(Key const& key, T& value, NodeType* next);
-    NodeType* CreateHashNode(Key const& key, T const& value, NodeType* next);
+    NodeType* createHashNode(Key const& key, T& value, NodeType* next);
+    NodeType* createHashNode(Key const& key, T const& value, NodeType* next);
 
 private:
     NodeType** m_buckets;
