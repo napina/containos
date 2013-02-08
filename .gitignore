@@ -31,6 +31,6 @@
 *.manifest
 *.opensdf
 
-# Filter forders
+# Filter folders
 build/vc10
 build/vc11
