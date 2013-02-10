@@ -30,7 +30,7 @@ IN THE SOFTWARE.
 /*----------------------------------------------------------------------------
 struct Allocator
 {
-    static void* alloc(size_t size, size_t align, int flags = 0);
+    static void* alloc(size_t size, size_t align);
     static void  dealloc(void* ptr);
 };
 //--------------------------------------------------------------------------*/

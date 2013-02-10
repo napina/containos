@@ -29,8 +29,8 @@ namespace c = containos;
 
 struct Mallocator
 {
-    static void* alloc(size_t size, size_t align, int flags = 0)    { return ::malloc(size); }
-    static void  dealloc(void* ptr)                                 { ::free(ptr); }
+    static void* alloc(size_t size, size_t align)   { return ::malloc(size); }
+    static void  dealloc(void* ptr)                 { ::free(ptr); }
 };
 
 TEST_SUITE(SlotList)

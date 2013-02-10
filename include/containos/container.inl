@@ -34,18 +34,18 @@ template<typename Allocator, bool IsStatic>
 struct ContainerBase
 {
 protected:
-    void* alloc(size_t size, size_t align, int flags = 0)   { return Allocator::alloc(size, align, flags); }
-    void  dealloc(void* ptr)                                { Allocator::dealloc(ptr); }
+    void* alloc(size_t size, size_t align)      { return Allocator::alloc(size, align); }
+    void  dealloc(void* ptr)                    { Allocator::dealloc(ptr); }
 };
 
 template<typename Allocator>
 struct ContainerBase<Allocator,false>
 {
-    void setAllocator(Allocator* allocator)                 { m_allocator = allocator; }
+    void setAllocator(Allocator* allocator)     { m_allocator = allocator; }
 
 protected:
-    void* alloc(size_t size, size_t align, int flags = 0)   { return m_allocator->alloc(size, align, flags); }
-    void  dealloc(void* ptr)                                { m_allocator->dealloc(ptr); }
+    void* alloc(size_t size, size_t align)      { return m_allocator->alloc(size, align); }
+    void  dealloc(void* ptr)                    { m_allocator->dealloc(ptr); }
 
 private:
     Allocator* m_allocator;
