@@ -110,7 +110,7 @@ struct placement_new<T,false> {
 
 template<typename T, bool HasTrivialDestructor>
 struct placement_delete {
-    static void destroy(void*)									{}
+    static void destroy(void*)                                  {}
 };
 
 template<typename T>
