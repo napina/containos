@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\tests\atomic_tests.cpp" />
     <ClCompile Include="..\..\tests\bitblock_tests.cpp" />
     <ClCompile Include="..\..\tests\bitset_tests.cpp" />
     <ClCompile Include="..\..\tests\config_tests.cpp" />
@@ -32,6 +33,8 @@
     <ClCompile Include="..\..\tests\slotlist_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\include\containos\algorithm.h" />
+    <ClInclude Include="..\..\include\containos\atomic.h" />
     <ClInclude Include="..\..\include\containos\bitblock.h" />
     <ClInclude Include="..\..\include\containos\bitset.h" />
     <ClInclude Include="..\..\include\containos\config.h" />
@@ -45,6 +48,8 @@
     <ClInclude Include="..\..\include\containos\slotlist.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\include\containos\algorithm.inl" />
+    <None Include="..\..\include\containos\atomic.inl" />
     <None Include="..\..\include\containos\bitblock.inl" />
     <None Include="..\..\include\containos\bitset.inl" />
     <None Include="..\..\include\containos\container.inl" />
