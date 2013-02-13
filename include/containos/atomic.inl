@@ -28,73 +28,81 @@ IN THE SOFTWARE.
 namespace containos {
 
 #if defined(CONTAINOS_WINDOWS)
+#include <intrin.h>
 
-#ifndef WIN32_LEAN_AND_MEAN
-  #define WIN32_LEAN_AND_MEAN
+__forceinline void memoryBarrier()
+{
+    _mm_sfence();
+}
+
+__forceinline void prefetch_nta(void const* ptr)
+{
+    _mm_prefetch((char const*)ptr, _MM_HINT_NTA);
+}
+
+__forceinline void* atomicCompareAndSwapPtr(void*& r, void* comp, void* v)
+{
+#if defined(CONTAINOS_ARCH64)
+    return _InterlockedCompareExchangePointer(&r, v, comp);
+#else
+    return (void*)(long*)_InterlockedCompareExchange((long volatile*)&r, (long)(long*)v, (long)(long*)comp);
 #endif
-#ifndef NOMINMAX
-  #define NOMINMAX
-#endif
-#include <windows.h>
-
-void* atomicCompareAndSwapPtr(void*& r, void* comp, void* v)
-{
-    return InterlockedCompareExchangePointer(&r, v, comp);
 }
 
-uint32_t atomicAssign32(uint32_t& r, uint32_t v)
+__forceinline uint32_t atomicAssign32(uint32_t& r, uint32_t v)
 {
-    return InterlockedExchange((LONG*)&r, (LONG)v);
+    return _InterlockedExchange((long*)&r, (long)v);
 }
 
-uint32_t atomicInc32(uint32_t& r)
+__forceinline uint32_t atomicInc32(uint32_t& r)
 {
-    return (uint32_t)InterlockedIncrement((LONG*)&r);
+    return (uint32_t)_InterlockedIncrement((long*)&r);
 }
 
-uint32_t atomicDec32(uint32_t& r)
+__forceinline uint32_t atomicDec32(uint32_t& r)
 {
-    return (uint32_t)InterlockedDecrement((LONG*)&r);
+    return (uint32_t)_InterlockedDecrement((long*)&r);
 }
 
-uint32_t atomicAdd32(uint32_t& r, uint32_t v)
+__forceinline uint32_t atomicAdd32(uint32_t& r, uint32_t v)
 {
-    return InterlockedExchangeAdd((LONG*)&r, (LONG)v) + v;
+    return _InterlockedExchangeAdd((long*)&r, (long)v) + v;
 }
 
-uint32_t atomicSub32(uint32_t& r, uint32_t v)
+__forceinline uint32_t atomicSub32(uint32_t& r, uint32_t v)
 {
-    return InterlockedExchangeAdd((LONG*)&r, -(LONG)v) - v;
+    return _InterlockedExchangeAdd((long*)&r, -(long)v) - v;
 }
 
 #if defined(CONTAINOS_ARCH64)
 
-uint64_t atomicAssign64(uint64_t& r, uint64_t v)
+__forceinline uint64_t atomicAssign64(uint64_t& r, uint64_t v)
 {
-    return InterlockedExchange64((LONGLONG*)&r, (LONGLONG)v);
+    return _InterlockedExchange64((long long*)&r, (long long)v);
 }
 
-uint64_t atomicInc64(uint64_t& r)
+__forceinline uint64_t atomicInc64(uint64_t& r)
 {
-    return (uint64_t)InterlockedIncrement64((LONGLONG*)&r);
+    return (uint64_t)_InterlockedIncrement64((long long*)&r);
 }
 
-uint64_t atomicDec64(uint64_t& r)
+__forceinline uint64_t atomicDec64(uint64_t& r)
 {
-    return (uint64_t)InterlockedDecrement64((LONGLONG*)&r);
+    return (uint64_t)_InterlockedDecrement64((long long*)&r);
 }
 
-uint64_t atomicAdd64(uint64_t& r, uint64_t v)
+__forceinline uint64_t atomicAdd64(uint64_t& r, uint64_t v)
 {
-    return InterlockedExchangeAdd64((LONGLONG*)&r, (LONGLONG)v) + v;
+    return _InterlockedExchangeAdd64((long long*)&r, (long long)v) + v;
 }
 
-uint64_t atomicSub64(uint64_t& r, uint64_t v)
+__forceinline uint64_t atomicSub64(uint64_t& r, uint64_t v)
 {
-    return InterlockedExchangeAdd64((LONGLONG*)&r, -(LONGLONG)v) - v;
+    return _InterlockedExchangeAdd64((long long*)&r, -(long long)v) - v;
 }
 
 #endif
+
 #endif
 
 } // end of containos

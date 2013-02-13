@@ -29,6 +29,12 @@ IN THE SOFTWARE.
 
 namespace containos {
 
+// makes sure that every preceding store is globally visible before any subsequent store
+void memoryBarrier();
+
+// prefetch data for only short period of time
+void prefetch_nta(void const* ptr);
+
 // does: oldr = r, if r == comp then r = v, ret r
 void* atomicCompareAndSwapPtr(void*& r, void* comp, void* v);
 
