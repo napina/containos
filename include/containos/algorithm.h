@@ -35,6 +35,9 @@ void sort(Iterator begin, Iterator end, Compare compare);
 template<typename Iterator,typename Compare>
 Iterator unique(Iterator begin, Iterator end, Compare compare);
 
+template<typename Iterator,typename Compare,typename Merge>
+Iterator mergeSame(Iterator begin, Iterator end, Compare compare, Merge merge);
+
 } // end of containos
 
 #include "containos/algorithm.inl"

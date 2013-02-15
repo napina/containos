@@ -30,15 +30,41 @@ IN THE SOFTWARE.
 namespace containos {
 
 template<typename Iterator,typename Compare>
-__forceinline void sort(Iterator begin, Iterator end, Compare compare)
+inline void sort(Iterator begin, Iterator end, Compare compare)
 {
-	return std::stable_sort(begin, end, compare);
+    return std::stable_sort(begin, end, compare);
 }
 
 template<typename Iterator,typename Compare>
-__forceinline Iterator unique(Iterator begin, Iterator end, Compare compare)
+inline Iterator unique(Iterator begin, Iterator end, Compare compare)
 {
-	return std::unique(begin, end, compare);
+    return std::unique(begin, end, compare);
+}
+
+template<typename Iterator,typename Compare,typename Merge>
+inline Iterator mergeSame(Iterator begin, Iterator end, Compare compare, Merge merge)
+{
+	if(begin == end)
+		return end;
+	Iterator current = begin;
+	Iterator result = begin;
+	++current;
+	while(current != end) {
+		if(compare(*result, *current)) {
+			merge(*result, *current);
+			++current;
+		} else {
+			++result;
+			if(result != current) {
+				//containos_placement_delete(result);
+				//containos_placement_copy(result, current);
+				*result = *current;
+			}
+			++current;
+		}
+	}
+	++result;
+    return result;
 }
 
 } // end of containos

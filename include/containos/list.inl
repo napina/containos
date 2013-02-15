@@ -110,7 +110,7 @@ __forceinline void List<T,Allocator>::remove(int index)
     containos_assert(index < m_size);
     containos_placement_delete(&m_mem[index], T);
     --m_size;
-    m_mem[index] = m_mem[m_size];
+    //m_mem[index] = m_mem[m_size];
 	memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
 }
 
@@ -133,7 +133,7 @@ __forceinline void List<T,Allocator>::removeLast()
 }
 
 template<typename T, typename Allocator>
-inline void List<T,Allocator>::resize(size_t newSize)
+inline void List<T,Allocator>::resize(int newSize)
 {
     T* newMem = nullptr;
     size_t copyCount = m_size < newSize ? m_size : newSize;
@@ -167,6 +167,13 @@ inline void List<T,Allocator>::resize(size_t newSize)
 }
 
 template<typename T, typename Allocator>
+__forceinline void List<T,Allocator>::resize(iterator newEnd)
+{
+    ptrdiff_t size = newEnd - m_mem;
+    resize((int)size);
+}
+
+template<typename T, typename Allocator>
 inline void List<T,Allocator>::resizeNoCopy(size_t newSize)
 {
     clearAndFree();
@@ -180,6 +187,13 @@ inline void List<T,Allocator>::resizeNoCopy(size_t newSize)
     for(size_t i = 0; i < newSize; ++i) {
         containos_placement_new(&m_mem[i], T);
     }
+}
+
+template<typename T, typename Allocator>
+__forceinline void List<T,Allocator>::resizeNoCopy(iterator newEnd)
+{
+    ptrdiff_t size = newEnd - m_mem;
+    resizeNoCopy((int)size);
 }
 
 template<typename T, typename Allocator>

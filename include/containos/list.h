@@ -52,8 +52,10 @@ public:
     void remove(iterator ite);
     void removeLast();
 
-    void resize(size_t newSize);
+    void resize(int newSize);
+    void resize(iterator newEnd);
     void resizeNoCopy(size_t newSize);
+    void resizeNoCopy(iterator newEnd);
     void reserve(size_t capasity);
     void clearAndFree();
     void clear();

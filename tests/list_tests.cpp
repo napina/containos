@@ -185,6 +185,21 @@ TEST_SUITE(List)
         EXPECT_EQUAL(list[3], 33);
     }
 
+    TEST(ResizeWithIterator)
+    {
+        c::List<IntWrap,Mallocator> list;
+        list.reserve(5);
+        list.insert(1);
+        list.insert(2);
+        list.insert(3);
+        list.insert(4);
+        EXPECT_EQUAL(list.size(), 4);
+        c::List<IntWrap,Mallocator>::iterator it = list.begin();
+        list.resize(++it);
+        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list[0], 1);
+    }
+
     TEST(Iterate)
     {
         c::List<IntWrap,Mallocator> list;
