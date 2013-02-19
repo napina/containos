@@ -74,6 +74,11 @@ __forceinline uint32_t atomicSub32(uint32_t& r, uint32_t v)
     return _InterlockedExchangeAdd((long*)&r, -(long)v) - v;
 }
 
+__forceinline uint32_t atomicCompareAndSet32(uint32_t& r, uint32_t comp, uint32_t v)
+{
+    return (uint32_t)_InterlockedCompareExchange((long volatile*)&r, v, comp);
+}
+
 #if defined(CONTAINOS_ARCH64)
 
 __forceinline uint64_t atomicAssign64(uint64_t& r, uint64_t v)
@@ -99,6 +104,11 @@ __forceinline uint64_t atomicAdd64(uint64_t& r, uint64_t v)
 __forceinline uint64_t atomicSub64(uint64_t& r, uint64_t v)
 {
     return _InterlockedExchangeAdd64((long long*)&r, -(long long)v) - v;
+}
+
+__forceinline uint64_t atomicCompareAndSet64(uint64_t& r, uint64_t comp, uint64_t v)
+{
+    return (uint64_t)_InterlockedCompareExchange64((long long volatile*)&r, v, comp);
 }
 
 #endif
