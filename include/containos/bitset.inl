@@ -85,6 +85,17 @@ __forceinline uint32_t bitset32::acquire()
     return index;
 }
 
+__forceinline uint32_t bitset32::pop()
+{
+#if defined(CONTAINOS_NATIVE_BSR)
+    uint32_t index =  containos::bsr32(~m_mask);
+#elif defined(CONTAINOS_NATIVE_CLZ)
+    uint32_t index =  containos::clz32(~m_mask) ^ 31;
+#endif
+    m_mask |= (1U << index);
+    return index;
+}
+
 __forceinline void bitset32::set(uint32_t index)
 {
     containos_assert(index < 64);
@@ -112,7 +123,7 @@ __forceinline uint32_t bitset32::highest() const
 #if defined(CONTAINOS_NATIVE_BSR)
     return containos::bsr32(~m_mask);
 #elif defined(CONTAINOS_NATIVE_CLZ)
-    return containos::clz32(m_mask) ^ 31;
+    return containos::clz32(~m_mask) ^ 31;
 #endif
 }
 
@@ -164,10 +175,21 @@ __forceinline uint64_t bitset64::acquire()
     containos_assert(m_mask != 0);
 #ifdef CONTAINOS_NATIVE_BSR
     uint64_t index = containos::bsr64(m_mask);
-#elif CONTAINOS_NATIVE_CLZ
+#elif defined(CONTAINOS_NATIVE_CLZ)
     uint64_t index = containos::clz64(m_mask) ^ 63;
 #endif
     m_mask &= ~(1ULL << index);
+    return index;
+}
+
+__forceinline uint64_t bitset64::pop()
+{
+#if defined(CONTAINOS_NATIVE_BSR)
+    uint64_t index = containos::bsr64(~m_mask);
+#elif defined(CONTAINOS_NATIVE_CLZ)
+    uint64_t index = containos::clz64(~m_mask) ^ 63;
+#endif
+    m_mask |= (1ULL << index);
     return index;
 }
 

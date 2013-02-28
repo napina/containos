@@ -44,26 +44,26 @@ inline Iterator unique(Iterator begin, Iterator end, Compare compare)
 template<typename Iterator,typename Compare,typename Merge>
 inline Iterator mergeSame(Iterator begin, Iterator end, Compare compare, Merge merge)
 {
-	if(begin == end)
-		return end;
-	Iterator current = begin;
-	Iterator result = begin;
-	++current;
-	while(current != end) {
-		if(compare(*result, *current)) {
-			merge(*result, *current);
-			++current;
-		} else {
-			++result;
-			if(result != current) {
-				//containos_placement_delete(result);
-				//containos_placement_copy(result, current);
-				*result = *current;
-			}
-			++current;
-		}
-	}
-	++result;
+    if(begin == end)
+        return end;
+    Iterator current = begin;
+    Iterator result = begin;
+    ++current;
+    while(current != end) {
+        if(compare(*result, *current)) {
+            merge(*result, *current);
+            ++current;
+        } else {
+            ++result;
+            if(result != current) {
+                //containos_placement_delete(result);
+                //containos_placement_copy(result, Iterator, current);
+                *result = *current;
+            }
+            ++current;
+        }
+    }
+    ++result;
     return result;
 }
 

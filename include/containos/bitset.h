@@ -45,6 +45,7 @@ struct bitset32
     bitset32(const bitset32& other);
 
     uint32_t acquire();
+    uint32_t pop();
     void set(uint32_t index);
     void remove(uint32_t index);
     void clear();
@@ -80,6 +81,7 @@ struct bitset64
     bitset64(const bitset64& other);
 
     uint64_t acquire();
+    uint64_t pop();
     void set(uint64_t index);
     void remove(uint64_t index);
     void clear();

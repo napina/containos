@@ -111,7 +111,7 @@ __forceinline void List<T,Allocator>::remove(int index)
     containos_placement_delete(&m_mem[index], T);
     --m_size;
     //m_mem[index] = m_mem[m_size];
-	memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
+    ::memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
 }
 
 template<typename T, typename Allocator>
@@ -121,7 +121,7 @@ __forceinline void List<T,Allocator>::remove(iterator ite)
     ptrdiff_t index = ite - m_mem;
     containos_placement_delete(&m_mem[index], T);
     --m_size;
-    memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
+    ::memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
 }
 
 template<typename T, typename Allocator>
