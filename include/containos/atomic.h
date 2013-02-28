@@ -35,7 +35,7 @@ void memoryBarrier();
 // prefetch data for only short period of time
 void prefetch_nta(void const* ptr);
 
-// does: oldr = r, if r == comp then r = v, ret r
+// does: oldr = r, if r == comp then r = v, ret oldr
 void* atomicCompareAndSwapPtr(void*& r, void* comp, void* v);
 
 // does: oldr = r, r = v, ret oldr
@@ -48,6 +48,8 @@ uint32_t atomicDec32(uint32_t& r);
 uint32_t atomicAdd32(uint32_t& r, uint32_t v);
 // does: r -= v, ret r
 uint32_t atomicSub32(uint32_t& r, uint32_t v);
+// does: oldr = r, if r == comp then r = v, ret oldr
+uint32_t atomicCompareAndSet32(uint32_t& r, uint32_t comp, uint32_t v);
 
 #if defined(CONTAINOS_ARCH64)
 // does: oldr = r, r = v, ret oldr
@@ -60,6 +62,8 @@ uint64_t atomicDec64(uint64_t& r);
 uint64_t atomicAdd64(uint64_t& r, uint64_t v);
 // does: r -= v, ret r
 uint64_t atomicSub64(uint64_t& r, uint64_t v);
+// does: oldr = r, if r == comp then r = v, ret oldr
+uint64_t atomicCompareAndSet64(uint64_t& r, uint64_t comp, uint64_t v);
 #endif
 
 } // end of containos

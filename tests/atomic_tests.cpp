@@ -39,6 +39,17 @@ TEST_SUITE(Atomic)
         EXPECT_EQUAL(r, (void*)0x12345678);
     }
 
+    TEST(CompareAndSet32)
+    {
+        uint32_t v = 0x12345678;
+        uint32_t r = c::atomicCompareAndSet32(v, 0x10101010, 0x87654321);
+        EXPECT_EQUAL(v, 0x12345678);
+        EXPECT_EQUAL(r, 0x12345678);
+        r = c::atomicCompareAndSet32(v, 0x12345678, 0x87654321);
+        EXPECT_EQUAL(v, 0x87654321);
+        EXPECT_EQUAL(r, 0x12345678);
+    }
+
     TEST(Assign32)
     {
         uint32_t v = 100;
@@ -89,6 +100,17 @@ TEST_SUITE(Atomic)
         r = c::atomicCompareAndSwapPtr(ptr, (void*)0x12345678AB, (void*)0x87654641AB);
         EXPECT_EQUAL(ptr, (void*)0x87654641AB);
         EXPECT_EQUAL(r, (void*)0x12345678AB);
+    }
+
+    TEST(CompareAndSet64)
+    {
+        uint64_t v = 0x12345678AB;
+        uint64_t r = c::atomicCompareAndSet64(v, 0x10101010, 0x87654641AB);
+        EXPECT_EQUAL(v, 0x12345678AB);
+        EXPECT_EQUAL(r, 0x12345678AB);
+        r = c::atomicCompareAndSet64(v, 0x12345678AB, 0x87654641AB);
+        EXPECT_EQUAL(v, 0x87654641AB);
+        EXPECT_EQUAL(r, 0x12345678AB);
     }
 
     TEST(Assign64)
