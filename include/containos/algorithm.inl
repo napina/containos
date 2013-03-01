@@ -44,6 +44,7 @@ inline Iterator unique(Iterator begin, Iterator end, Compare compare)
 template<typename Iterator,typename Compare,typename Merge>
 inline Iterator mergeSame(Iterator begin, Iterator end, Compare compare, Merge merge)
 {
+    typedef std::remove_pointer<Iterator>::type T;
     if(begin == end)
         return end;
     Iterator current = begin;
@@ -56,9 +57,8 @@ inline Iterator mergeSame(Iterator begin, Iterator end, Compare compare, Merge m
         } else {
             ++result;
             if(result != current) {
-                //containos_placement_delete(result);
-                //containos_placement_copy(result, Iterator, current);
-                *result = *current;
+                containos_placement_delete(result, T);
+                containos_placement_copy(result, T, *current);
             }
             ++current;
         }

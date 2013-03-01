@@ -39,6 +39,7 @@ struct Complex
 {
     Complex() : m_i(666) { m_value = new int(333); }
     Complex(int i, int value) : m_i(i) { m_value = new int(value); }
+    Complex(Complex const& other) : m_i(other.m_i) { m_value = new int(*other.m_value); }
     ~Complex() { delete m_value; }
     int i() const { return m_i; }
     int& value() const { return *m_value; }
@@ -111,7 +112,7 @@ TEST_SUITE(Algorithm)
                 a.value() += b.value();
             } );
         EXPECT_EQUAL(list.size(), 6);
-        list.resizeNoCopy(newEnd);
+        list.resize(newEnd);
         EXPECT_EQUAL(list.size(), 3);
         EXPECT_EQUAL(list[0].i(), 1);
         EXPECT_EQUAL(list[1].i(), 2);
