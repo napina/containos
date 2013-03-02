@@ -30,11 +30,11 @@ IN THE SOFTWARE.
 namespace containos {
 //-----------------------------------------------------------------------------
 
-uint32 bsr32(uint32 x);
-uint32 bsf32(uint32 x);
-uint32 ctz32(uint32 x);
-uint32 clz32(uint32 x);
-uint32 popcnt32(uint32 x);
+uint32_t bsr32(uint32_t x);
+uint32_t bsf32(uint32_t x);
+uint32_t ctz32(uint32_t x);
+uint32_t clz32(uint32_t x);
+uint32_t popcnt32(uint32_t x);
 
 struct bitset32
 {
@@ -44,33 +44,33 @@ struct bitset32
     bitset32();
     bitset32(const bitset32& other);
 
-    uint32 acquire();
-    uint32 pop();
-    void set(uint32 index);
-    void remove(uint32 index);
+    uint32_t acquire();
+    uint32_t pop();
+    void set(uint32_t index);
+    void remove(uint32_t index);
     void clear();
-    bool isSet(uint32 index) const;
-    uint32 count() const;
-    uint32 highest() const;
-    uint32 mask() const;
+    bool isSet(uint32_t index) const;
+    uint32_t count() const;
+    uint32_t highest() const;
+    uint32_t mask() const;
 
-    bool operator==(uint32 other) const;
+    bool operator==(uint32_t other) const;
     bool operator==(bitset32 const& other) const;
-    bool operator!=(uint32 other) const;
+    bool operator!=(uint32_t other) const;
     bool operator!=(bitset32 const& other) const;
 
 private:
-    uint32 m_mask;
+    uint32_t m_mask;
 };
 //-----------------------------------------------------------------------------
 
 #ifdef CONTAINOS_ARCH64
 
-uint32 bsr64(uint64 x);
-uint32 bsf64(uint64 x);
-uint32 ctz64(uint64 x);
-uint32 clz64(uint64 x);
-uint64 popcnt64(uint64 x);
+uint32_t bsr64(uint64_t x);
+uint32_t bsf64(uint64_t x);
+uint32_t ctz64(uint64_t x);
+uint32_t clz64(uint64_t x);
+uint64_t popcnt64(uint64_t x);
 
 struct bitset64
 {
@@ -80,23 +80,23 @@ struct bitset64
     bitset64();
     bitset64(const bitset64& other);
 
-    uint64 acquire();
-    uint64 pop();
-    void set(uint64 index);
-    void remove(uint64 index);
+    uint64_t acquire();
+    uint64_t pop();
+    void set(uint64_t index);
+    void remove(uint64_t index);
     void clear();
-    bool isSet(uint64 index) const;
-    uint64 count() const;
-    uint64 highest() const;
-    uint64 mask() const;
+    bool isSet(uint64_t index) const;
+    uint64_t count() const;
+    uint64_t highest() const;
+    uint64_t mask() const;
 
-    bool operator==(uint64 mask) const;
+    bool operator==(uint64_t mask) const;
     bool operator==(bitset64 const& other) const;
-    bool operator!=(uint64 mask) const;
+    bool operator!=(uint64_t mask) const;
     bool operator!=(bitset64 const& other) const;
 
 private:
-    uint64 m_mask;
+    uint64_t m_mask;
 };
 #endif
 //-----------------------------------------------------------------------------

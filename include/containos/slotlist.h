@@ -40,13 +40,13 @@ public:
     SlotList();
     SlotList(SlotList const& other);
 
-    uint64 acquire();
-    void remove(uint64 id);
+    uint64_t acquire();
+    void remove(uint64_t id);
     void clearAndFree();
     void clear();
 
-    T* operator[](uint64 id);
-    T const* operator[](uint64 id) const;
+    T* operator[](uint64_t id);
+    T const* operator[](uint64_t id) const;
     int size() const;
     bool isEmpty() const;
 

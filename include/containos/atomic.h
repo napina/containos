@@ -39,31 +39,31 @@ void prefetch_nta(void const* ptr);
 void* atomicCompareAndSwapPtr(void*& r, void* comp, void* v);
 
 // does: oldr = r, r = v, ret oldr
-uint32 atomicAssign32(uint32& r, uint32 v);
+uint32_t atomicAssign32(uint32_t& r, uint32_t v);
 // does: ++r; ret r
-uint32 atomicInc32(uint32& r);
+uint32_t atomicInc32(uint32_t& r);
 // does: --r, ret r
-uint32 atomicDec32(uint32& r);
+uint32_t atomicDec32(uint32_t& r);
 // does: r += v, ret r
-uint32 atomicAdd32(uint32& r, uint32 v);
+uint32_t atomicAdd32(uint32_t& r, uint32_t v);
 // does: r -= v, ret r
-uint32 atomicSub32(uint32& r, uint32 v);
+uint32_t atomicSub32(uint32_t& r, uint32_t v);
 // does: oldr = r, if r == comp then r = v, ret oldr
-uint32 atomicCompareAndSet32(uint32& r, uint32 comp, uint32 v);
+uint32_t atomicCompareAndSet32(uint32_t& r, uint32_t comp, uint32_t v);
 
 #if defined(CONTAINOS_ARCH64)
 // does: oldr = r, r = v, ret oldr
-uint64 atomicAssign64(uint64& r, uint64 v);
+uint64_t atomicAssign64(uint64_t& r, uint64_t v);
 // does: ++r; ret r
-uint64 atomicInc64(uint64& r);
+uint64_t atomicInc64(uint64_t& r);
 // does: --r, ret r
-uint64 atomicDec64(uint64& r);
+uint64_t atomicDec64(uint64_t& r);
 // does: r += v, ret r
-uint64 atomicAdd64(uint64& r, uint64 v);
+uint64_t atomicAdd64(uint64_t& r, uint64_t v);
 // does: r -= v, ret r
-uint64 atomicSub64(uint64& r, uint64 v);
+uint64_t atomicSub64(uint64_t& r, uint64_t v);
 // does: oldr = r, if r == comp then r = v, ret oldr
-uint64 atomicCompareAndSet64(uint64& r, uint64 comp, uint64 v);
+uint64_t atomicCompareAndSet64(uint64_t& r, uint64_t comp, uint64_t v);
 #endif
 
 } // end of containos

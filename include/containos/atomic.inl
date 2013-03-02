@@ -49,66 +49,66 @@ __forceinline void* atomicCompareAndSwapPtr(void*& r, void* comp, void* v)
 #endif
 }
 
-__forceinline uint32 atomicAssign32(uint32& r, uint32 v)
+__forceinline uint32_t atomicAssign32(uint32_t& r, uint32_t v)
 {
     return _InterlockedExchange((long*)&r, (long)v);
 }
 
-__forceinline uint32 atomicInc32(uint32& r)
+__forceinline uint32_t atomicInc32(uint32_t& r)
 {
-    return (uint32)_InterlockedIncrement((long*)&r);
+    return (uint32_t)_InterlockedIncrement((long*)&r);
 }
 
-__forceinline uint32 atomicDec32(uint32& r)
+__forceinline uint32_t atomicDec32(uint32_t& r)
 {
-    return (uint32)_InterlockedDecrement((long*)&r);
+    return (uint32_t)_InterlockedDecrement((long*)&r);
 }
 
-__forceinline uint32 atomicAdd32(uint32& r, uint32 v)
+__forceinline uint32_t atomicAdd32(uint32_t& r, uint32_t v)
 {
     return _InterlockedExchangeAdd((long*)&r, (long)v) + v;
 }
 
-__forceinline uint32 atomicSub32(uint32& r, uint32 v)
+__forceinline uint32_t atomicSub32(uint32_t& r, uint32_t v)
 {
     return _InterlockedExchangeAdd((long*)&r, -(long)v) - v;
 }
 
-__forceinline uint32 atomicCompareAndSet32(uint32& r, uint32 comp, uint32 v)
+__forceinline uint32_t atomicCompareAndSet32(uint32_t& r, uint32_t comp, uint32_t v)
 {
-    return (uint32)_InterlockedCompareExchange((long volatile*)&r, v, comp);
+    return (uint32_t)_InterlockedCompareExchange((long volatile*)&r, v, comp);
 }
 
 #if defined(CONTAINOS_ARCH64)
 
-__forceinline uint64 atomicAssign64(uint64& r, uint64 v)
+__forceinline uint64_t atomicAssign64(uint64_t& r, uint64_t v)
 {
     return _InterlockedExchange64((long long*)&r, (long long)v);
 }
 
-__forceinline uint64 atomicInc64(uint64& r)
+__forceinline uint64_t atomicInc64(uint64_t& r)
 {
-    return (uint64)_InterlockedIncrement64((long long*)&r);
+    return (uint64_t)_InterlockedIncrement64((long long*)&r);
 }
 
-__forceinline uint64 atomicDec64(uint64& r)
+__forceinline uint64_t atomicDec64(uint64_t& r)
 {
-    return (uint64)_InterlockedDecrement64((long long*)&r);
+    return (uint64_t)_InterlockedDecrement64((long long*)&r);
 }
 
-__forceinline uint64 atomicAdd64(uint64& r, uint64 v)
+__forceinline uint64_t atomicAdd64(uint64_t& r, uint64_t v)
 {
     return _InterlockedExchangeAdd64((long long*)&r, (long long)v) + v;
 }
 
-__forceinline uint64 atomicSub64(uint64& r, uint64 v)
+__forceinline uint64_t atomicSub64(uint64_t& r, uint64_t v)
 {
     return _InterlockedExchangeAdd64((long long*)&r, -(long long)v) - v;
 }
 
-__forceinline uint64 atomicCompareAndSet64(uint64& r, uint64 comp, uint64 v)
+__forceinline uint64_t atomicCompareAndSet64(uint64_t& r, uint64_t comp, uint64_t v)
 {
-    return (uint64)_InterlockedCompareExchange64((long long volatile*)&r, v, comp);
+    return (uint64_t)_InterlockedCompareExchange64((long long volatile*)&r, v, comp);
 }
 
 #endif

@@ -47,7 +47,7 @@ inline SlotList<T,Allocator>::SlotList(SlotList const& other)
 }
 
 template<typename T,typename Allocator>
-__forceinline uint64 SlotList<T,Allocator>::acquire()
+__forceinline uint64_t SlotList<T,Allocator>::acquire()
 {
     if(m_freeList.empty()) {
         T* chunk = Base::constructArray(chunk_size);
@@ -64,7 +64,7 @@ __forceinline uint64 SlotList<T,Allocator>::acquire()
 }
 
 template<typename T,typename Allocator>
-inline void SlotList<T,Allocator>::remove(uint64 id)
+inline void SlotList<T,Allocator>::remove(uint64_t id)
 {
     T* obj = operator[](id);
     obj->id = (obj->id & 0xFFFFFFFF) | (((obj->id >> 32) + 1) << 32);
@@ -84,14 +84,14 @@ __forceinline void SlotList<T,Allocator>::clear()
 }
 
 template<typename T,typename Allocator>
-__forceinline T* SlotList<T,Allocator>::operator[](uint64 id)
+__forceinline T* SlotList<T,Allocator>::operator[](uint64_t id)
 {
     T* obj = m_chunkList[(id & 0xFFFFFFFF) / chunk_size] + ((id & 0xFFFFFFFF) % chunk_size);
     return &obj;// TODO obj->id != id ? nullptr : obj;
 }
 
 template<typename T,typename Allocator>
-__forceinline T const* SlotList<T,Allocator>::operator[](uint64 id) const
+__forceinline T const* SlotList<T,Allocator>::operator[](uint64_t id) const
 {
     T* obj = m_chunkList[(id & 0xFFFFFFFF) / chunk_size] + ((id & 0xFFFFFFFF) % chunk_size);
     return &obj;// TODO obj->id != id ? nullptr : obj;

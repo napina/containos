@@ -48,8 +48,9 @@ IN THE SOFTWARE.
 #   define inline __forceinline
 #endif
 
-typedef unsigned int uint32;
-typedef unsigned __int64 uint64;
+// no need of #include <stdint.h>
+typedef unsigned int uint32_t;
+typedef unsigned long long uint64_t;
 
 #ifndef containos_assert
 #define containos_assert(Test)

@@ -41,8 +41,8 @@ TEST_SUITE(Atomic)
 
     TEST(CompareAndSet32)
     {
-        uint32 v = 0x12345678;
-        uint32 r = c::atomicCompareAndSet32(v, 0x10101010, 0x87654321);
+        uint32_t v = 0x12345678;
+        uint32_t r = c::atomicCompareAndSet32(v, 0x10101010, 0x87654321);
         EXPECT_EQUAL(v, 0x12345678);
         EXPECT_EQUAL(r, 0x12345678);
         r = c::atomicCompareAndSet32(v, 0x12345678, 0x87654321);
@@ -52,40 +52,40 @@ TEST_SUITE(Atomic)
 
     TEST(Assign32)
     {
-        uint32 v = 100;
-        uint32 r = c::atomicAssign32(v, 33);
+        uint32_t v = 100;
+        uint32_t r = c::atomicAssign32(v, 33);
         EXPECT_EQUAL(v, 33);
         EXPECT_EQUAL(r, 100);
     }
 
     TEST(Inc32)
     {
-        uint32 v = 100;
-        uint32 r = c::atomicInc32(v);
+        uint32_t v = 100;
+        uint32_t r = c::atomicInc32(v);
         EXPECT_EQUAL(v, 101);
         EXPECT_EQUAL(r, 101);
     }
 
     TEST(Dec32)
     {
-        uint32 v = 100;
-        uint32 r = c::atomicDec32(v);
+        uint32_t v = 100;
+        uint32_t r = c::atomicDec32(v);
         EXPECT_EQUAL(v, 99);
         EXPECT_EQUAL(r, 99);
     }
 
     TEST(Add32)
     {
-        uint32 v = 100;
-        uint32 r = c::atomicAdd32(v, 10);
+        uint32_t v = 100;
+        uint32_t r = c::atomicAdd32(v, 10);
         EXPECT_EQUAL(v, 110);
         EXPECT_EQUAL(r, 110);
     }
 
     TEST(Sub32)
     {
-        uint32 v = 100;
-        uint32 r = c::atomicSub32(v, 10);
+        uint32_t v = 100;
+        uint32_t r = c::atomicSub32(v, 10);
         EXPECT_EQUAL(v, 90);
         EXPECT_EQUAL(r, 90);
     }
@@ -104,8 +104,8 @@ TEST_SUITE(Atomic)
 
     TEST(CompareAndSet64)
     {
-        uint64 v = 0x12345678AB;
-        uint64 r = c::atomicCompareAndSet64(v, 0x10101010, 0x87654641AB);
+        uint64_t v = 0x12345678AB;
+        uint64_t r = c::atomicCompareAndSet64(v, 0x10101010, 0x87654641AB);
         EXPECT_EQUAL(v, 0x12345678AB);
         EXPECT_EQUAL(r, 0x12345678AB);
         r = c::atomicCompareAndSet64(v, 0x12345678AB, 0x87654641AB);
@@ -115,40 +115,40 @@ TEST_SUITE(Atomic)
 
     TEST(Assign64)
     {
-        uint64 v = 100;
-        uint64 r = c::atomicAssign64(v, 0x100000000);
+        uint64_t v = 100;
+        uint64_t r = c::atomicAssign64(v, 0x100000000);
         EXPECT_EQUAL(v, 0x100000000);
         EXPECT_EQUAL(r, 100);
     }
 
     TEST(Inc64)
     {
-        uint64 v = 0xffffffff;
-        uint64 r = c::atomicInc64(v);
+        uint64_t v = 0xffffffff;
+        uint64_t r = c::atomicInc64(v);
         EXPECT_EQUAL(v, 0x100000000);
         EXPECT_EQUAL(r, 0x100000000);
     }
 
     TEST(Dec64)
     {
-        uint64 v = 0x100000000;
-        uint64 r = c::atomicDec64(v);
+        uint64_t v = 0x100000000;
+        uint64_t r = c::atomicDec64(v);
         EXPECT_EQUAL(v, 0xffffffff);
         EXPECT_EQUAL(r, 0xffffffff);
     }
 
     TEST(Add64)
     {
-        uint64 v = 0xffffffff;
-        uint64 r = c::atomicAdd64(v, 16);
+        uint64_t v = 0xffffffff;
+        uint64_t r = c::atomicAdd64(v, 16);
         EXPECT_EQUAL(v, 0x10000000f);
         EXPECT_EQUAL(r, 0x10000000f);
     }
 
     TEST(Sub64)
     {
-        uint64 v = 0x100000000;
-        uint64 r = c::atomicSub64(v, 16);
+        uint64_t v = 0x100000000;
+        uint64_t r = c::atomicSub64(v, 16);
         EXPECT_EQUAL(v, 0xfffffff0);
         EXPECT_EQUAL(r, 0xfffffff0);
     }
