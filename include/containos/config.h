@@ -44,18 +44,17 @@ IN THE SOFTWARE.
 
 #if defined(__GNUC__)
 #   define __forceinline inline __attribute__((always_inline))
-#elif !defined(_MSC_VER) && !defined(__forceinline)
+#elif !defined(_MSC_VER)
 #   define inline __forceinline
 #endif
 
-#if !defined(nullptr_t)
-    typedef decltype(nullptr) nullptr_t;
+typedef unsigned int uint32;
+typedef unsigned __int64 uint64;
+
+#ifndef containos_assert
+#define containos_assert(Test)
 #endif
 
-typedef unsigned int uint32_t;
-typedef unsigned __int64 uint64_t;
-
-#define containos_assert(Test)
 #define containos_cast(Type,Ptr)    static_cast<Type >(Ptr)
 #define containos_delete(Ptr)       delete (Ptr)
 //----------------------------------------------------------------------------

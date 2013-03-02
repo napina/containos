@@ -34,26 +34,26 @@ namespace containos {
 template<typename T,typename Allocator>
 class SlotList : protected Container<Allocator>
 {
-	typedef Container<Allocator> Base;
+    typedef Container<Allocator> Base;
 public:
     ~SlotList();
     SlotList();
     SlotList(SlotList const& other);
 
-	uint64_t acquire();
-    void remove(uint64_t id);
+    uint64 acquire();
+    void remove(uint64 id);
     void clearAndFree();
-	void clear();
+    void clear();
 
-    T* operator[](uint64_t id);
-    T const* operator[](uint64_t id) const;
+    T* operator[](uint64 id);
+    T const* operator[](uint64 id) const;
     int size() const;
     bool isEmpty() const;
 
 private:
-	static const int chunk_size = 128;
-	List<T*,Allocator> m_chunkList;
-	List<int,Allocator> m_freeList;
+    static const int chunk_size = 128;
+    List<T*,Allocator> m_chunkList;
+    List<int,Allocator> m_freeList;
 };
 
 } // end of containos

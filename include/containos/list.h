@@ -31,7 +31,8 @@ namespace containos {
 
 // Simple continuous list of items
 // TODO add template specialization for auto grow
-template<typename T, typename Allocator>// = DefaultAllocator>
+// TODO or bitblock list with custom iterator
+template<typename T, typename Allocator>
 class List : protected Container<Allocator>
 {
     typedef Container<Allocator> Base;
@@ -42,7 +43,7 @@ public:
     ~List();
     List();
     List(size_t capasity);
-    List(const List& other);
+    template<typename Allocator2> List(List<T,Allocator2> const& other);
 
     T& acquire();
     void insert(T& item);

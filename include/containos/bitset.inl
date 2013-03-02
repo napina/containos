@@ -25,6 +25,10 @@ IN THE SOFTWARE.
 #ifndef containos_bitset_inl
 #define containos_bitset_inl
 
+#if defined(CONTAINOS_WINDOWS)
+#include <intrin.h>
+#endif
+
 namespace containos {
 
 #if defined(__arm__)
@@ -34,31 +38,30 @@ namespace containos {
 #endif
 
 #ifdef __GNUC__
-    __forceinline static uint32_t bsr32(uint32_t x) { return __builtin_clz(x) ^ 31; }
-    __forceinline static uint32_t bsf32(uint32_t x) { return __builtin_ctz(x); }
-    __forceinline static uint32_t ctz32(uint32_t x) { return __builtin_ctz(x); }
-    __forceinline static uint32_t clz32(uint32_t x) { return __builtin_clz(x); }
-    __forceinline static uint32_t popcnt32(uint32_t x) { return __builtin_popcount(x); }
+    __forceinline uint32 bsr32(uint32 x) { return __builtin_clz(x) ^ 31; }
+    __forceinline uint32 bsf32(uint32 x) { return __builtin_ctz(x); }
+    __forceinline uint32 ctz32(uint32 x) { return __builtin_ctz(x); }
+    __forceinline uint32 clz32(uint32 x) { return __builtin_clz(x); }
+    __forceinline uint32 popcnt32(uint32 x) { return __builtin_popcount(x); }
 #if defined(CONTAINOS_ARCH64)
-    __forceinline static uint32_t bsr64(uint64_t x) { return __builtin_clzll(x) ^ 63; }
-    __forceinline static uint32_t bsf64(uint64_t x) { return __builtin_ctzll(x); }
-    __forceinline static uint32_t ctz64(uint64_t x) { return __builtin_ctzll(x); }
-    __forceinline static uint32_t clz64(uint64_t x) { return __builtin_clzll(x); }
-    __forceinline static uint64_t popcnt64(uint64_t x) { return __builtin_popcountll(x); }
+    __forceinline uint32 bsr64(uint64 x) { return __builtin_clzll(x) ^ 63; }
+    __forceinline uint32 bsf64(uint64 x) { return __builtin_ctzll(x); }
+    __forceinline uint32 ctz64(uint64 x) { return __builtin_ctzll(x); }
+    __forceinline uint32 clz64(uint64 x) { return __builtin_clzll(x); }
+    __forceinline uint64 popcnt64(uint64 x) { return __builtin_popcountll(x); }
 #endif
 #elif defined(CONTAINOS_WINDOWS)
-#   include <intrin.h>
-    __forceinline static uint32_t bsr32(uint32_t x) { uint32_t r; _BitScanReverse((unsigned long*)&r, x); return r; }
-    __forceinline static uint32_t bsf32(uint32_t x) { uint32_t r; _BitScanForward((unsigned long*)&r, x); return r; }
-    __forceinline static uint32_t ctz32(uint32_t x) { uint32_t r; _BitScanForward((unsigned long*)&r, x); return r; }
-    __forceinline static uint32_t clz32(uint32_t x) { uint32_t r; _BitScanReverse((unsigned long*)&r, x); return r ^ 31; }
-    __forceinline static uint32_t popcnt32(uint32_t x) { return __popcnt(x); }
+    __forceinline uint32 bsr32(uint32 x) { uint32 r; ::_BitScanReverse((unsigned long*)&r, x); return r; }
+    __forceinline uint32 bsf32(uint32 x) { uint32 r; ::_BitScanForward((unsigned long*)&r, x); return r; }
+    __forceinline uint32 ctz32(uint32 x) { uint32 r; ::_BitScanForward((unsigned long*)&r, x); return r; }
+    __forceinline uint32 clz32(uint32 x) { uint32 r; ::_BitScanReverse((unsigned long*)&r, x); return r ^ 31; }
+    __forceinline uint32 popcnt32(uint32 x) { return ::__popcnt(x); }
 #if defined(CONTAINOS_ARCH64)
-    __forceinline static uint32_t bsr64(uint64_t x) { uint32_t r; _BitScanReverse64((unsigned long*)&r, x); return r; }
-    __forceinline static uint32_t bsf64(uint64_t x) { uint32_t r; _BitScanForward64((unsigned long*)&r, x); return r; }
-    __forceinline static uint32_t ctz64(uint64_t x) { uint32_t r; _BitScanForward64((unsigned long*)&r, x); return r; }
-    __forceinline static uint32_t clz64(uint64_t x) { uint32_t r; _BitScanReverse64((unsigned long*)&r, x); return r ^ 63; }
-    __forceinline static uint64_t popcnt64(uint64_t x) { return __popcnt64(x); }
+    __forceinline uint32 bsr64(uint64 x) { uint32 r; ::_BitScanReverse64((unsigned long*)&r, x); return r; }
+    __forceinline uint32 bsf64(uint64 x) { uint32 r; ::_BitScanForward64((unsigned long*)&r, x); return r; }
+    __forceinline uint32 ctz64(uint64 x) { uint32 r; ::_BitScanForward64((unsigned long*)&r, x); return r; }
+    __forceinline uint32 clz64(uint64 x) { uint32 r; ::_BitScanReverse64((unsigned long*)&r, x); return r ^ 63; }
+    __forceinline uint64 popcnt64(uint64 x) { return ::__popcnt64(x); }
 #endif
 #endif
 //-----------------------------------------------------------------------------
@@ -73,36 +76,36 @@ __forceinline bitset32::bitset32(const bitset32& other)
 {
 }
 
-__forceinline uint32_t bitset32::acquire()
+__forceinline uint32 bitset32::acquire()
 {
     containos_assert(m_mask != 0);
 #if defined(CONTAINOS_NATIVE_BSR)
-    uint32_t index = containos::bsr32(m_mask);
+    uint32 index = containos::bsr32(m_mask);
 #elif defined(CONTAINOS_NATIVE_CLZ)
-    uint32_t index = containos::clz32(m_mask) ^ 31;
+    uint32 index = containos::clz32(m_mask) ^ 31;
 #endif
     m_mask &= ~(1U << index);
     return index;
 }
 
-__forceinline uint32_t bitset32::pop()
+__forceinline uint32 bitset32::pop()
 {
 #if defined(CONTAINOS_NATIVE_BSR)
-    uint32_t index =  containos::bsr32(~m_mask);
+    uint32 index =  containos::bsr32(~m_mask);
 #elif defined(CONTAINOS_NATIVE_CLZ)
-    uint32_t index =  containos::clz32(~m_mask) ^ 31;
+    uint32 index =  containos::clz32(~m_mask) ^ 31;
 #endif
     m_mask |= (1U << index);
     return index;
 }
 
-__forceinline void bitset32::set(uint32_t index)
+__forceinline void bitset32::set(uint32 index)
 {
     containos_assert(index < 64);
     m_mask &= ~(1U << index);
 }
 
-__forceinline void bitset32::remove(uint32_t index)
+__forceinline void bitset32::remove(uint32 index)
 {
     containos_assert(index < 32);
     m_mask |= (1U << index);
@@ -113,12 +116,12 @@ __forceinline void bitset32::clear()
     m_mask = 0xffffffff;
 }
 
-__forceinline uint32_t bitset32::count() const
+__forceinline uint32 bitset32::count() const
 {
     return containos::popcnt32(~m_mask);
 }
 
-__forceinline uint32_t bitset32::highest() const
+__forceinline uint32 bitset32::highest() const
 {
 #if defined(CONTAINOS_NATIVE_BSR)
     return containos::bsr32(~m_mask);
@@ -127,18 +130,18 @@ __forceinline uint32_t bitset32::highest() const
 #endif
 }
 
-__forceinline uint32_t bitset32::mask() const
+__forceinline uint32 bitset32::mask() const
 {
     return ~m_mask;
 }
 
-__forceinline bool bitset32::isSet(uint32_t index) const
+__forceinline bool bitset32::isSet(uint32 index) const
 {
     containos_assert(index < 32);
     return (m_mask & (1U << index)) == 0;
 }
 
-__forceinline bool bitset32::operator==(uint32_t mask) const
+__forceinline bool bitset32::operator==(uint32 mask) const
 {
     return ~m_mask == mask;
 }
@@ -148,7 +151,7 @@ __forceinline bool bitset32::operator==(bitset32 const& other) const
     return m_mask == other.m_mask;
 }
 
-__forceinline bool bitset32::operator!=(uint32_t mask) const
+__forceinline bool bitset32::operator!=(uint32 mask) const
 {
     return ~m_mask != mask;
 }
@@ -170,36 +173,36 @@ __forceinline bitset64::bitset64(const bitset64& other)
 {
 }
 
-__forceinline uint64_t bitset64::acquire()
+__forceinline uint64 bitset64::acquire()
 {
     containos_assert(m_mask != 0);
 #ifdef CONTAINOS_NATIVE_BSR
-    uint64_t index = containos::bsr64(m_mask);
+    uint64 index = containos::bsr64(m_mask);
 #elif defined(CONTAINOS_NATIVE_CLZ)
-    uint64_t index = containos::clz64(m_mask) ^ 63;
+    uint64 index = containos::clz64(m_mask) ^ 63;
 #endif
     m_mask &= ~(1ULL << index);
     return index;
 }
 
-__forceinline uint64_t bitset64::pop()
+__forceinline uint64 bitset64::pop()
 {
 #if defined(CONTAINOS_NATIVE_BSR)
-    uint64_t index = containos::bsr64(~m_mask);
+    uint64 index = containos::bsr64(~m_mask);
 #elif defined(CONTAINOS_NATIVE_CLZ)
-    uint64_t index = containos::clz64(~m_mask) ^ 63;
+    uint64 index = containos::clz64(~m_mask) ^ 63;
 #endif
     m_mask |= (1ULL << index);
     return index;
 }
 
-__forceinline void bitset64::set(uint64_t index)
+__forceinline void bitset64::set(uint64 index)
 {
     containos_assert(index < 64);
     m_mask &= ~(1ULL << index);
 }
 
-__forceinline void bitset64::remove(uint64_t index)
+__forceinline void bitset64::remove(uint64 index)
 {
     containos_assert(index < 64);
     m_mask |= (1ULL << index);
@@ -210,17 +213,17 @@ __forceinline void bitset64::clear()
     m_mask = 0xffffffffffffffff;
 }
 
-__forceinline bool bitset64::isSet(uint64_t index) const
+__forceinline bool bitset64::isSet(uint64 index) const
 {
     return (m_mask & (1ULL << index)) == 0;
 }
 
-__forceinline uint64_t bitset64::count() const
+__forceinline uint64 bitset64::count() const
 {
     return containos::popcnt64(~m_mask);
 }
 
-__forceinline uint64_t bitset64::highest() const
+__forceinline uint64 bitset64::highest() const
 {
 #if defined(CONTAINOS_NATIVE_BSR)
     return containos::bsr64(~m_mask);
@@ -229,12 +232,12 @@ __forceinline uint64_t bitset64::highest() const
 #endif
 }
 
-__forceinline uint64_t bitset64::mask() const
+__forceinline uint64 bitset64::mask() const
 {
     return ~m_mask;
 }
 
-__forceinline bool bitset64::operator==(uint64_t mask) const
+__forceinline bool bitset64::operator==(uint64 mask) const
 {
     return ~m_mask == mask;
 }
@@ -244,7 +247,7 @@ __forceinline bool bitset64::operator==(bitset64 const& other) const
     return m_mask == other.m_mask;
 }
 
-__forceinline bool bitset64::operator!=(uint64_t mask) const
+__forceinline bool bitset64::operator!=(uint64 mask) const
 {
     return ~m_mask != mask;
 }

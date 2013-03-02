@@ -53,7 +53,8 @@ __forceinline List<T,Allocator>::List(size_t capasity)
 }
 
 template<typename T, typename Allocator>
-__forceinline List<T,Allocator>::List(const List& other)
+template<typename Allocator2>
+__forceinline List<T,Allocator>::List(List<T,Allocator2> const& other)
     : Base()
     , m_mem(nullptr)
     , m_size(0)
@@ -181,7 +182,7 @@ inline void List<T,Allocator>::resizeNoCopy(size_t newSize)
     if(newSize == 0)
         return;
 
-    m_mem = Base::template constructArray<T>(newSize);;
+    m_mem = Base::template constructArray<T>(newSize);
     m_capasity = newSize;
     m_size = newSize;
     for(size_t i = 0; i < newSize; ++i) {
