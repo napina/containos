@@ -44,10 +44,11 @@ class Ref
 public:
     ~Ref();
     Ref();
-    explicit Ref(T* ptr);
+    explicit Ref(nullptr_t);
+    explicit Ref(T const* ptr);
     Ref(Ref<T> const& handle);
 
-    Ref<T>& operator=(T* ptr);
+    Ref<T>& operator=(T const* ptr);
     Ref<T>& operator=(Ref<T> const& handle);
     Ref<T>& operator=(nullptr_t);
     bool operator==(Ref<T> const& other) const;
@@ -69,12 +70,12 @@ public:
 
     template<typename T2> T2* cast();
 
-    void reset(T* ptr = nullptr);
+    void reset(T const* ptr = nullptr);
     /// doesn't delete
     T* release();
 
 private:
-    void set(T* ptr);
+    void set(T const* ptr);
     void removeRef();
 
 private:

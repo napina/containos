@@ -40,7 +40,13 @@ __forceinline Ref<T>::Ref()
 }
 
 template<typename T>
-__forceinline Ref<T>::Ref(T* ptr)
+__forceinline Ref<T>::Ref(nullptr_t)
+    : m_mem(nullptr)
+{
+}
+
+template<typename T>
+__forceinline Ref<T>::Ref(T const* ptr)
 {
     set(ptr);
 }
@@ -52,7 +58,7 @@ __forceinline Ref<T>::Ref(Ref<T> const& handle)
 }
 
 template<typename T>
-__forceinline Ref<T>& Ref<T>::operator=(T* ptr)
+__forceinline Ref<T>& Ref<T>::operator=(T const* ptr)
 {
     reset(ptr);
     return *this;
@@ -164,7 +170,7 @@ __forceinline T2* Ref<T>::cast()
 }
 
 template<typename T>
-__forceinline void Ref<T>::reset(T* ptr)
+__forceinline void Ref<T>::reset(T const* ptr)
 {
     removeRef();
     set(ptr);
@@ -179,9 +185,9 @@ __forceinline T* Ref<T>::release()
 }
 
 template<typename T>
-__forceinline void Ref<T>::set(T* ptr)
+__forceinline void Ref<T>::set(T const* ptr)
 {
-    m_mem = ptr;
+    m_mem = const_cast<T*>(ptr);
     if(m_mem) {
         ++(m_mem->m_refCount);
     }
