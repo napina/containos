@@ -25,6 +25,8 @@ IN THE SOFTWARE.
 #include "containos/atomic.h"
 
 namespace c = containos;
+typedef c::uint32_t uint32_t;
+typedef c::uint64_t uint64_t;
 
 TEST_SUITE(Atomic)
 {

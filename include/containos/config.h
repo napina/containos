@@ -48,16 +48,27 @@ IN THE SOFTWARE.
 #   define inline __forceinline
 #endif
 
-// no need of #include <stdint.h>
-typedef unsigned int uint32_t;
-typedef unsigned long long uint64_t;
+#define containos_tostring_impl(x)  #x
+#define containos_tostring(x)       containos_tostring_impl(x)
+#if defined(_MSC_VER)
+#   define containos_lineinfo       __FILE__ "(" containos_tostring(__LINE__) ")"
+#else
+#   define containos_lineinfo       __FILE__ ":" containos_tostring(__LINE__)
+#endif
+
+#define containos_todo(msg)         __pragma(message(containos_lineinfo ": TODO " msg))
 
 #ifndef containos_assert
 #define containos_assert(Test)
 #endif
 
-#define containos_cast(Type,Ptr)    static_cast<Type >(Ptr)
+#ifndef containos_delete
 #define containos_delete(Ptr)       delete (Ptr)
+#endif
+
+#ifndef containos_cast
+#define containos_cast(Type,Ptr)    static_cast<Type >(Ptr)
+#endif
 //----------------------------------------------------------------------------
 
 #define containos_placement_new(ptr,t)                  containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr)
@@ -74,6 +85,10 @@ typedef unsigned long long uint64_t;
 //----------------------------------------------------------------------------
 
 namespace containos {
+
+typedef unsigned int uint32_t;
+typedef unsigned long long uint64_t;
+
 namespace internal {
 
 template<typename T, bool IsPod>
@@ -108,7 +123,7 @@ struct placement_new<T,false> {
 };
 //----------------------------------------------------------------------------
 
-template<typename T, bool HasTrivialDestructor>
+template<typename T, bool HasDestructor>
 struct placement_delete {
     static void destroy(void*)                                  {}
 };
