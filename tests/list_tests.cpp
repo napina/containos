@@ -69,6 +69,24 @@ TEST_SUITE(List)
         EXPECT_EQUAL(list.capasity(), 10);
     }
 
+    TEST(Copy)
+    {
+        c::List<IntWrap,Mallocator> list;
+        list.reserve(3);
+        list.insert(3);
+        list.insert(5);
+        list.insert(15);
+        c::List<IntWrap,Mallocator> list2;
+        list2.reserve(4);
+        list2.insert(9);
+        list2.insert(13);
+        list2 = list;
+        EXPECT_EQUAL(list2.size(), 3);
+        EXPECT_EQUAL(list2[0], 3);
+        EXPECT_EQUAL(list2[1], 5);
+        EXPECT_EQUAL(list2[2], 15);
+    }
+
     TEST(Insert)
     {
         c::List<IntWrap,Mallocator> list;

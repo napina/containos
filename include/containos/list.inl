@@ -54,20 +54,28 @@ __forceinline List<T,Allocator>::List(size_t capasity)
 
 template<typename T, typename Allocator>
 template<typename Allocator2>
-__forceinline List<T,Allocator>::List(List<T,Allocator2> const& other)
+inline List<T,Allocator>::List(List<T,Allocator2> const& other)
     : Base()
     , m_mem(nullptr)
     , m_size(0)
     , m_capasity(0)
 {
-    if(other.m_size > 0) {
-        m_mem = Base::template constructArray<T>(other.m_size);
-        m_capasity = other.m_size;
-        m_size = other.m_size;
-        for(size_t i = 0; i < m_size; ++i) {
-            containos_placement_copy(&m_mem[i], T, other.m_mem[i]);
-        }
-    }
+    copy(other);
+}
+
+template<typename T, typename Allocator>
+__forceinline void List<T,Allocator>::operator=(List<T,Allocator> const& other)
+{
+    clearAndFree();
+    copy(other);
+}
+
+template<typename T, typename Allocator>
+template<typename Allocator2>
+__forceinline void List<T,Allocator>::operator=(List<T,Allocator2> const& other)
+{
+    clearAndFree();
+    copy(other);
 }
 
 template<typename T, typename Allocator>
@@ -295,6 +303,20 @@ template<typename T, typename Allocator>
 __forceinline size_t List<T,Allocator>::capasity() const
 {
     return m_capasity;
+}
+
+template<typename T, typename Allocator>
+template<typename Allocator2>
+inline void List<T,Allocator>::copy(List<T,Allocator2> const& other)
+{
+    if(other.m_size > 0) {
+        m_mem = Base::template constructArray<T>(other.m_size);
+        m_capasity = other.m_size;
+        m_size = other.m_size;
+        for(size_t i = 0; i < m_size; ++i) {
+            containos_placement_copy(&m_mem[i], T, other.m_mem[i]);
+        }
+    }
 }
 
 } // end of containos

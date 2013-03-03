@@ -43,7 +43,10 @@ public:
     ~List();
     List();
     List(size_t capasity);
+
+    void operator=(List<T,Allocator> const& other);
     template<typename Allocator2> List(List<T,Allocator2> const& other);
+    template<typename Allocator2> void operator=(List<T,Allocator2> const& other);
 
     T& acquire();
     void insert(T& item);
@@ -74,6 +77,8 @@ public:
     size_t capasity() const;
 
 private:
+    template<typename Allocator2> void copy(List<T,Allocator2> const& other);
+
     T* m_mem;
     size_t m_size;
     size_t m_capasity;
