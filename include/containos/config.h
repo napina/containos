@@ -42,21 +42,23 @@ IN THE SOFTWARE.
 #   define CONTAINOS_ARCH32
 #endif
 
-#if defined(__GNUC__)
-#   define __forceinline inline __attribute__((always_inline))
-#elif !defined(_MSC_VER)
-#   define inline __forceinline
-#endif
-
 #define containos_tostring_impl(x)  #x
 #define containos_tostring(x)       containos_tostring_impl(x)
+
 #if defined(_MSC_VER)
 #   define containos_lineinfo       __FILE__ "(" containos_tostring(__LINE__) ")"
+#   define containos_todo(msg)      __pragma(message(containos_lineinfo " TODO " msg))
+#elif defined(__GNUC__)
+#   define containos_lineinfo       __FILE__ ":" containos_tostring(__LINE__)
+#   define containos_todo(msg)      __Pragma(message("TODO " msg))
+#   define __forceinline            inline __attribute__((always_inline))
+#   define __restrict               __restrict__
 #else
 #   define containos_lineinfo       __FILE__ ":" containos_tostring(__LINE__)
+#   define containos_todo(msg)
+#   define __forceinline            inline
+#   define __restrict
 #endif
-
-#define containos_todo(msg)         __pragma(message(containos_lineinfo ": TODO " msg))
 
 #ifndef containos_assert
 #define containos_assert(Test)
