@@ -47,7 +47,7 @@ IN THE SOFTWARE.
 
 #if defined(_MSC_VER)
 #   define containos_lineinfo       __FILE__ "(" containos_tostring(__LINE__) ")"
-#   define containos_todo(msg)      __pragma(message(containos_lineinfo " TODO " msg))
+#   define containos_todo(msg)      __pragma(message(containos_lineinfo ": TODO " msg))
 #elif defined(__GNUC__)
 #   define containos_lineinfo       __FILE__ ":" containos_tostring(__LINE__)
 #   define containos_todo(msg)      __Pragma(message("TODO " msg))
