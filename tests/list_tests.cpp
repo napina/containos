@@ -50,6 +50,10 @@ private:
 
 }
 
+template<> struct allow_memcpy<IntWrap> {
+    static const bool allowed = false;
+};
+
 TEST_SUITE(List)
 {
     TEST(Empty)
@@ -67,6 +71,21 @@ TEST_SUITE(List)
         list.reserve(10);
         EXPECT_EQUAL(list.size(), 0);
         EXPECT_EQUAL(list.capasity(), 10);
+    }
+
+    TEST(ReserveMore)
+    {
+        c::List<IntWrap,Mallocator> list;
+        EXPECT_EQUAL(list.size(), 0);
+        EXPECT_EQUAL(list.capasity(), 0);
+        list.reserve(1);
+        list.insert(13);
+        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.capasity(), 1);
+        list.reserve(2);
+        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.capasity(), 2);
+        EXPECT_EQUAL(list[0], 13);
     }
 
     TEST(Copy)
@@ -263,5 +282,18 @@ TEST_SUITE(List)
         EXPECT_EQUAL(list.size(), 2);
         EXPECT_EQUAL(list[0], 0);
         EXPECT_EQUAL(list[1], 2);
+    }
+
+    TEST(GrowRule)
+    {
+        c::List<IntWrap,Mallocator,c::ListGrowRule<8> > list;
+        list.insert(0);
+        list.insert(1);
+        list.insert(2);
+        EXPECT_EQUAL(list.size(), 3);
+        EXPECT_EQUAL(list.capasity(), 8);
+        EXPECT_EQUAL(list[0], 0);
+        EXPECT_EQUAL(list[1], 1);
+        EXPECT_EQUAL(list[2], 2);
     }
 }

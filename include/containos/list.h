@@ -29,37 +29,42 @@ IN THE SOFTWARE.
 
 namespace containos {
 
+template<int Count>
+struct ListGrowRule {
+    static const bool enabled = Count > 0;
+    static const int count = Count;
+};
+
 // Simple continuous list of items
-// TODO add template specialization for auto grow
-// TODO or bitblock list with custom iterator
-template<typename T, typename Allocator>
+template<typename T, typename Allocator, typename GrowRule=ListGrowRule<8> >
 class List : protected Container<Allocator>
 {
     typedef Container<Allocator> Base;
 public:
     typedef T* iterator;
     typedef T const* const_iterator;
+    typedef allow_memcpy<T> copy_rule;
 
     ~List();
     List();
     List(size_t capasity);
 
-    void operator=(List<T,Allocator> const& other);
-    template<typename Allocator2> List(List<T,Allocator2> const& other);
-    template<typename Allocator2> void operator=(List<T,Allocator2> const& other);
+    void operator=(List<T,Allocator,GrowRule> const& other);
+    template<typename Allocator2,typename GrowRule2> List(List<T,Allocator2,GrowRule2> const& other);
+    template<typename Allocator2,typename GrowRule2> void operator=(List<T,Allocator2,GrowRule2> const& other);
 
     T& acquire();
     void insert(T& item);
     void insert(T const& item);
-    template<typename Allocator2> void insert(List<T,Allocator2> const& other);
-    void remove(int index);
-    void remove(iterator ite);
+    template<typename Allocator2,typename GrowRule2> void insert(List<T,Allocator2,GrowRule2> const& other);
+    void remove(size_t index);
+    void remove(iterator& ite);
     void removeLast();
 
-    void resize(int newSize);
-    void resize(iterator newEnd);
+    void resize(size_t newSize);
+    void resize(iterator& newEnd);
     void resizeNoCopy(size_t newSize);
-    void resizeNoCopy(iterator newEnd);
+    void resizeNoCopy(iterator& newEnd);
     void reserve(size_t capasity);
     void clearAndFree();
     void clear();
@@ -77,7 +82,7 @@ public:
     size_t capasity() const;
 
 private:
-    template<typename Allocator2> void copy(List<T,Allocator2> const& other);
+    template<typename Allocator2,typename GrowRule2> void copy(List<T,Allocator2,GrowRule2> const& other);
 
     T* m_mem;
     size_t m_size;

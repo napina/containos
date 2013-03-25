@@ -86,6 +86,13 @@ IN THE SOFTWARE.
 #define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,std::has_trivial_destructor<t>::value>::destroy(ptr)
 //----------------------------------------------------------------------------
 
+// specialize this if you have type that cannot be moved around with memcpy
+template<typename T>
+struct allow_memcpy {
+    static const bool allowed = true;
+};
+//----------------------------------------------------------------------------
+
 namespace containos {
 
 typedef unsigned int uint32_t;
