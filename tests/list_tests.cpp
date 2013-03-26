@@ -62,7 +62,7 @@ TEST_SUITE(List)
         EXPECT_EQUAL(list.size(), 0);
         EXPECT_EQUAL(list.capasity(), 0);
     }
-    
+
     TEST(Reserve)
     {
         c::List<IntWrap,Mallocator> list;

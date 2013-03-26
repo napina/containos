@@ -172,9 +172,9 @@ inline void List<T,Allocator,GrowRule>::resize(size_t newSize)
             for(size_t i = copyCount; i < newSize; ++i) {
                 containos_placement_new(&newMem[i], T);
             }
+            copyCount = 0;
         }
     }
-
     for(size_t i = copyCount; i < m_size; ++i) {
         containos_placement_delete(&m_mem[i], T);
     }
