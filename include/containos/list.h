@@ -36,7 +36,7 @@ struct ListGrowRule {
 };
 
 // Simple continuous list of items
-template<typename T, typename Allocator, typename GrowRule=ListGrowRule<8> >
+template<typename T,typename Allocator=Mallocator,typename GrowRule=ListGrowRule<0> >
 class List : protected Container<Allocator>
 {
     typedef Container<Allocator> Base;

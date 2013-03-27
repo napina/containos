@@ -50,6 +50,10 @@ private:
 
 }
 
+template<> struct allow_memcpy<Complex> {
+    static const bool allowed = false;
+};
+
 TEST_SUITE(Algorithm)
 {
     TEST(SortList)

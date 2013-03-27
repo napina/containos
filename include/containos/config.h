@@ -98,6 +98,12 @@ namespace containos {
 typedef unsigned int uint32_t;
 typedef unsigned long long uint64_t;
 
+struct Mallocator
+{
+    static void* alloc(size_t size, size_t align)   { align; return ::malloc(size); }
+    static void  dealloc(void* ptr)                 { ::free(ptr); }
+};
+
 namespace internal {
 
 template<typename T, bool IsPod>

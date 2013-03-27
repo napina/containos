@@ -27,30 +27,22 @@ IN THE SOFTWARE.
 
 namespace c = containos;
 
-namespace {
-
-struct Mallocator
-{
-    static void* alloc(size_t size, size_t align)   { return ::malloc(size); }
-    static void  dealloc(void* ptr)                 { ::free(ptr); }
-};
-
-}
-
 TEST_SUITE(HashMap)
 {
     TEST(Invalid)
     {
-        c::HashMap<c::uint32,int,Mallocator> map(100);
+        c::HashMap<c::uint32,int> map(100);
         EXPECT_EQUAL(map.size(), 0);
     }
 
     TEST(Insert)
     {
-        c::HashMap<c::uint32,int,Mallocator> map(100);
+        c::HashMap<c::uint32,int> map(100);
         map.insert(65, 11);
         EXPECT_EQUAL(map.size(), 1);
         EXPECT_VALID(map.find(65));
         EXPECT_EQUAL(*map.find(65), 11);
     }
+
+    containos_todo("add more hash map tests")
 }

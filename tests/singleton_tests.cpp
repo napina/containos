@@ -27,13 +27,7 @@ IN THE SOFTWARE.
 
 namespace c = containos;
 
-struct Mallocator
-{
-    static void* alloc(size_t size, size_t align)   { return ::malloc(size); }
-    static void  dealloc(void* ptr)                 { ::free(ptr); }
-};
-
-class TestSingleton : public c::Singleton<TestSingleton,Mallocator>
+class TestSingleton : public c::Singleton<TestSingleton>
 {
 public:
     TestSingleton() : value(1337) {}

@@ -31,7 +31,7 @@ IN THE SOFTWARE.
 namespace containos {
 
 // Auto grow list where items keep same location
-template<typename T,typename Allocator>
+template<typename T,typename Allocator=Mallocator>
 class SlotList : protected Container<Allocator>
 {
     typedef Container<Allocator> Base;

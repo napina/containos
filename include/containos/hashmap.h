@@ -137,7 +137,7 @@ private:
 
 } // end of internal
 
-template<typename Key,typename T,typename Allocator>
+template<typename Key,typename T,typename Allocator=Mallocator>
 struct HashMap :
     public internal::HashMapBase<Key,T,internal::HashedKeyToBucket<Key>,Allocator>
 {

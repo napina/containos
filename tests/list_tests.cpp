@@ -29,12 +29,6 @@ namespace c = containos;
 
 namespace {
 
-struct Mallocator
-{
-    static void* alloc(size_t size, size_t align)   { return ::malloc(size); }
-    static void  dealloc(void* ptr)                 { ::free(ptr); }
-};
-
 struct IntWrap
 {
     IntWrap()                       { m_mem = new int(33); }
@@ -58,14 +52,14 @@ TEST_SUITE(List)
 {
     TEST(Empty)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         EXPECT_EQUAL(list.size(), 0);
         EXPECT_EQUAL(list.capasity(), 0);
     }
 
     TEST(Reserve)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         EXPECT_EQUAL(list.size(), 0);
         EXPECT_EQUAL(list.capasity(), 0);
         list.reserve(10);
@@ -75,7 +69,7 @@ TEST_SUITE(List)
 
     TEST(ReserveMore)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         EXPECT_EQUAL(list.size(), 0);
         EXPECT_EQUAL(list.capasity(), 0);
         list.reserve(1);
@@ -90,12 +84,12 @@ TEST_SUITE(List)
 
     TEST(Copy)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(3);
         list.insert(3);
         list.insert(5);
         list.insert(15);
-        c::List<IntWrap,Mallocator> list2;
+        c::List<IntWrap> list2;
         list2.reserve(4);
         list2.insert(9);
         list2.insert(13);
@@ -108,7 +102,7 @@ TEST_SUITE(List)
 
     TEST(Insert)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(2);
         list.insert(3);
         EXPECT_EQUAL(list.size(), 1);
@@ -120,11 +114,11 @@ TEST_SUITE(List)
 
     TEST(InsertOther)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(3);
         list.insert(3);
         list.insert(5);
-        c::List<IntWrap,Mallocator> list2;
+        c::List<IntWrap> list2;
         list2.reserve(4);
         list2.insert(9);
         list2.insert(list);
@@ -138,7 +132,7 @@ TEST_SUITE(List)
 
     TEST(Acquire)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(2);
         list.acquire() = 3;
         EXPECT_EQUAL(list.size(), 1);
@@ -150,7 +144,7 @@ TEST_SUITE(List)
 
     TEST(Remove)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(2);
         list.insert(3);
         EXPECT_EQUAL(list.size(), 1);
@@ -160,7 +154,7 @@ TEST_SUITE(List)
 
     TEST(Clear)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(3);
         list.insert(3);
         list.insert(7);
@@ -172,7 +166,7 @@ TEST_SUITE(List)
 
     TEST(ResizeToSmaller)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(2);
         list.insert(3);
         list.insert(5);
@@ -184,7 +178,7 @@ TEST_SUITE(List)
 
     TEST(ResizeToBigger)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(2);
         list.insert(3);
         list.insert(5);
@@ -198,7 +192,7 @@ TEST_SUITE(List)
 
     TEST(ResizeToZero)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(2);
         list.insert(3);
         list.insert(5);
@@ -209,7 +203,7 @@ TEST_SUITE(List)
 
     TEST(ResizeNoCopy)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(2);
         list.insert(3);
         list.insert(5);
@@ -224,14 +218,14 @@ TEST_SUITE(List)
 
     TEST(ResizeWithIterator)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(5);
         list.insert(1);
         list.insert(2);
         list.insert(3);
         list.insert(4);
         EXPECT_EQUAL(list.size(), 4);
-        c::List<IntWrap,Mallocator>::iterator it = list.begin();
+        c::List<IntWrap>::iterator it = list.begin();
         list.resize(++it);
         EXPECT_EQUAL(list.size(), 1);
         EXPECT_EQUAL(list[0], 1);
@@ -239,13 +233,13 @@ TEST_SUITE(List)
 
     TEST(Iterate)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(3);
         list.insert(0);
         list.insert(1);
         list.insert(2);
-        c::List<IntWrap,Mallocator>::iterator it = list.begin();
-        c::List<IntWrap,Mallocator>::iterator end = list.end();
+        c::List<IntWrap>::iterator it = list.begin();
+        c::List<IntWrap>::iterator end = list.end();
         int i = 0;
         for( ; it != end; ++it, ++i ) {
             EXPECT_EQUAL(*it, i);
@@ -255,13 +249,13 @@ TEST_SUITE(List)
 
     TEST(ConstIterate)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(3);
         list.insert(0);
         list.insert(1);
         list.insert(2);
-        c::List<IntWrap,Mallocator>::const_iterator it = list.begin();
-        c::List<IntWrap,Mallocator>::const_iterator end = list.end();
+        c::List<IntWrap>::const_iterator it = list.begin();
+        c::List<IntWrap>::const_iterator end = list.end();
         int i = 0;
         for( ; it != end; ++it, ++i ) {
             EXPECT_EQUAL(*it, i);
@@ -271,12 +265,12 @@ TEST_SUITE(List)
 
     TEST(DeleteIterator)
     {
-        c::List<IntWrap,Mallocator> list;
+        c::List<IntWrap> list;
         list.reserve(3);
         list.insert(0);
         list.insert(1);
         list.insert(2);
-        c::List<IntWrap,Mallocator>::iterator it = list.begin();
+        c::List<IntWrap>::iterator it = list.begin();
         ++it;
         list.remove(it);
         EXPECT_EQUAL(list.size(), 2);
@@ -286,7 +280,7 @@ TEST_SUITE(List)
 
     TEST(GrowRule)
     {
-        c::List<IntWrap,Mallocator,c::ListGrowRule<8> > list;
+        c::List<IntWrap,c::Mallocator,c::ListGrowRule<8> > list;
         list.insert(0);
         list.insert(1);
         list.insert(2);

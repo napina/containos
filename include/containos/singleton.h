@@ -29,7 +29,7 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-template<typename T,typename Allocator>
+template<typename T,typename Allocator=Mallocator>
 struct Singleton
 {
     static void createInstance();

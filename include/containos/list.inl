@@ -25,6 +25,8 @@ IN THE SOFTWARE.
 #ifndef containos_list_inl
 #define containos_list_inl
 
+#pragma warning(disable:4127)
+
 namespace containos {
 
 template<typename T, typename Allocator, typename GrowRule>

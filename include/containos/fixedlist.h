@@ -29,7 +29,7 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-template<typename T, int Capasity>
+template<typename T,int Capasity>
 class FixedList
 {
 public:
