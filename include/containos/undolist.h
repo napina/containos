@@ -34,7 +34,7 @@ class UndoCommand
 {
 public:
     virtual ~UndoCommand() {};
-    virtual void undo() = 0;
+    virtual void reverse() = 0;
 };
 
 template<typename Allocator = Mallocator>
@@ -68,10 +68,7 @@ public:
     bool isRedoAllowed() const;
 
 private:
-    void doCommand(UndoCommand* command);
-
-private:
-    typedef List<UndoCommand*> CommandStack;
+    typedef List<UndoCommand*,Allocator,ListGrowRule<64> > CommandStack;
     CommandStack m_commandStack;
     size_t m_currentIndex;
 };

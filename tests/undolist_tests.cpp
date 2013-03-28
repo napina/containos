@@ -26,34 +26,30 @@ IN THE SOFTWARE.
 
 namespace c = containos;
 
-class IntCommand : public c::UndoCommand
+class SetIntCommand : public c::UndoCommand
 {
 public:
-    virtual ~IntCommand()
+    virtual ~SetIntCommand()
     {
     }
 
-    IntCommand(int* target, int newValue)
-        : target(target)
-        , oldValue(*target)
-        , newValue(newValue)
+    SetIntCommand(int* target, int newValue)
+        : m_target(target)
+        , m_oldValue(*target)
     {
+        *m_target = newValue;
     }
 
-    virtual void Do()
+    virtual void reverse()
     {
-        (*target) = newValue;
-    }
-
-    virtual void undo()
-    {
-        (*target) = oldValue;
+        int value = *m_target;
+        *m_target = m_oldValue;
+        m_oldValue = value;
     }
 
 private:
-    int* target;
-    int oldValue;
-    int newValue;
+    int* m_target;
+    int m_oldValue;
 };
 
 TEST_SUITE(UndoList)
@@ -64,7 +60,7 @@ TEST_SUITE(UndoList)
         c::UndoList<> list(10);
         EXPECT_EQUAL(list.undoCount(), 0);
         EXPECT_EQUAL(list.redoCount(), 0);
-        list.add<IntCommand>(&value, 23);
+        list.add<SetIntCommand>(&value, 23);
         EXPECT_EQUAL(value, 23);
         EXPECT_EQUAL(list.undoCount(), 1);
         EXPECT_EQUAL(list.redoCount(), 0);
@@ -78,7 +74,7 @@ TEST_SUITE(UndoList)
     {
         int value = 100;
         c::UndoList<> list(10);
-        list.add<IntCommand>(&value, 23);
+        list.add<SetIntCommand>(&value, 23);
         EXPECT_EQUAL(list.undoCount(), 1);
         EXPECT_EQUAL(list.redoCount(), 0);
         EXPECT_EQUAL(value, 23);
@@ -97,7 +93,7 @@ TEST_SUITE(UndoList)
         c::UndoList<> list(10);
         int value = 100;
         for(int i = 0; i < 8; ++i) {
-            list.add<IntCommand>(&value, i);
+            list.add<SetIntCommand>(&value, i);
         }
         EXPECT_EQUAL(value, 7);
         EXPECT_EQUAL(list.undoCount(), 8);
@@ -112,7 +108,7 @@ TEST_SUITE(UndoList)
     {
         int value = 100;
         c::UndoList<> list(10);
-        list.add<IntCommand>(&value, 23);
+        list.add<SetIntCommand>(&value, 23);
         list.clear();
         EXPECT_EQUAL(list.undoCount(), 0);
         EXPECT_EQUAL(list.redoCount(), 0);
@@ -124,7 +120,7 @@ TEST_SUITE(UndoList)
         c::UndoList<> list(10);
         int value = 100;
         for(int i = 0; i < 8; ++i) {
-            list.add<IntCommand>(&value, i);
+            list.add<SetIntCommand>(&value, i);
         }
         EXPECT_EQUAL(value, 7);
         list.undo(4);
@@ -141,7 +137,7 @@ TEST_SUITE(UndoList)
         c::UndoList<> list(10);
         int value = 100;
         for(int i = 0; i < 8; ++i) {
-            list.add<IntCommand>(&value, i);
+            list.add<SetIntCommand>(&value, i);
         }
         EXPECT_EQUAL(value, 7);
         list.undo(4);
@@ -158,7 +154,7 @@ TEST_SUITE(UndoList)
         c::UndoList<> list(10);
         int value = 100;
         for(int i = 0; i < 8; ++i) {
-            list.add<IntCommand>(&value, i);
+            list.add<SetIntCommand>(&value, i);
         }
         EXPECT_EQUAL(value, 7);
         EXPECT_EQUAL(list.undoCount(), 8);
@@ -167,7 +163,7 @@ TEST_SUITE(UndoList)
         EXPECT_EQUAL(value, 3);
         EXPECT_EQUAL(list.undoCount(), 4);
         EXPECT_EQUAL(list.redoCount(), 4);
-        list.add<IntCommand>(&value, 50);
+        list.add<SetIntCommand>(&value, 50);
         EXPECT_EQUAL(value, 50);
         EXPECT_EQUAL(list.undoCount(), 5);
         EXPECT_EQUAL(list.redoCount(), 0);
