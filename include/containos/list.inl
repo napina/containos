@@ -224,17 +224,19 @@ inline void List<T,Allocator,GrowRule>::reserve(size_t newCapasity)
         return;
 
     T* newMem = Base::template constructArray<T>(newCapasity);
-    if(copy_rule::allowed) {
-        ::memcpy(newMem, m_mem, m_size * sizeof(T));
-    } else {
-        for(size_t i = 0; i < m_size; ++i) {
-            containos_placement_copy(&newMem[i], T, m_mem[i]);
+    if(m_mem != nullptr) {
+        if(copy_rule::allowed) {
+            ::memcpy(newMem, m_mem, m_size * sizeof(T));
+        } else {
+            for(size_t i = 0; i < m_size; ++i) {
+                containos_placement_copy(&newMem[i], T, m_mem[i]);
+            }
         }
+        for(size_t i = 0; i < m_size; ++i) {
+            containos_placement_delete(&m_mem[i], T);
+        }
+        Base::template destructArray<T>(m_mem, m_capasity);
     }
-    for(size_t i = 0; i < m_size; ++i) {
-        containos_placement_delete(&m_mem[i], T);
-    }
-    Base::template destructArray<T>(m_mem, m_capasity);
     m_mem = newMem;
     m_capasity = newCapasity;
 }
