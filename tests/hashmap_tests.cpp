@@ -40,7 +40,7 @@ TEST_SUITE(HashMap)
         c::HashMap<c::uint32,int> map(100);
         map.insert(65, 11);
         EXPECT_EQUAL(map.size(), 1);
-        EXPECT_VALID(map.find(65));
+        EXPECT_NOTEQUAL(map.find(65), map.end());
         EXPECT_EQUAL(*map.find(65), 11);
     }
 

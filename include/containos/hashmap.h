@@ -123,7 +123,7 @@ public:
     iterator end();
     const_iterator begin() const;
     const_iterator end() const;
-    T* find(Key const& key) const;
+    iterator find(Key const& key);
 
 private:
     NodeType* createHashNode(Key const& key, T& value, NodeType* next);
