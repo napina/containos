@@ -47,14 +47,14 @@ public:
 
     template<typename T>
     void add();
-    template<typename T, typename ARG1>
-    void add(ARG1 arg1);
-    template<typename T, typename ARG1, typename ARG2>
-    void add(ARG1 arg1, ARG2 arg2);
-    template<typename T, typename ARG1, typename ARG2, typename ARG3>
-    void add(ARG1 arg1, ARG2 arg2, ARG3 arg3);
-    template<typename T, typename ARG1, typename ARG2, typename ARG3, typename ARG4>
-    void add(ARG1 arg1, ARG2 arg2, ARG3 arg3, ARG4 arg4);
+    template<typename T,typename A>
+    void add(A a);
+    template<typename T,typename A,typename B>
+    void add(A a, B b);
+    template<typename T,typename A,typename B,typename C>
+    void add(A a, B b, C c);
+    template<typename T,typename A,typename B,typename C,typename D>
+    void add(A a, B b, C c, D d);
     void undo(size_t count = 1);
     void redo(size_t count = 1);
 

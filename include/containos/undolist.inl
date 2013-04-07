@@ -51,38 +51,38 @@ __forceinline void UndoList<Allocator>::add()
 }
 
 template<typename Allocator>
-template<typename T, typename ARG1>
-__forceinline void UndoList<Allocator>::add(ARG1 arg1)
+template<typename T,typename A>
+__forceinline void UndoList<Allocator>::add(A a)
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>(arg1));
+    m_commandStack.insert(Base::template construct<T>(a));
     ++m_currentIndex;
 }
 
 template<typename Allocator>
-template<typename T, typename ARG1, typename ARG2>
-__forceinline void UndoList<Allocator>::add(ARG1 arg1, ARG2 arg2)
+template<typename T,typename A,typename B>
+__forceinline void UndoList<Allocator>::add(A a, B b)
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>(arg1, arg2));
+    m_commandStack.insert(Base::template construct<T>(a, b));
     ++m_currentIndex;
 }
 
 template<typename Allocator>
-template<typename T, typename ARG1, typename ARG2, typename ARG3>
-__forceinline void UndoList<Allocator>::add(ARG1 arg1, ARG2 arg2, ARG3 arg3)
+template<typename T,typename A,typename B,typename C>
+__forceinline void UndoList<Allocator>::add(A a, B b, C c)
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>(arg1, arg2, arg3));
+    m_commandStack.insert(Base::template construct<T>(a, b, c));
     ++m_currentIndex;
 }
 
 template<typename Allocator>
-template<typename T, typename ARG1, typename ARG2, typename ARG3, typename ARG4>
-__forceinline void UndoList<Allocator>::add(ARG1 arg1, ARG2 arg2, ARG3 arg3, ARG4 arg4)
+template<typename T,typename A,typename B,typename C,typename D>
+__forceinline void UndoList<Allocator>::add(A a, B b, C c, D d)
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>(arg1, arg2, arg3, arg4));
+    m_commandStack.insert(Base::template construct<T>(a, b, c, d));
     ++m_currentIndex;
 }
 
