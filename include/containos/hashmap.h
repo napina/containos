@@ -89,8 +89,8 @@ public:
         typedef HashMapBase<Key,T,ToBucket,Allocator> MapType;
         typedef HashMapNode<Key,T> NodeType;
 
-        const_iterator(MapType* map);
-        const_iterator(MapType* map, NodeType* node, uint32 bucketIndex);
+        const_iterator(MapType const* map);
+        const_iterator(MapType const* map, NodeType* node, uint32 bucketIndex);
         const_iterator(iterator const& other);
         const_iterator(const_iterator const& other);
 
@@ -124,6 +124,7 @@ public:
     const_iterator begin() const;
     const_iterator end() const;
     iterator find(Key const& key);
+    const_iterator find(Key const& key) const;
 
 private:
     NodeType* createHashNode(Key const& key, T& value, NodeType* next);

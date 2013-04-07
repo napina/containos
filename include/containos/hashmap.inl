@@ -62,7 +62,7 @@ public:
 template<typename Key>
 __forceinline uint32 HashedKeyToBucket<Key>::get(Key const& key, uint32 bucketCount)
 {
-    return key.hash() % bucketCount;
+    return key.Hash() % bucketCount;
 }
 
 template<typename Key>
@@ -190,7 +190,7 @@ __forceinline bool HashMapBase<Key,T,ToBucket,Allocator>::iterator::operator!=(i
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
-__forceinline HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::const_iterator(HashMapBase<Key,T,ToBucket,Allocator>* map)
+__forceinline HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::const_iterator(HashMapBase<Key,T,ToBucket,Allocator> const* map)
     : m_map(map)
     , m_node(nullptr)
     , m_bucketIndex(0)
@@ -204,7 +204,7 @@ __forceinline HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::const_itera
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
-__forceinline HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::const_iterator(HashMapBase<Key,T,ToBucket,Allocator>* map, HashMapNode<Key,T>* node, uint32 bucketIndex)
+__forceinline HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::const_iterator(HashMapBase<Key,T,ToBucket,Allocator> const* map, HashMapNode<Key,T>* node, uint32 bucketIndex)
     : m_map(map)
     , m_node(node)
     , m_bucketIndex(bucketIndex)
@@ -373,6 +373,18 @@ inline typename HashMapBase<Key,T,ToBucket,Allocator>::iterator HashMapBase<Key,
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
+inline typename HashMapBase<Key,T,ToBucket,Allocator>::const_iterator HashMapBase<Key,T,ToBucket,Allocator>::find(Key const& key) const
+{
+    uint32 bucketIndex = ToBucket::get(key, m_bucketCount);
+    for(HashMapNode<Key,T>* node = m_buckets[bucketIndex]; node; node = node->m_next) {
+        if(node->m_key == key) {
+            return const_iterator(this, node, bucketIndex);
+        }
+    }
+    return end();
+}
+
+template<typename Key,typename T,typename ToBucket,typename Allocator>
 inline void HashMapBase<Key,T,ToBucket,Allocator>::clear()
 {
     for(uint32 i = 0; i < m_bucketCount; ++i) {
@@ -402,7 +414,7 @@ __forceinline typename HashMapBase<Key,T,ToBucket,Allocator>::iterator HashMapBa
 template<typename Key,typename T,typename ToBucket,typename Allocator>
 __forceinline typename HashMapBase<Key,T,ToBucket,Allocator>::iterator HashMapBase<Key,T,ToBucket,Allocator>::end()
 {
-    return iterator(this, 0, 0);
+    return iterator(this, nullptr, 0);
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
@@ -414,7 +426,7 @@ __forceinline typename HashMapBase<Key,T,ToBucket,Allocator>::const_iterator Has
 template<typename Key,typename T,typename ToBucket,typename Allocator>
 __forceinline typename HashMapBase<Key,T,ToBucket,Allocator>::const_iterator HashMapBase<Key,T,ToBucket,Allocator>::end() const
 {
-    return const_iterator(this, 0, 0);
+    return const_iterator(this, nullptr, 0);
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
