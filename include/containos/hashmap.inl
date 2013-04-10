@@ -303,7 +303,7 @@ __forceinline HashMapBase<Key,T,ToBucket,Allocator>::HashMapBase(uint32 bucketCo
     , m_size(0)
 {
     m_buckets = Base::template constructArray<HashMapNode<Key,T>*>(bucketCount);
-    ::memset(m_buckets, 0, sizeof(HashMapNode<Key,T>*) * bucketCount);
+    containos_memzero(m_buckets, sizeof(HashMapNode<Key,T>*) * bucketCount);
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>

@@ -25,10 +25,13 @@ IN THE SOFTWARE.
 #ifndef containos_atomic_inl
 #define containos_atomic_inl
 
+#if defined(CONTAINOS_WINDOWS)
+#include <intrin.h>
+#endif
+
 namespace containos {
 
 #if defined(CONTAINOS_WINDOWS)
-#include <intrin.h>
 
 __forceinline void memoryBarrier()
 {

@@ -42,21 +42,21 @@ IN THE SOFTWARE.
 #   define CONTAINOS_ARCH32
 #endif
 
-#define containos_tostring_impl(x)  #x
-#define containos_tostring(x)       containos_tostring_impl(x)
+#define containos_tostring_impl(x)      #x
+#define containos_tostring(x)           containos_tostring_impl(x)
 
 #if defined(_MSC_VER)
-#   define containos_lineinfo       __FILE__ "(" containos_tostring(__LINE__) ")"
-#   define containos_todo(msg)      __pragma(message(containos_lineinfo ": TODO " msg))
+#   define containos_lineinfo           __FILE__ "(" containos_tostring(__LINE__) ")"
+#   define containos_todo(msg)          __pragma(message(containos_lineinfo ": TODO " msg))
 #elif defined(__GNUC__)
-#   define containos_lineinfo       __FILE__ ":" containos_tostring(__LINE__)
-#   define containos_todo(msg)      __Pragma(message("TODO " msg))
-#   define __forceinline            inline __attribute__((always_inline))
-#   define __restrict               __restrict__
+#   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
+#   define containos_todo(msg)          __Pragma(message("TODO " msg))
+#   define __forceinline                inline __attribute__((always_inline))
+#   define __restrict                   __restrict__
 #else
-#   define containos_lineinfo       __FILE__ ":" containos_tostring(__LINE__)
+#   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
 #   define containos_todo(msg)
-#   define __forceinline            inline
+#   define __forceinline                inline
 #   define __restrict
 #endif
 
@@ -65,11 +65,19 @@ IN THE SOFTWARE.
 #endif
 
 #ifndef containos_delete
-#define containos_delete(Ptr)       delete (Ptr)
+#define containos_delete(Ptr)           delete (Ptr)
 #endif
 
 #ifndef containos_cast
-#define containos_cast(Type,Ptr)    static_cast<Type >(Ptr)
+#define containos_cast(Type,Ptr)        static_cast<Type >(Ptr)
+#endif
+
+#ifndef containos_memcpy
+#define containos_memcpy(Dst,Src,Size)  ::memcpy(Dst, Src, Size)
+#endif
+
+#ifndef containos_memzero
+#define containos_memzero(Dst,Size)     ::memset(Dst, 0, Size)
 #endif
 //----------------------------------------------------------------------------
 

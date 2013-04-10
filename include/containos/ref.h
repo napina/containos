@@ -35,6 +35,8 @@ namespace containos {
     mutable SizeType m_refCount
 // add this to constructor
 #define REF_STORAGE_INIT()\
+    m_refCount(0)
+#define REF_STORAGE_RESET()\
     m_refCount = 0
 
 // reference counted scoped pointer

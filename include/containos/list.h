@@ -36,7 +36,7 @@ struct ListGrowRule {
 };
 
 // Simple continuous list of items
-template<typename T,typename Allocator=Mallocator,typename GrowRule=ListGrowRule<0> >
+template<typename T,typename GrowRule=ListGrowRule<32>,typename Allocator=Mallocator >
 class List : protected Container<Allocator>
 {
     typedef Container<Allocator> Base;
@@ -49,14 +49,14 @@ public:
     List();
     List(size_t capasity);
 
-    void operator=(List<T,Allocator,GrowRule> const& other);
-    template<typename Allocator2,typename GrowRule2> List(List<T,Allocator2,GrowRule2> const& other);
-    template<typename Allocator2,typename GrowRule2> void operator=(List<T,Allocator2,GrowRule2> const& other);
+    void operator=(List<T,GrowRule,Allocator> const& other);
+    template<typename Allocator2,typename GrowRule2> List(List<T,GrowRule2,Allocator2> const& other);
+    template<typename Allocator2,typename GrowRule2> void operator=(List<T,GrowRule2,Allocator2> const& other);
 
     T& acquire();
     void insert(T& item);
     void insert(T const& item);
-    template<typename Allocator2,typename GrowRule2> void insert(List<T,Allocator2,GrowRule2> const& other);
+    template<typename Allocator2,typename GrowRule2> void insert(List<T,GrowRule2,Allocator2> const& other);
     void remove(size_t index);
     void remove(iterator& ite);
     void removeLast();
@@ -82,7 +82,7 @@ public:
     size_t capasity() const;
 
 private:
-    template<typename Allocator2,typename GrowRule2> void copy(List<T,Allocator2,GrowRule2> const& other);
+    template<typename Allocator2,typename GrowRule2> void copy(List<T,GrowRule2,Allocator2> const& other);
 
     T* m_mem;
     size_t m_size;
