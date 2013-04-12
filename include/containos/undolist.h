@@ -68,7 +68,7 @@ public:
     bool isRedoAllowed() const;
 
 private:
-    typedef List<UndoCommand*,Allocator,ListGrowRule<64> > CommandStack;
+    typedef List<UndoCommand*,ListGrowRule<64>,Allocator> CommandStack;
     CommandStack m_commandStack;
     size_t m_currentIndex;
 };
