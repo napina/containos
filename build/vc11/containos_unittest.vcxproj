@@ -24,6 +24,7 @@
     <ClCompile Include="..\..\tests\bitblock_tests.cpp" />
     <ClCompile Include="..\..\tests\bitset_tests.cpp" />
     <ClCompile Include="..\..\tests\config_tests.cpp" />
+    <ClCompile Include="..\..\tests\event_tests.cpp" />
     <ClCompile Include="..\..\tests\fixedlist_tests.cpp" />
     <ClCompile Include="..\..\tests\hashmap_tests.cpp" />
     <ClCompile Include="..\..\tests\list_tests.cpp" />
@@ -32,6 +33,7 @@
     <ClCompile Include="..\..\tests\ref_tests.cpp" />
     <ClCompile Include="..\..\tests\singleton_tests.cpp" />
     <ClCompile Include="..\..\tests\slotlist_tests.cpp" />
+    <ClCompile Include="..\..\tests\undolist_tests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\containos\algorithm.h" />
@@ -40,6 +42,7 @@
     <ClInclude Include="..\..\include\containos\bitset.h" />
     <ClInclude Include="..\..\include\containos\config.h" />
     <ClInclude Include="..\..\include\containos\container.h" />
+    <ClInclude Include="..\..\include\containos\event.h" />
     <ClInclude Include="..\..\include\containos\fixedlist.h" />
     <ClInclude Include="..\..\include\containos\hashmap.h" />
     <ClInclude Include="..\..\include\containos\list.h" />
@@ -47,6 +50,7 @@
     <ClInclude Include="..\..\include\containos\ref.h" />
     <ClInclude Include="..\..\include\containos\singleton.h" />
     <ClInclude Include="..\..\include\containos\slotlist.h" />
+    <ClInclude Include="..\..\include\containos\undolist.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\include\containos\algorithm.inl" />
@@ -54,6 +58,7 @@
     <None Include="..\..\include\containos\bitblock.inl" />
     <None Include="..\..\include\containos\bitset.inl" />
     <None Include="..\..\include\containos\container.inl" />
+    <None Include="..\..\include\containos\event.inl" />
     <None Include="..\..\include\containos\fixedlist.inl" />
     <None Include="..\..\include\containos\hashmap.inl" />
     <None Include="..\..\include\containos\list.inl" />
@@ -61,6 +66,7 @@
     <None Include="..\..\include\containos\ref.inl" />
     <None Include="..\..\include\containos\singleton.inl" />
     <None Include="..\..\include\containos\slotlist.inl" />
+    <None Include="..\..\include\containos\undolist.inl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\unitos\build\vc11\unitos.vcxproj">
