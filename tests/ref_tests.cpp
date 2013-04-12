@@ -39,8 +39,10 @@ struct BaseClass
 {
     virtual ~BaseClass() {}
 
-    BaseClass() : m_value(0) {
-        REF_STORAGE_INIT();
+    BaseClass()
+        : m_value(0)
+        , REF_STORAGE_INIT()
+    {
     }
 
 private:

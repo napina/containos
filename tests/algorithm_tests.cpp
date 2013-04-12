@@ -58,7 +58,7 @@ TEST_SUITE(Algorithm)
 {
     TEST(SortList)
     {
-        c::List<int,Mallocator> list(5);
+        c::List<int,c::ListGrowRule<0>,Mallocator> list(5);
         list.insert(5);
         list.insert(1);
         list.insert(8);
@@ -78,7 +78,7 @@ TEST_SUITE(Algorithm)
 
     TEST(UniqueList)
     {
-        c::List<int,Mallocator> list(6);
+        c::List<int,c::ListGrowRule<0>,Mallocator> list(6);
         list.insert(1);
         list.insert(3);
         list.insert(3);
@@ -86,7 +86,7 @@ TEST_SUITE(Algorithm)
         list.insert(2);
         list.insert(2);
         
-        c::List<int,Mallocator>::iterator newEnd = c::unique(list.begin(), list.end(),
+        c::List<int,c::ListGrowRule<0>,Mallocator>::iterator newEnd = c::unique(list.begin(), list.end(),
             [](int a, int b) -> bool {
                 return a == b;
             } );
@@ -100,7 +100,7 @@ TEST_SUITE(Algorithm)
 
     TEST(MergeList)
     {
-        c::List<Complex,Mallocator> list(6);
+        c::List<Complex,c::ListGrowRule<0>,Mallocator> list(6);
         list.insert(Complex(1,10));
         list.insert(Complex(2,4));
         list.insert(Complex(2,8));
@@ -108,7 +108,7 @@ TEST_SUITE(Algorithm)
         list.insert(Complex(3,100));
         list.insert(Complex(3,2));
 
-        c::List<Complex,Mallocator>::iterator newEnd = c::mergeSame(list.begin(), list.end(),
+        c::List<Complex,c::ListGrowRule<0>,Mallocator>::iterator newEnd = c::mergeSame(list.begin(), list.end(),
             [](const Complex& a, const Complex& b) -> bool {
                 return a.i() == b.i();
             },
