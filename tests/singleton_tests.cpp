@@ -27,6 +27,8 @@ IN THE SOFTWARE.
 
 namespace c = containos;
 
+namespace {
+
 class TestSingleton : public c::Singleton<TestSingleton>
 {
 public:
@@ -34,6 +36,8 @@ public:
     ~TestSingleton() { }
     int value;
 };
+
+}
 
 TEST_SUITE(Singleton)
 {
