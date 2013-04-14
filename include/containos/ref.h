@@ -46,8 +46,8 @@ class Ref
 public:
     ~Ref();
     Ref();
-    explicit Ref(nullptr_t);
-    explicit Ref(T const* ptr);
+    Ref(nullptr_t);
+    Ref(T const* __restrict ptr);
     Ref(Ref<T> const& handle);
 
     Ref<T>& operator=(T const* ptr);
