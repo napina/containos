@@ -90,11 +90,7 @@ __forceinline uint32_t bitset32::acquire()
 
 __forceinline uint32_t bitset32::pop()
 {
-#if defined(CONTAINOS_NATIVE_BSR)
-    uint32_t index =  containos::bsr32(~m_mask);
-#elif defined(CONTAINOS_NATIVE_CLZ)
-    uint32_t index =  containos::clz32(~m_mask) ^ 31;
-#endif
+    uint32_t index =  highest();
     m_mask |= (1U << index);
     return index;
 }
@@ -187,11 +183,7 @@ __forceinline uint64_t bitset64::acquire()
 
 __forceinline uint64_t bitset64::pop()
 {
-#if defined(CONTAINOS_NATIVE_BSR)
-    uint64_t index = containos::bsr64(~m_mask);
-#elif defined(CONTAINOS_NATIVE_CLZ)
-    uint64_t index = containos::clz64(~m_mask) ^ 63;
-#endif
+    uint64_t index = highest();
     m_mask |= (1ULL << index);
     return index;
 }

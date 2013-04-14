@@ -28,6 +28,37 @@ IN THE SOFTWARE.
 namespace containos {
 
 template<typename T>
+struct BitBlock<T>::iterator {
+    iterator()                                      : m_block(nullptr), m_bits() {}
+    iterator(BitBlock<T>* block)                    : m_block(block), m_bits(block->m_mask) {}
+    void operator++()                               { m_bits.pop(); }
+    T& operator*()                                  { return (*m_block)[m_bits.highest()]; }
+    T& operator->()                                 { return (*m_block)[m_bits.highest()]; }
+    bool operator==(iterator const& other) const    { return m_bits == other.m_bits; }
+    bool operator!=(iterator const& other) const    { return m_bits != other.m_bits; }
+
+private:
+    BitBlock<T>* m_block;
+    bitset m_bits;
+};
+
+template<typename T>
+struct BitBlock<T>::const_iterator {
+    const_iterator()                                    : m_block(nullptr), m_bits() {}
+    const_iterator(BitBlock<T> const* block)            : m_block(block), m_bits(block->m_mask) {}
+    void operator++()                                   { m_bits.pop(); }
+    T const& operator*()                                { return (*m_block)[m_bits.highest()]; }
+    T const& operator->()                               { return (*m_block)[m_bits.highest()]; }
+    bool operator==(const_iterator const& other) const  { return m_bits == other.m_bits; }
+    bool operator!=(const_iterator const& other) const  { return m_bits != other.m_bits; }
+
+private:
+    BitBlock<T>* m_block;
+    bitset m_bits;
+};
+//----------------------------------------------------------------------------
+
+template<typename T>
 inline BitBlock<T>::~BitBlock()
 {
     clear();
@@ -84,6 +115,30 @@ inline void BitBlock<T>::clear()
         containos_placement_delete(&m_data[index*sizeof(T)],T);
         m_mask.remove(index);
     }
+}
+
+template<typename T>
+inline typename BitBlock<T>::iterator BitBlock<T>::begin()
+{
+    return iterator(this);
+}
+
+template<typename T>
+inline typename BitBlock<T>::iterator BitBlock<T>::end()
+{
+    return iterator();
+}
+
+template<typename T>
+inline typename BitBlock<T>::const_iterator BitBlock<T>::begin() const
+{
+    return iterator(this);
+}
+
+template<typename T>
+inline typename BitBlock<T>::const_iterator BitBlock<T>::end() const
+{
+    return iterator();
 }
 
 template<typename T>

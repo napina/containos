@@ -33,8 +33,8 @@ namespace containos {
 template<typename T>
 struct BitBlock
 {
-    typedef T* iterator;
-    typedef T const* const_iterator;
+    struct iterator;
+    struct const_iterator;
 
     ~BitBlock();
     BitBlock();

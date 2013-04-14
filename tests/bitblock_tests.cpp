@@ -109,4 +109,38 @@ TEST_SUITE(BitBlock)
         block.clear();
         EXPECT_EQUAL(block.size(), 0);
     }
+
+    TEST(Iterate)
+    {
+        c::BitBlock<IntWrap> block;
+        block.insert(0);
+        block.insert(1);
+        block.insert(2);
+        c::BitBlock<IntWrap>::iterator it = block.begin();
+        c::BitBlock<IntWrap>::iterator end = block.end();
+        int i = 0;
+        for( ; it != end; ++it, ++i ) {
+            EXPECT_EQUAL(*it, i);
+        }
+        EXPECT_EQUAL(i, 3);
+    }
+
+    TEST(RemoveMiddleIterate)
+    {
+        c::BitBlock<IntWrap> block;
+        block.insert(0);
+        size_t index = block.insert(1);
+        block.insert(2);
+        block.remove(index);
+
+        c::BitBlock<IntWrap>::iterator it = block.begin();
+        c::BitBlock<IntWrap>::iterator end = block.end();
+        EXPECT_EQUAL(*it, 0);
+        EXPECT_NOTEQUAL(it, end);
+        ++it;
+        EXPECT_EQUAL(*it, 2);
+        EXPECT_NOTEQUAL(it, end);
+        ++it;
+        EXPECT_EQUAL(it, end);
+    }
 }
