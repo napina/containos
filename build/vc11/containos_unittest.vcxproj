@@ -27,6 +27,7 @@
     <ClCompile Include="..\..\tests\event_tests.cpp" />
     <ClCompile Include="..\..\tests\fixedlist_tests.cpp" />
     <ClCompile Include="..\..\tests\hashmap_tests.cpp" />
+    <ClCompile Include="..\..\tests\hash_tests.cpp" />
     <ClCompile Include="..\..\tests\list_tests.cpp" />
     <ClCompile Include="..\..\tests\main.cpp" />
     <ClCompile Include="..\..\tests\ptr_tests.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="..\..\include\containos\container.h" />
     <ClInclude Include="..\..\include\containos\event.h" />
     <ClInclude Include="..\..\include\containos\fixedlist.h" />
+    <ClInclude Include="..\..\include\containos\hash.h" />
     <ClInclude Include="..\..\include\containos\hashmap.h" />
     <ClInclude Include="..\..\include\containos\list.h" />
     <ClInclude Include="..\..\include\containos\ptr.h" />
@@ -60,6 +62,7 @@
     <None Include="..\..\include\containos\container.inl" />
     <None Include="..\..\include\containos\event.inl" />
     <None Include="..\..\include\containos\fixedlist.inl" />
+    <None Include="..\..\include\containos\hash.inl" />
     <None Include="..\..\include\containos\hashmap.inl" />
     <None Include="..\..\include\containos\list.inl" />
     <None Include="..\..\include\containos\ptr.inl" />
