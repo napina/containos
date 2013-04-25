@@ -29,17 +29,24 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-// helper for function specialization
+// These are for static const strings. Compiler should evaluate these with static values
+template<uint32_t Count> __forceinline uint32_t hash32(char const (&str)[Count]);
+template<uint64_t Count> __forceinline uint64_t hash64(char const (&str)[Count]);
+//-----------------------------------------------------------------------------
+
 struct ConstCharWrapper {
     inline ConstCharWrapper(const char* str) : m_str(str) {}
     const char* m_str;
 };
 
-template<uint32_t Count> __forceinline uint32_t hash32(char const (&str)[Count]);
-template<uint64_t Count> __forceinline uint64_t hash64(char const (&str)[Count]);
-
+// These are for dynamic null terminated strings
 __forceinline uint32_t hash32(ConstCharWrapper str);
 __forceinline uint64_t hash64(ConstCharWrapper str);
+//-----------------------------------------------------------------------------
+
+// These are for generic data
+__forceinline uint32_t hash32(void const* data, size_t size);
+__forceinline uint64_t hash64(void const* data, size_t size);
 
 } // end of containos
 

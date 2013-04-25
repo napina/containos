@@ -29,10 +29,11 @@ namespace containos {
 
 namespace internal {
 
+// Based on "Quasi compile-time string hashing" by Stefan Reinalter
 template<uint32_t Count,uint32_t Index>
 struct Hasher32 {
     __forceinline static uint32_t generate(const char (&str)[Count]) {
-        return (Hasher32<Count,Index-1>::generate(str) ^ str[Index - 1]) * 16777619u;
+        return (Hasher32<Count,Index - 1>::generate(str) ^ str[Index - 1]) * 16777619u;
     }
 };
 
@@ -46,7 +47,7 @@ struct Hasher32<Count,1> {
 template<uint64_t Count,uint64_t Index>
 struct Hasher64 {
     __forceinline static uint64_t generate(const char (&str)[Count]) {
-        return (Hasher64<Count,Index-1>::generate(str) ^ str[Index - 1]) * 1099511628211ull;
+        return (Hasher64<Count,Index - 1>::generate(str) ^ str[Index - 1]) * 1099511628211ull;
     }
 };
 
@@ -71,10 +72,11 @@ __forceinline uint64_t hash64(char const (&str)[Count])
 {
     return internal::Hasher64<Count,Count>::generate(str);
 }
+//-----------------------------------------------------------------------------
 
 __forceinline uint32_t hash32(ConstCharWrapper wrapper)
 {
-    const char* str = wrapper.m_str;
+    char const* str = wrapper.m_str;
     uint32_t value = 2166136261u; // basis
     do {
         value ^= str[0];
@@ -85,12 +87,37 @@ __forceinline uint32_t hash32(ConstCharWrapper wrapper)
 
 __forceinline uint64_t hash64(ConstCharWrapper wrapper)
 {
-    const char* str = wrapper.m_str;
+    char const* str = wrapper.m_str;
     uint64_t value = 14695981039346656037ull; // basis
     do {
         value ^= str[0];
         value *= 1099511628211ull; // prime
     } while((*str++) != 0);
+    return value;
+}
+//-----------------------------------------------------------------------------
+
+__forceinline uint32_t hash32(void const* data, size_t size)
+{
+    char const* ptr = reinterpret_cast<char const*>(data);
+    char const* ptrEnd = ptr + size;
+    uint32_t value = 2166136261u; // basis
+    do {
+        value ^= ptr[0];
+        value *= 16777619u; // prime
+    } while(++ptr != ptrEnd);
+    return value;
+}
+
+__forceinline uint64_t hash64(void* data, size_t size)
+{
+    char const* ptr = reinterpret_cast<char const*>(data);
+    char const* ptrEnd = ptr + size;
+    uint64_t value = 14695981039346656037ull; // basis
+    do {
+        value ^= ptr[0];
+        value *= 1099511628211ull; // prime
+    } while(++ptr != ptrEnd);
     return value;
 }
 
