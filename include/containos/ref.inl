@@ -109,6 +109,12 @@ __forceinline bool Ref<T>::operator<(Ref<T> const& other) const
 }
 
 template<typename T>
+__forceinline Ref<T>::operator bool() const
+{
+    return m_mem != nullptr;
+}
+
+template<typename T>
 __forceinline Ref<T>::operator T*() const
 {
     return m_mem;
