@@ -27,6 +27,7 @@ IN THE SOFTWARE.
 
 #include "containos\container.h"
 #include "containos\list.h" // TODO remove dependency
+#include "containos\list.h" // TODO remove dependency
 
 namespace containos {
 
@@ -51,10 +52,43 @@ public:
     bool isEmpty() const;
 
 private:
+    template Chunk;
     static const int chunk_size = 128;
-    List<T*,Allocator> m_chunkList;
+    List<Chunk*,Allocator> m_chunkList;
     List<int,Allocator> m_freeList;
 };
+
+namespace wip {
+class LinearStorage
+{
+    template<typename T> T* get(size_t index);
+    void* get(size_t offset);
+    void reserve(size_t capasity);
+    void copyTo(LinearStorage& other);
+
+    void* m_mem;
+    size_t m_capasity;
+};
+
+class ChunkStorage
+{
+    template<typename T> T* get(size_t index);
+    void* get(size_t offset);
+    void reserve(size_t capasity);
+    void copyTo(LinearStorage& other);
+
+    struct Chunk;
+    Chunk* m_usedChunk;
+    Chunk* m_freeChunk;
+};
+
+struct ChunkStorage::Chunk
+{
+    void* m_data;
+    Chunk* m_next;
+    bitset m_used;
+};
+}
 
 } // end of containos
 
