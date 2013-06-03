@@ -22,44 +22,34 @@ IN THE SOFTWARE.
 
 =============================================================================*/
 #pragma once
-#ifndef containos_slotlist_h
-#define containos_slotlist_h
-
-#include "containos\container.h"
-#include "containos\list.h" // TODO remove dependency
-#include "containos\list.h" // TODO remove dependency
+#ifndef containos_storage_inl
+#define containos_storage_inl
 
 namespace containos {
 
-// Auto grow list where items keep same location
-template<typename T,typename Allocator=Mallocator>
-class SlotList : protected Container<Allocator>
+template<typename T>
+T* LinearStorage::get(size_t index)
 {
-    typedef Container<Allocator> Base;
-public:
-    ~SlotList();
-    SlotList();
-    SlotList(SlotList const& other);
+	return static_cast<T*>(m_mem + sizeof(T) * index);
+}
 
-    uint64_t acquire();
-    void remove(uint64_t id);
-    void clearAndFree();
-    void clear();
+void* LinearStorage::get(size_t offset)
+{
+	return m_mem + sizeof(T) * index;
+}
 
-    T* operator[](uint64_t id);
-    T const* operator[](uint64_t id) const;
-    int size() const;
-    bool isEmpty() const;
+void LinearStorage::resize(size_t capasity)
+{
+}
 
-private:
-    template Chunk;
-    static const int chunk_size = 128;
-    List<Chunk*,Allocator> m_chunkList;
-    List<int,Allocator> m_freeList;
-};
+void LinearStorage::copyTo(LinearStorage* target)
+{
+}
+
+void LinearStorage::copyTo(ChunkStorage* target)
+{
+}
 
 } // end of containos
-
-#include "containos/slotlist.inl"
 
 #endif

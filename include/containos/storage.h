@@ -22,44 +22,52 @@ IN THE SOFTWARE.
 
 =============================================================================*/
 #pragma once
-#ifndef containos_slotlist_h
-#define containos_slotlist_h
+#ifndef containos_storage_h
+#define containos_storage_h
 
-#include "containos\container.h"
-#include "containos\list.h" // TODO remove dependency
-#include "containos\list.h" // TODO remove dependency
+#include "containos\bitset.h"
 
 namespace containos {
 
-// Auto grow list where items keep same location
-template<typename T,typename Allocator=Mallocator>
-class SlotList : protected Container<Allocator>
+struct ChunkStorage;
+
+struct LinearStorage
 {
-    typedef Container<Allocator> Base;
-public:
-    ~SlotList();
-    SlotList();
-    SlotList(SlotList const& other);
-
-    uint64_t acquire();
-    void remove(uint64_t id);
-    void clearAndFree();
-    void clear();
-
-    T* operator[](uint64_t id);
-    T const* operator[](uint64_t id) const;
-    int size() const;
-    bool isEmpty() const;
+    template<typename T> T* get(size_t index);
+    void* get(size_t offset);
+    void resize(size_t capasity);
+    void copyTo(LinearStorage* target);
+    void copyTo(ChunkStorage* target);
 
 private:
-    template Chunk;
-    static const int chunk_size = 128;
-    List<Chunk*,Allocator> m_chunkList;
-    List<int,Allocator> m_freeList;
+    void* m_mem;
+    size_t m_capasity;
+};
+//-----------------------------------------------------------------------------
+
+struct ChunkStorage
+{
+    struct Chunk
+    {
+        void* m_data;
+        bitset m_used;
+        Chunk* m_next;
+        void* reserved;
+    };
+
+    template<typename T> T* get(size_t index);
+    void* get(size_t offset);
+    void reserve(size_t capasity);
+    void copyTo(LinearStorage* target);
+    void copyTo(ChunkStorage* target);
+
+private:
+    Chunk* m_usedChunk;
+    Chunk* m_freeChunk;
 };
 
 } // end of containos
 
-#include "containos/slotlist.inl"
+#include "containos/storage.inl"
 
 #endif
