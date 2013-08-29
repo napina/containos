@@ -38,9 +38,9 @@ struct Hasher32 {
 };
 
 template<uint32_t Count>
-struct Hasher32<Count,1> {
-    __forceinline static uint32_t generate(const char (&str)[Count]) {
-        return (2166136261u ^ str[0]) * 16777619u;
+struct Hasher32<Count,0> {
+    __forceinline static uint32_t generate(const char (&)[Count]) {
+        return 2166136261u;
     }
 };
 
@@ -52,9 +52,9 @@ struct Hasher64 {
 };
 
 template<uint64_t Count>
-struct Hasher64<Count,1> {
-    __forceinline static uint64_t generate(const char (&str)[Count]) {
-        return (14695981039346656037ull ^ str[0]) * 1099511628211ull;
+struct Hasher64<Count,0> {
+    __forceinline static uint64_t generate(const char (&)[Count]) {
+        return 14695981039346656037ull;
     }
 };
 
@@ -64,13 +64,13 @@ struct Hasher64<Count,1> {
 template<uint32_t Count>
 __forceinline uint32_t hash32(char const (&str)[Count])
 {
-    return internal::Hasher32<Count,Count>::generate(str);
+    return internal::Hasher32<Count,Count - 1>::generate(str);
 }
 
 template<uint64_t Count>
 __forceinline uint64_t hash64(char const (&str)[Count])
 {
-    return internal::Hasher64<Count,Count>::generate(str);
+    return internal::Hasher64<Count,Count - 1>::generate(str);
 }
 //-----------------------------------------------------------------------------
 
@@ -78,10 +78,11 @@ __forceinline uint32_t hash32(ConstCharWrapper wrapper)
 {
     char const* str = wrapper.m_str;
     uint32_t value = 2166136261u; // basis
-    do {
+    while(*str != 0) {
         value ^= str[0];
         value *= 16777619u; // prime
-    } while((*str++) != 0);
+        ++str;
+    }
     return value;
 }
 
@@ -89,10 +90,11 @@ __forceinline uint64_t hash64(ConstCharWrapper wrapper)
 {
     char const* str = wrapper.m_str;
     uint64_t value = 14695981039346656037ull; // basis
-    do {
+    while(*str != 0) {
         value ^= str[0];
         value *= 1099511628211ull; // prime
-    } while((*str++) != 0);
+        ++str;
+    }
     return value;
 }
 //-----------------------------------------------------------------------------
@@ -102,22 +104,24 @@ __forceinline uint32_t hash32(void const* data, size_t size)
     char const* ptr = reinterpret_cast<char const*>(data);
     char const* ptrEnd = ptr + size;
     uint32_t value = 2166136261u; // basis
-    do {
+    while(ptr != ptrEnd) {
         value ^= ptr[0];
         value *= 16777619u; // prime
-    } while(++ptr != ptrEnd);
+        ++ptr;
+    }
     return value;
 }
 
-__forceinline uint64_t hash64(void* data, size_t size)
+__forceinline uint64_t hash64(void const* data, size_t size)
 {
     char const* ptr = reinterpret_cast<char const*>(data);
     char const* ptrEnd = ptr + size;
     uint64_t value = 14695981039346656037ull; // basis
-    do {
+    while(ptr != ptrEnd) {
         value ^= ptr[0];
         value *= 1099511628211ull; // prime
-    } while(++ptr != ptrEnd);
+        ++ptr;
+    }
     return value;
 }
 

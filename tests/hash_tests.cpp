@@ -28,10 +28,24 @@ namespace c = containos;
 
 TEST_SUITE(Hash)
 {
+    TEST(Zero32)
+    {
+        c::uint32_t compiled1 = c::hash32("", 0);
+        c::uint32_t compiled2 = c::hash32("");
+        EXPECT_EQUAL(compiled1, 0x811c9dc5);
+        EXPECT_EQUAL(compiled2, 0x811c9dc5);
+    }
+
     TEST(Compiled32)
     {
         const c::uint32_t compiled = c::hash32("Apina");
-        EXPECT_EQUAL(compiled, 0xb7d9149a);
+        EXPECT_EQUAL(compiled, 0x69c0613e);
+    }
+
+    TEST(Generic32)
+    {
+        const c::uint32_t compiled = c::hash32("Apina", 5);
+        EXPECT_EQUAL(compiled, 0x69c0613e);
     }
 
     TEST(CompiledVsDynamic32)
@@ -45,10 +59,24 @@ TEST_SUITE(Hash)
         delete [] dynamicStr;
     }
 
+    TEST(Zero64)
+    {
+        c::uint64_t compiled1 = c::hash64("", 0);
+        c::uint64_t compiled2 = c::hash64("");
+        EXPECT_EQUAL(compiled1, 0xcbf29ce484222325);
+        EXPECT_EQUAL(compiled2, 0xcbf29ce484222325);
+    }
+
     TEST(Compiled64)
     {
         const c::uint64_t compiled = c::hash64("Apina");
-        EXPECT_EQUAL(compiled, 0x9965e7a51dc786ba);
+        EXPECT_EQUAL(compiled, 0x91b452b50d03fd5e);
+    }
+
+    TEST(Generic64)
+    {
+        const c::uint64_t compiled = c::hash64("Apina", 5);
+        EXPECT_EQUAL(compiled, 0x91b452b50d03fd5e);
     }
 
     TEST(CompiledVsDynamic64)
