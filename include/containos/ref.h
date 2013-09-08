@@ -29,15 +29,14 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-// add this to class header
-#define REF_STORAGE(ClassType,SizeType)\
-    friend class containos::Ref<ClassType>;\
-    mutable SizeType m_refCount
+// add this to class header. this needs to be protected member to support derived access
+#define REF_STORAGE(ClassType,SizeType)     REF_STORAGE_IMPL(ClassType,SizeType)
+// add this to derived class
+#define REF_DERIVED(ClassType)              REF_DERIVED_IMPL(ClassType)
 // add this to constructor
-#define REF_STORAGE_INIT()\
-    m_refCount(0)
-#define REF_STORAGE_RESET()\
-    m_refCount = 0
+#define REF_STORAGE_INIT()                  REF_STORAGE_INIT_IMPL()
+// use this if you want to reset count
+#define REF_STORAGE_RESET()                 REF_STORAGE_RESET_IMPL()
 
 // reference counted scoped pointer
 template<typename T>

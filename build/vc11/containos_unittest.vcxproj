@@ -48,6 +48,7 @@
     <ClInclude Include="..\..\include\containos\hash.h" />
     <ClInclude Include="..\..\include\containos\hashmap.h" />
     <ClInclude Include="..\..\include\containos\list.h" />
+    <ClInclude Include="..\..\include\containos\pack.h" />
     <ClInclude Include="..\..\include\containos\ptr.h" />
     <ClInclude Include="..\..\include\containos\ref.h" />
     <ClInclude Include="..\..\include\containos\singleton.h" />

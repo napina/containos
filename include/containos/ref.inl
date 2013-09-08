@@ -25,6 +25,19 @@ IN THE SOFTWARE.
 #ifndef containos_ref_inl
 #define containos_ref_inl
 
+#define REF_STORAGE_IMPL(ClassType,SizeType)\
+    friend class containos::Ref<ClassType>;\
+    mutable SizeType m_refCount
+
+#define REF_DERIVED_IMPL(ClassType)\
+    friend class containos::Ref<ClassType>;
+
+#define REF_STORAGE_INIT_IMPL()\
+    m_refCount(0)
+
+#define REF_STORAGE_RESET_IMPL()\
+    m_refCount = 0
+
 namespace containos {
 
 template<typename T>

@@ -45,7 +45,7 @@ struct BaseClass
     {
     }
 
-private:
+protected:
     int m_value;
     REF_STORAGE(BaseClass,int);
 };
@@ -62,6 +62,7 @@ struct DerivedClass : public BaseClass
 
 private:
     int* m_ptr;
+    REF_DERIVED(DerivedClass);
 };
 
 }
@@ -90,6 +91,18 @@ TEST_SUITE(Ref)
     TEST(CreateManualDelete)
     {
         c::Ref<BaseClass> ptr;
+        ptr = new DerivedClass();
+        EXPECT_TRUE(ptr.isValid());
+        EXPECT_FALSE(ptr == nullptr);
+        EXPECT_TRUE(ptr != nullptr);
+        EXPECT_FALSE(ptr.get() == nullptr);
+        ptr = nullptr;
+        EXPECT_FALSE(ptr.isValid());
+    }
+
+    TEST(CreateDerived)
+    {
+        c::Ref<DerivedClass> ptr;
         ptr = new DerivedClass();
         EXPECT_TRUE(ptr.isValid());
         EXPECT_FALSE(ptr == nullptr);
