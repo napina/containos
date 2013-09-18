@@ -29,7 +29,7 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-template<typename T,int Capasity>
+template<typename T,size_t Capasity>
 class FixedList
 {
 public:
@@ -40,20 +40,20 @@ public:
     T& acquire();
     void insert(T& item);
     void insert(T const& item);
-    void remove(int index);
+    void remove(size_t index);
     void removeLast();
     void clear();
 
-    T& operator[](int index);
-    T const& operator[](int index) const;
-    int capasity() const;
-    int size() const;
+    T& operator[](size_t index);
+    T const& operator[](size_t index) const;
+    size_t capasity() const;
+    size_t size() const;
     bool isEmpty() const;
     bool hasSpace() const;
 
 private:
     T m_items[Capasity];
-    int m_size;
+    size_t m_size;
 };
 
 } // end of containos
