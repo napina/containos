@@ -44,6 +44,7 @@ struct BitBlock
     size_t insert(T& item);
     size_t insert(T const& item);
     void remove(size_t index);
+    void remove(iterator const& i);
     void clear();
 
     iterator begin();

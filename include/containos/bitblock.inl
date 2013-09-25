@@ -36,6 +36,7 @@ struct BitBlock<T>::iterator {
     T& operator->()                                 { return (*m_block)[m_bits.highest()]; }
     bool operator==(iterator const& other) const    { return m_bits == other.m_bits; }
     bool operator!=(iterator const& other) const    { return m_bits != other.m_bits; }
+    size_t index() const                            { return m_bits.highest(); }
 
 private:
     BitBlock<T>* m_block;
@@ -51,6 +52,7 @@ struct BitBlock<T>::const_iterator {
     T const& operator->()                               { return (*m_block)[m_bits.highest()]; }
     bool operator==(const_iterator const& other) const  { return m_bits == other.m_bits; }
     bool operator!=(const_iterator const& other) const  { return m_bits != other.m_bits; }
+    size_t index() const                                { return m_bits.highest(); }
 
 private:
     BitBlock<T>* m_block;
@@ -73,7 +75,7 @@ template<typename T>
 inline BitBlock<T>::BitBlock(const BitBlock& other)
     : m_mask(other.mask)
 {
-    // TODO
+    containos_todo("Implement BitBlock copy constructor");
 }
 
 template<typename T>
@@ -105,6 +107,12 @@ inline void BitBlock<T>::remove(size_t index)
     containos_assert(m_mask.isSet(index));
     containos_placement_delete(&m_data[index*sizeof(T)], T);
     m_mask.remove(index);
+}
+
+template<typename T>
+inline void BitBlock<T>::remove(iterator const& i)
+{
+    remove(i.index());
 }
 
 template<typename T>
