@@ -40,13 +40,13 @@ struct ConstCharWrapper {
 };
 
 // These are for dynamic null terminated strings
-__forceinline uint32_t hash32(ConstCharWrapper str);
-__forceinline uint64_t hash64(ConstCharWrapper str);
+uint32_t hash32(ConstCharWrapper str);
+uint64_t hash64(ConstCharWrapper str);
 //-----------------------------------------------------------------------------
 
 // These are for generic data
-__forceinline uint32_t hash32(void const* data, size_t size);
-__forceinline uint64_t hash64(void const* data, size_t size);
+uint32_t hash32(void const* data, size_t size);
+uint64_t hash64(void const* data, size_t size);
 
 } // end of containos
 
