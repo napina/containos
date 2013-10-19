@@ -71,7 +71,7 @@ public:
         void next();
         NodeType* node() const;
         T& operator*() const;
-        T* operator->() const;
+        T& operator->() const;
         iterator& operator++();
         iterator operator++(int);
         bool operator==(iterator const& other) const;
@@ -97,7 +97,7 @@ public:
         void next();
         NodeType const* node() const;
         T const& operator*() const;
-        T const* operator->() const;
+        T const& operator->() const;
         const_iterator& operator++();
         const_iterator operator++(int);
         bool operator==(const_iterator const& other) const;

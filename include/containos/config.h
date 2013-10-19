@@ -32,7 +32,7 @@ IN THE SOFTWARE.
 #   define CONTAINOS_LINUX
 #   define CONTAINOS_ARCH32
 #elif defined(__APPLE__) && defined(__MACH__)
-#   define CONTAINOS_MACOS
+#   define CONTAINOS_MACOSX
 #   define CONTAINOS_ARCH32
 #elif defined(_WIN64) || defined(_M_X64)
 #   define CONTAINOS_WINDOWS

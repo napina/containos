@@ -157,9 +157,9 @@ __forceinline T& HashMapBase<Key,T,ToBucket,Allocator>::iterator::operator*() co
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
-__forceinline T* HashMapBase<Key,T,ToBucket,Allocator>::iterator::operator->() const
+__forceinline T& HashMapBase<Key,T,ToBucket,Allocator>::iterator::operator->() const
 {
-    return &(m_node->m_value);
+    return m_node->m_value;
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
@@ -256,9 +256,9 @@ __forceinline T const& HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::op
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
-__forceinline T const* HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::operator->() const
+__forceinline T const& HashMapBase<Key,T,ToBucket,Allocator>::const_iterator::operator->() const
 {
-    return &(m_node->m_value);
+    return m_node->m_value;
 }
 
 template<typename Key,typename T,typename ToBucket,typename Allocator>
