@@ -69,7 +69,7 @@ template<typename Key>
 __forceinline uint32 PointerKeyToBucket<Key>::get(Key const& key, uint32 bucketCount)
 {
     // todo shift down by alignment
-    return reinterpret_cast<uint32>(key) % bucketCount;
+    return uint32(uint64(key) % bucketCount);
 }
 
 template<typename Key>

@@ -25,7 +25,7 @@ IN THE SOFTWARE.
 #ifndef containos_algorithm_h
 #define containos_algorithm_h
 
-#include "containos\config.h"
+#include "containos\common.h"
 
 namespace containos {
 

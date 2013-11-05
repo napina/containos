@@ -23,7 +23,7 @@
     <ClCompile Include="..\..\tests\atomic_tests.cpp" />
     <ClCompile Include="..\..\tests\bitblock_tests.cpp" />
     <ClCompile Include="..\..\tests\bitset_tests.cpp" />
-    <ClCompile Include="..\..\tests\config_tests.cpp" />
+    <ClCompile Include="..\..\tests\common_tests.cpp" />
     <ClCompile Include="..\..\tests\event_tests.cpp" />
     <ClCompile Include="..\..\tests\fixedlist_tests.cpp" />
     <ClCompile Include="..\..\tests\hashmap_tests.cpp" />
@@ -41,7 +41,7 @@
     <ClInclude Include="..\..\include\containos\atomic.h" />
     <ClInclude Include="..\..\include\containos\bitblock.h" />
     <ClInclude Include="..\..\include\containos\bitset.h" />
-    <ClInclude Include="..\..\include\containos\config.h" />
+    <ClInclude Include="..\..\include\containos\common.h" />
     <ClInclude Include="..\..\include\containos\container.h" />
     <ClInclude Include="..\..\include\containos\event.h" />
     <ClInclude Include="..\..\include\containos\fixedlist.h" />

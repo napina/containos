@@ -25,7 +25,7 @@ IN THE SOFTWARE.
 #ifndef containos_container_h
 #define containos_container_h
 
-#include "containos/config.h"
+#include "containos/common.h"
 
 /*----------------------------------------------------------------------------
 struct Allocator

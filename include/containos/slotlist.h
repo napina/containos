@@ -52,7 +52,7 @@ public:
     bool isEmpty() const;
 
 private:
-    template Chunk;
+    struct Chunk;
     static const int chunk_size = 128;
     List<Chunk*,Allocator> m_chunkList;
     List<int,Allocator> m_freeList;

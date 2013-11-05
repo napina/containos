@@ -22,8 +22,8 @@ IN THE SOFTWARE.
 
 =============================================================================*/
 #pragma once
-#ifndef containos_config_h
-#define containos_config_h
+#ifndef containos_common_h
+#define containos_common_h
 
 #include <type_traits>
 #include <new>
