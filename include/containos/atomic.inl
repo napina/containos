@@ -31,6 +31,12 @@ IN THE SOFTWARE.
 
 namespace containos {
 
+#if defined(_MSC_VER)
+#   define containos_compilerBarrier()   _ReadWriteBarrier()
+#elif defined(__GNUC__)
+#   define containos_compilerBarrier()   __asm__ __volatile__ ("" : : : "memory")
+#endif
+
 #if defined(CONTAINOS_WINDOWS)
 
 __forceinline void memoryBarrier()

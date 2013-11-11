@@ -29,6 +29,9 @@ IN THE SOFTWARE.
 
 namespace containos {
 
+// prevent compiler from reordering reads and writes to globally visible variables across the call.
+#define compilerBarrier()	containos_compilerBarrier()
+
 // makes sure that every preceding store is globally visible before any subsequent store
 void memoryBarrier();
 
