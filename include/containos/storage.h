@@ -33,28 +33,29 @@ struct ChunkStorage;
 
 struct LinearStorage
 {
-    template<typename T> T* get(size_t index);
+    template<typename T,typename Allocator>
+    static LinearStorage* alloc(size_t capasity);
+    template<typename T,typename Allocator>
+    static LinearStorage* alloc(size_t capasity, Allocator& allocator);
+    template<typename Allocator>
+    static void free(LinearStorage* ptr);
+    template<typename Allocator>
+    static void free(LinearStorage* ptr, Allocator& allocator);
+
+    template<typename T>
+    T* get(size_t index);
     void* get(size_t offset);
-    void resize(size_t capasity);
-    void copyTo(LinearStorage* target);
-    void copyTo(ChunkStorage* target);
+    void copyTo(LinearStorage& target);
+    void copyTo(ChunkStorage& target);
 
 private:
-    void* m_mem;
     size_t m_capasity;
+    uint8_t m_mem[1];
 };
 //-----------------------------------------------------------------------------
 
 struct ChunkStorage
 {
-    struct Chunk
-    {
-        void* m_data;
-        bitset m_used;
-        Chunk* m_next;
-        void* reserved;
-    };
-
     template<typename T> T* get(size_t index);
     void* get(size_t offset);
     void reserve(size_t capasity);
@@ -62,6 +63,12 @@ struct ChunkStorage
     void copyTo(ChunkStorage* target);
 
 private:
+    struct Chunk
+    {
+        bitset m_used;
+        Chunk* m_next;
+        char m_data[1];
+    };
     Chunk* m_usedChunk;
     Chunk* m_freeChunk;
 };

@@ -21,57 +21,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
 =============================================================================*/
-#pragma once
-#ifndef containos_storage_inl
-#define containos_storage_inl
+#include "unitos/unitos.h"
+#include "containos/storage.h"
 
-namespace containos {
+namespace c = containos;
 
-template<typename T,typename Allocator>
-__forceinline LinearStorage* LinearStorage::alloc(size_t capasity)
+TEST_SUITE(Storage)
 {
-	return static_cast<T*>(Allocator::alloc(capasity + sizeof(T)));
+    TEST(Simple)
+    {
+        
+    }
 }
-
-template<typename T,typename Allocator>
-__forceinline LinearStorage* LinearStorage::alloc(size_t capasity, Allocator& allocator)
-{
-	return static_cast<T*>(allocator.alloc(capasity + sizeof(T)));
-}
-
-template<typename Allocator>
-__forceinline void LinearStorage::free(LinearStorage* ptr)
-{
-	Allocator::free(ptr);
-}
-
-template<typename Allocator>
-__forceinline void LinearStorage::free(LinearStorage* ptr, Allocator& allocator)
-{
-	allocator.free(ptr);
-}
-
-template<typename T>
-__forceinline T* LinearStorage::get(size_t index)
-{
-	return static_cast<T*>(m_mem + sizeof(T) * index);
-}
-
-__forceinline void* LinearStorage::get(size_t offset)
-{
-	return (char*)m_mem + offset;
-}
-
-__forceinline void LinearStorage::copyTo(LinearStorage& target)
-{
-	containos_todo("Implement copyTo");
-}
-
-__forceinline void LinearStorage::copyTo(ChunkStorage& target)
-{
-	containos_todo("Implement copyTo");
-}
-
-} // end of containos
-
-#endif
