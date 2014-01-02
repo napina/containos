@@ -64,11 +64,13 @@ __forceinline void* LinearStorage::get(size_t offset)
 
 __forceinline void LinearStorage::copyTo(LinearStorage& target)
 {
+    target;
 	containos_todo("Implement copyTo");
 }
 
 __forceinline void LinearStorage::copyTo(ChunkStorage& target)
 {
+    target;
 	containos_todo("Implement copyTo");
 }
 

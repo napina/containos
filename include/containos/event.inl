@@ -55,8 +55,8 @@ protected:
     template<typename T,typename funcptr_t>
     __forceinline void unsubscribe(T* ptr, funcptr_t func)
     {
-        E::DelegateType newDelegate(ptr, func);
-        m_delegates.insert(newDelegate.GetMemento());
+        //E::DelegateType newDelegate(ptr, func);
+        //m_delegates.insert(newDelegate.GetMemento());
     }
 
     List<fastdelegate::DelegateMemento,ListGrowRule<4> > m_delegates;

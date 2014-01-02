@@ -31,8 +31,8 @@ namespace {
 
 struct Mallocator
 {
-    static void* alloc(size_t size, size_t align)   { return ::malloc(size); }
-    static void  dealloc(void* ptr)                 { ::free(ptr); }
+    static void* alloc(size_t size, size_t /*align*/)   { return ::malloc(size); }
+    static void  dealloc(void* ptr)                     { ::free(ptr); }
 };
 
 struct Complex
@@ -90,9 +90,9 @@ TEST_SUITE(Algorithm)
             [](int a, int b) -> bool {
                 return a == b;
             } );
-        EXPECT_EQUAL(list.size(), 6);
+        EXPECT_EQUAL(list.size(), 6U);
         list.resize(newEnd);
-        EXPECT_EQUAL(list.size(), 3);
+        EXPECT_EQUAL(list.size(), 3U);
         EXPECT_EQUAL(list[0], 1);
         EXPECT_EQUAL(list[1], 3);
         EXPECT_EQUAL(list[2], 2);

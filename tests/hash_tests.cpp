@@ -39,13 +39,13 @@ TEST_SUITE(Hash)
     TEST(Compiled32)
     {
         const c::uint32_t compiled = c::hash32("Apina");
-        EXPECT_EQUAL(compiled, 0x69c0613e);
+        EXPECT_EQUAL(compiled, 0x69c0613eu);
     }
 
     TEST(Generic32)
     {
         const c::uint32_t compiled = c::hash32("Apina", 5);
-        EXPECT_EQUAL(compiled, 0x69c0613e);
+        EXPECT_EQUAL(compiled, 0x69c0613eu);
     }
 
     TEST(CompiledVsDynamic32)
@@ -63,20 +63,20 @@ TEST_SUITE(Hash)
     {
         c::uint64_t compiled1 = c::hash64("", 0);
         c::uint64_t compiled2 = c::hash64("");
-        EXPECT_EQUAL(compiled1, 0xcbf29ce484222325);
-        EXPECT_EQUAL(compiled2, 0xcbf29ce484222325);
+        EXPECT_EQUAL(compiled1, 0xcbf29ce484222325u);
+        EXPECT_EQUAL(compiled2, 0xcbf29ce484222325u);
     }
 
     TEST(Compiled64)
     {
         const c::uint64_t compiled = c::hash64("Apina");
-        EXPECT_EQUAL(compiled, 0x91b452b50d03fd5e);
+        EXPECT_EQUAL(compiled, 0x91b452b50d03fd5eu);
     }
 
     TEST(Generic64)
     {
         const c::uint64_t compiled = c::hash64("Apina", 5);
-        EXPECT_EQUAL(compiled, 0x91b452b50d03fd5e);
+        EXPECT_EQUAL(compiled, 0x91b452b50d03fd5eu);
     }
 
     TEST(CompiledVsDynamic64)

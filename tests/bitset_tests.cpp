@@ -32,42 +32,42 @@ TEST_SUITE(BitSet)
 {
     TEST(BitCountForward32)
     {
-        EXPECT_EQUAL(c::bsf32(0xFFFFFFFF),0);
-        EXPECT_EQUAL(c::bsf32(0x00123100),8);
-        EXPECT_EQUAL(c::bsf32(0x200FF0F8),3);
-        EXPECT_EQUAL(c::bsf32(0x00100000),20);
-        EXPECT_EQUAL(c::bsf32(0x80000000),31);
-        EXPECT_EQUAL(c::bsf32(0x00000001),0);
+        EXPECT_EQUAL(c::bsf32(0xFFFFFFFF),0U);
+        EXPECT_EQUAL(c::bsf32(0x00123100),8U);
+        EXPECT_EQUAL(c::bsf32(0x200FF0F8),3U);
+        EXPECT_EQUAL(c::bsf32(0x00100000),20U);
+        EXPECT_EQUAL(c::bsf32(0x80000000),31U);
+        EXPECT_EQUAL(c::bsf32(0x00000001),0U);
     }
 
     TEST(BitCountReverse32)
     {
-        EXPECT_EQUAL(c::bsr32(0xFFFFFFFF),31);
-        EXPECT_EQUAL(c::bsr32(0x00123100),20);
-        EXPECT_EQUAL(c::bsr32(0x200FF0F8),29);
-        EXPECT_EQUAL(c::bsr32(0x00100000),20);
-        EXPECT_EQUAL(c::bsr32(0x80000000),31);
-        EXPECT_EQUAL(c::bsr32(0x00000001),0);
+        EXPECT_EQUAL(c::bsr32(0xFFFFFFFF),31u);
+        EXPECT_EQUAL(c::bsr32(0x00123100),20u);
+        EXPECT_EQUAL(c::bsr32(0x200FF0F8),29u);
+        EXPECT_EQUAL(c::bsr32(0x00100000),20u);
+        EXPECT_EQUAL(c::bsr32(0x80000000),31u);
+        EXPECT_EQUAL(c::bsr32(0x00000001),0u);
     }
 
     TEST(CountTrailingZeroes32)
     {
-        EXPECT_EQUAL(c::ctz32(0xFFFFFFFF),0);
-        EXPECT_EQUAL(c::ctz32(0x00123100),8);
-        EXPECT_EQUAL(c::ctz32(0x200FF0F8),3);
-        EXPECT_EQUAL(c::ctz32(0x00100000),20);
-        EXPECT_EQUAL(c::ctz32(0x80000000),31);
-        EXPECT_EQUAL(c::ctz32(0x00000001),0);
+        EXPECT_EQUAL(c::ctz32(0xFFFFFFFF),0u);
+        EXPECT_EQUAL(c::ctz32(0x00123100),8u);
+        EXPECT_EQUAL(c::ctz32(0x200FF0F8),3u);
+        EXPECT_EQUAL(c::ctz32(0x00100000),20u);
+        EXPECT_EQUAL(c::ctz32(0x80000000),31u);
+        EXPECT_EQUAL(c::ctz32(0x00000001),0u);
     }
 
     TEST(CountLeadingZeroes32)
     {
-        EXPECT_EQUAL(c::clz32(0xFFFFFFFF),0);
-        EXPECT_EQUAL(c::clz32(0x00123100),11);
-        EXPECT_EQUAL(c::clz32(0x200FF0F8),2);
-        EXPECT_EQUAL(c::clz32(0x00100000),11);
-        EXPECT_EQUAL(c::clz32(0x80000000),0);
-        EXPECT_EQUAL(c::clz32(0x00000001),31);
+        EXPECT_EQUAL(c::clz32(0xFFFFFFFF),0u);
+        EXPECT_EQUAL(c::clz32(0x00123100),11u);
+        EXPECT_EQUAL(c::clz32(0x200FF0F8),2u);
+        EXPECT_EQUAL(c::clz32(0x00100000),11u);
+        EXPECT_EQUAL(c::clz32(0x80000000),0u);
+        EXPECT_EQUAL(c::clz32(0x00000001),31u);
     }
 
     TEST(Empty32)
@@ -84,7 +84,7 @@ TEST_SUITE(BitSet)
     TEST(Acquire32)
     {
         c::bitset32 counter;
-        for(int i = 0; i < 32; ++i) {
+        for(uint32_t i = 0; i < 32; ++i) {
             uint32_t index = counter.acquire();
             EXPECT_EQUAL(index, i^31);
             EXPECT_EQUAL(counter.count(), i+1);
@@ -97,21 +97,21 @@ TEST_SUITE(BitSet)
         c::bitset32 counter;
         counter.set(20);
         EXPECT_TRUE(counter.isSet(20));
-        EXPECT_EQUAL(counter.count(), 1);
+        EXPECT_EQUAL(counter.count(), 1u);
         uint32_t index = counter.pop();
-        EXPECT_EQUAL(index, 20);
-        EXPECT_EQUAL(counter.count(), 0);
+        EXPECT_EQUAL(index, 20u);
+        EXPECT_EQUAL(counter.count(), 0u);
     }
 
     TEST(Set32)
     {
         c::bitset32 counter;
         counter.set(22);
-        EXPECT_EQUAL(counter.count(), 1);
+        EXPECT_EQUAL(counter.count(), 1u);
         EXPECT_TRUE(counter.isSet(22));
-        EXPECT_EQUAL(counter.mask(), 0x00400000);
-        EXPECT_TRUE(counter == 0x00400000);
-        EXPECT_TRUE(counter != 0);
+        EXPECT_EQUAL(counter.mask(), 0x00400000u);
+        EXPECT_TRUE(counter == 0x00400000u);
+        EXPECT_TRUE(counter != 0u);
     }
 
     TEST(Remove32)
@@ -119,11 +119,13 @@ TEST_SUITE(BitSet)
         c::bitset32 counter;
         uint32_t index0 = counter.acquire();
         uint32_t index1 = counter.acquire();
-        uint32_t index3 = counter.acquire();
-        EXPECT_EQUAL(counter.count(), 3);
+        uint32_t index2 = counter.acquire();
+        EXPECT_EQUAL(counter.count(), 3u);
+        EXPECT_TRUE(counter.isSet(index0));
         EXPECT_TRUE(counter.isSet(index1));
+        EXPECT_TRUE(counter.isSet(index2));
         counter.remove(index1);
-        EXPECT_EQUAL(counter.count(), 2);
+        EXPECT_EQUAL(counter.count(), 2u);
         EXPECT_FALSE(counter.isSet(index1));
     }
 
@@ -133,7 +135,7 @@ TEST_SUITE(BitSet)
         counter.set(4);
         counter.set(27);
         counter.set(10);
-        EXPECT_EQUAL(counter.mask(), 0x08000410);
+        EXPECT_EQUAL(counter.mask(), 0x08000410u);
     }
 
     TEST(Highest32)
@@ -142,48 +144,48 @@ TEST_SUITE(BitSet)
         counter.set(4);
         counter.set(27);
         counter.set(10);
-        EXPECT_EQUAL(counter.highest(), 27);
+        EXPECT_EQUAL(counter.highest(), 27u);
     }
 
 #if defined(CONTAINOS_ARCH64)
     TEST(BitCountReverse64)
     {
-        EXPECT_EQUAL(c::bsr64(0xFFFFFFFFFFFFFFFF),63);
-        EXPECT_EQUAL(c::bsr64(0x0012000000003100),52);
-        EXPECT_EQUAL(c::bsr64(0x2000000FF00000F8),61);
-        EXPECT_EQUAL(c::bsr64(0x0000001000000000),36);
-        EXPECT_EQUAL(c::bsr64(0x8000000000000000),63);
-        EXPECT_EQUAL(c::bsr64(0x0000000000000001),0);
+        EXPECT_EQUAL(c::bsr64(0xFFFFFFFFFFFFFFFF),63u);
+        EXPECT_EQUAL(c::bsr64(0x0012000000003100),52u);
+        EXPECT_EQUAL(c::bsr64(0x2000000FF00000F8),61u);
+        EXPECT_EQUAL(c::bsr64(0x0000001000000000),36u);
+        EXPECT_EQUAL(c::bsr64(0x8000000000000000),63u);
+        EXPECT_EQUAL(c::bsr64(0x0000000000000001),0u);
     }
 
     TEST(BitCountForward64)
     {
-        EXPECT_EQUAL(c::bsf64(0xFFFFFFFFFFFFFFFF),0);
-        EXPECT_EQUAL(c::bsf64(0x0012000000003100),8);
-        EXPECT_EQUAL(c::bsf64(0x2000000FF00000F8),3);
-        EXPECT_EQUAL(c::bsf64(0x0000001000000000),36);
-        EXPECT_EQUAL(c::bsf64(0x8000000000000000),63);
-        EXPECT_EQUAL(c::bsf64(0x0000000000000001),0);
+        EXPECT_EQUAL(c::bsf64(0xFFFFFFFFFFFFFFFF),0u);
+        EXPECT_EQUAL(c::bsf64(0x0012000000003100),8u);
+        EXPECT_EQUAL(c::bsf64(0x2000000FF00000F8),3u);
+        EXPECT_EQUAL(c::bsf64(0x0000001000000000),36u);
+        EXPECT_EQUAL(c::bsf64(0x8000000000000000),63u);
+        EXPECT_EQUAL(c::bsf64(0x0000000000000001),0u);
     }
 
     TEST(CountTrailingZeroes64)
     {
-        EXPECT_EQUAL(c::ctz64(0xFFFFFFFFFFFFFFFF),0);
-        EXPECT_EQUAL(c::ctz64(0x0012000000003100),8);
-        EXPECT_EQUAL(c::ctz64(0x2000000FF00000F8),3);
-        EXPECT_EQUAL(c::ctz64(0x0000001000000000),36);
-        EXPECT_EQUAL(c::ctz64(0x8000000000000000),63);
-        EXPECT_EQUAL(c::ctz64(0x0000000000000001),0);
+        EXPECT_EQUAL(c::ctz64(0xFFFFFFFFFFFFFFFF),0u);
+        EXPECT_EQUAL(c::ctz64(0x0012000000003100),8u);
+        EXPECT_EQUAL(c::ctz64(0x2000000FF00000F8),3u);
+        EXPECT_EQUAL(c::ctz64(0x0000001000000000),36u);
+        EXPECT_EQUAL(c::ctz64(0x8000000000000000),63u);
+        EXPECT_EQUAL(c::ctz64(0x0000000000000001),0u);
     }
 
     TEST(CountLeadingZeroes64)
     {
-        EXPECT_EQUAL(c::clz64(0xFFFFFFFFFFFFFFFF),0);
-        EXPECT_EQUAL(c::clz64(0x0012000000003100),11);
-        EXPECT_EQUAL(c::clz64(0x2000000FF00000F8),2);
-        EXPECT_EQUAL(c::clz64(0x0000001000000000),27);
-        EXPECT_EQUAL(c::clz64(0x8000000000000000),0);
-        EXPECT_EQUAL(c::clz64(0x0000000000000001),63);
+        EXPECT_EQUAL(c::clz64(0xFFFFFFFFFFFFFFFF),0u);
+        EXPECT_EQUAL(c::clz64(0x0012000000003100),11u);
+        EXPECT_EQUAL(c::clz64(0x2000000FF00000F8),2u);
+        EXPECT_EQUAL(c::clz64(0x0000001000000000),27u);
+        EXPECT_EQUAL(c::clz64(0x8000000000000000),0u);
+        EXPECT_EQUAL(c::clz64(0x0000000000000001),63u);
     }
 
     TEST(Empty64)
@@ -200,7 +202,7 @@ TEST_SUITE(BitSet)
     TEST(Acquire64)
     {
         c::bitset64 counter;
-        for(int i = 0; i < 64; ++i) {
+        for(uint64_t i = 0; i < 64; ++i) {
             uint64_t index = counter.acquire();
             EXPECT_EQUAL(index, i^63);
             EXPECT_EQUAL(counter.count(), i+1);
@@ -213,19 +215,19 @@ TEST_SUITE(BitSet)
         c::bitset64 counter;
         counter.set(47);
         EXPECT_TRUE(counter.isSet(47));
-        EXPECT_EQUAL(counter.count(), 1);
+        EXPECT_EQUAL(counter.count(), 1u);
         uint64_t index = counter.pop();
-        EXPECT_EQUAL(index, 47);
-        EXPECT_EQUAL(counter.count(), 0);
+        EXPECT_EQUAL(index, 47u);
+        EXPECT_EQUAL(counter.count(), 0u);
     }
 
     TEST(Set64)
     {
         c::bitset64 counter;
         counter.set(42);
-        EXPECT_EQUAL(counter.count(), 1);
+        EXPECT_EQUAL(counter.count(), 1u);
         EXPECT_TRUE(counter.isSet(42));
-        EXPECT_EQUAL(counter.mask(), 0x0000040000000000);
+        EXPECT_EQUAL(counter.mask(), 0x0000040000000000u);
     }
 
     TEST(Remove64)
@@ -233,11 +235,13 @@ TEST_SUITE(BitSet)
         c::bitset64 counter;
         uint64_t index0 = counter.acquire();
         uint64_t index1 = counter.acquire();
-        uint64_t index3 = counter.acquire();
-        EXPECT_EQUAL(counter.count(), 3);
+        uint64_t index2 = counter.acquire();
+        EXPECT_EQUAL(counter.count(), 3u);
+        EXPECT_TRUE(counter.isSet(index0));
         EXPECT_TRUE(counter.isSet(index1));
+        EXPECT_TRUE(counter.isSet(index2));
         counter.remove(index1);
-        EXPECT_EQUAL(counter.count(), 2);
+        EXPECT_EQUAL(counter.count(), 2u);
         EXPECT_FALSE(counter.isSet(index1));
     }
 
@@ -247,7 +251,7 @@ TEST_SUITE(BitSet)
         counter.set(4);
         counter.set(47);
         counter.set(30);
-        EXPECT_EQUAL(counter.mask(), 0x0000800040000010);
+        EXPECT_EQUAL(counter.mask(), 0x0000800040000010u);
     }
 
     TEST(Highest64)
@@ -256,7 +260,7 @@ TEST_SUITE(BitSet)
         counter.set(4);
         counter.set(47);
         counter.set(30);
-        EXPECT_EQUAL(counter.highest(), 47);
+        EXPECT_EQUAL(counter.highest(), 47u);
     }
 #endif
 }

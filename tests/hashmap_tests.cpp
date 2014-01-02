@@ -32,14 +32,14 @@ TEST_SUITE(HashMap)
     TEST(Invalid)
     {
         c::HashMap<c::uint32,int> map(100);
-        EXPECT_EQUAL(map.size(), 0);
+        EXPECT_EQUAL(map.size(), 0U);
     }
 
     TEST(Insert)
     {
         c::HashMap<c::uint32,int> map(100);
         map.insert(65, 11);
-        EXPECT_EQUAL(map.size(), 1);
+        EXPECT_EQUAL(map.size(), 1U);
         EXPECT_NOTEQUAL(map.find(65), map.end());
         EXPECT_EQUAL(*map.find(65), 11);
     }

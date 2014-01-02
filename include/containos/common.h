@@ -91,7 +91,7 @@ IN THE SOFTWARE.
 #define containos_placement_new7(ptr,t,a,b,c,d,e,f,g)   containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f,g)
 #define containos_placement_new8(ptr,t,a,b,c,d,e,f,g,h) containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f,g,h)
 #define containos_placement_copy(ptr,t,other)           containos::internal::placement_new<t,std::is_pod<t>::value>::copy(ptr,other)
-#define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,std::has_trivial_destructor<t>::value>::destroy(ptr)
+#define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,!std::has_trivial_destructor<t>::value>::destroy(ptr)
 //----------------------------------------------------------------------------
 
 // specialize this if you have type that cannot be moved around with memcpy
@@ -107,7 +107,7 @@ typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
 typedef unsigned int uint32_t;
 typedef unsigned long long uint64_t;
-typedef unsigned int char_t;
+typedef char char_t; // TODO change to uint16
 
 struct Mallocator
 {
@@ -155,7 +155,7 @@ struct placement_delete {
 };
 
 template<typename T>
-struct placement_delete<T,false> {
+struct placement_delete<T,true> {
     static void destroy(void* ptr)                              { reinterpret_cast<T*>(ptr)->~T(); }
 };
 
