@@ -22,6 +22,7 @@ IN THE SOFTWARE.
 
 =============================================================================*/
 #include "unitos/unitos.h"
+#if 0
 #include "containos/utf8.h"
 
 // http://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
@@ -77,3 +78,4 @@ TEST_SUITE(Utf8)
         }
     }
 }
+#endif
