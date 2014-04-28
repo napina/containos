@@ -53,8 +53,8 @@ class HashMapBase : protected Container<Allocator>
     typedef Container<Allocator> Base;
     typedef Allocator AllocatorType;
     typedef HashMapNode<Key,T> NodeType;
-    friend class const_iterator;
-    friend class iterator;
+    friend struct const_iterator;
+    friend struct iterator;
 public:
     typedef T ElementType;
     typedef Key KeyType;
@@ -78,6 +78,7 @@ public:
         bool operator!=(iterator const& other) const;
 
     private:
+        friend struct const_iterator;
         MapType* m_map;
         NodeType* m_node;
         uint32 m_bucketIndex;
