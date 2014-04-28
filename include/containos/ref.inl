@@ -29,6 +29,10 @@ IN THE SOFTWARE.
     friend class containos::Ref<ClassType>;\
     mutable SizeType m_refCount
 
+#define REF_STORAGE_BITS_IMPL(ClassType,SizeType,Bits)\
+    friend class containos::Ref<ClassType>;\
+    mutable SizeType m_refCount : Bits
+
 #define REF_DERIVED_IMPL(ClassType)\
     friend class containos::Ref<ClassType>;
 
