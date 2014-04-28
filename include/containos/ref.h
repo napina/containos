@@ -30,13 +30,15 @@ IN THE SOFTWARE.
 namespace containos {
 
 // add this to class header. this needs to be protected member to support derived access
-#define REF_STORAGE(ClassType,SizeType)     REF_STORAGE_IMPL(ClassType,SizeType)
+#define REF_STORAGE(ClassType,SizeType)             REF_STORAGE_IMPL(ClassType,SizeType)
+// add this to class header. this needs to be protected member to support derived access
+#define REF_STORAGE_BITS(ClassType,SizeType,Bits)   REF_STORAGE_BITS_IMPL(ClassType,SizeType,Bits)
 // add this to derived class
-#define REF_DERIVED(ClassType)              REF_DERIVED_IMPL(ClassType)
+#define REF_DERIVED(ClassType)                      REF_DERIVED_IMPL(ClassType)
 // add this to constructor
-#define REF_STORAGE_INIT()                  REF_STORAGE_INIT_IMPL()
+#define REF_STORAGE_INIT()                          REF_STORAGE_INIT_IMPL()
 // use this if you want to reset count
-#define REF_STORAGE_RESET()                 REF_STORAGE_RESET_IMPL()
+#define REF_STORAGE_RESET()                         REF_STORAGE_RESET_IMPL()
 
 // reference counted scoped pointer
 template<typename T>
