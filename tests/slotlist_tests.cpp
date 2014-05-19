@@ -27,21 +27,11 @@ IN THE SOFTWARE.
 
 namespace c = containos;
 
-namespace {
-
-struct Mallocator
-{
-    static void* alloc(size_t size, size_t /*align*/)   { return ::malloc(size); }
-    static void  dealloc(void* ptr)                     { ::free(ptr); }
-};
-
-}
-
 TEST_SUITE(SlotList)
 {
     TEST(Empty)
     {
-        c::SlotList<int,Mallocator> list;
+        c::SlotList<int,c::Mallocator> list;
         EXPECT_EQUAL(list.size(), 0);
     }
 #if 0

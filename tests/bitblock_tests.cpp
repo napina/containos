@@ -48,17 +48,17 @@ TEST_SUITE(BitBlock)
     TEST(Empty)
     {
         c::BitBlock<IntWrap> block;
-        EXPECT_EQUAL(block.size(), 0);
+        EXPECT_EQUAL(block.size(), 0u);
     }
 
     TEST(Insert)
     {
         c::BitBlock<IntWrap> block;
         size_t index = block.insert(3);
-        EXPECT_EQUAL(block.size(), 1);
+        EXPECT_EQUAL(block.size(), 1u);
         EXPECT_EQUAL(block[index], 3);
         index = block.insert(7);
-        EXPECT_EQUAL(block.size(), 2);
+        EXPECT_EQUAL(block.size(), 2u);
         EXPECT_EQUAL(block[index], 7);
     }
 
@@ -83,10 +83,10 @@ TEST_SUITE(BitBlock)
         c::BitBlock<IntWrap> block;
         size_t index;
         block.acquire(index) = 3;
-        EXPECT_EQUAL(block.size(), 1);
+        EXPECT_EQUAL(block.size(), 1u);
         EXPECT_EQUAL(block[index], 3);
         block.acquire(index) = 7;
-        EXPECT_EQUAL(block.size(), 2);
+        EXPECT_EQUAL(block.size(), 2u);
         EXPECT_EQUAL(block[index], 7);
     }
 
@@ -94,9 +94,9 @@ TEST_SUITE(BitBlock)
     {
         c::BitBlock<IntWrap> block;
         size_t index = block.insert(3);
-        EXPECT_EQUAL(block.size(), 1);
+        EXPECT_EQUAL(block.size(), 1u);
         block.remove(index);
-        EXPECT_EQUAL(block.size(), 0);
+        EXPECT_EQUAL(block.size(), 0u);
     }
 
     TEST(Clear)
@@ -105,9 +105,9 @@ TEST_SUITE(BitBlock)
         block.insert(3);
         block.insert(7);
         block.insert(4);
-        EXPECT_EQUAL(block.size(), 3);
+        EXPECT_EQUAL(block.size(), 3u);
         block.clear();
-        EXPECT_EQUAL(block.size(), 0);
+        EXPECT_EQUAL(block.size(), 0u);
     }
 
     TEST(Iterate)

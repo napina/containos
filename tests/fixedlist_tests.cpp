@@ -31,18 +31,18 @@ TEST_SUITE(FixedList)
     TEST(Empty)
     {
         c::FixedList<int,4> list;
-        EXPECT_EQUAL(list.size(), 0);
-        EXPECT_EQUAL(list.capasity(), 4);
+        EXPECT_EQUAL(list.size(), 0u);
+        EXPECT_EQUAL(list.capasity(), 4u);
     }
 
     TEST(Insert)
     {
         c::FixedList<int,4> list;
         list.insert(3);
-        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
         EXPECT_EQUAL(list[0], 3);
         list.insert(7);
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         EXPECT_EQUAL(list[1], 7);
     }
 
@@ -50,10 +50,10 @@ TEST_SUITE(FixedList)
     {
         c::FixedList<int,4> list;
         list.acquire() = 3;
-        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
         EXPECT_EQUAL(list[0], 3);
         list.acquire() = 7;
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         EXPECT_EQUAL(list[1], 7);
     }
 
@@ -61,9 +61,9 @@ TEST_SUITE(FixedList)
     {
         c::FixedList<int,4> list;
         list.insert(3);
-        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
         list.remove(0);
-        EXPECT_EQUAL(list.size(), 0);
+        EXPECT_EQUAL(list.size(), 0u);
     }
 
     TEST(Clear)
@@ -72,8 +72,8 @@ TEST_SUITE(FixedList)
         list.insert(3);
         list.insert(7);
         list.insert(4);
-        EXPECT_EQUAL(list.size(), 3);
+        EXPECT_EQUAL(list.size(), 3u);
         list.clear();
-        EXPECT_EQUAL(list.size(), 0);
+        EXPECT_EQUAL(list.size(), 0u);
     }
 }
