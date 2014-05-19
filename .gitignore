@@ -32,5 +32,4 @@
 *.opensdf
 
 # Filter folders
-build/vc10
-build/vc11
+build
