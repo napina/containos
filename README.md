@@ -15,6 +15,7 @@ Features
 - BitBlock : 32/64 bit fast memory block
 - Event : Multi delegate
 - Atomic : Atomic operations
+- Compile time hash (flv1a)
 
 
 TODO
