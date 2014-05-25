@@ -29,12 +29,6 @@ namespace c = containos;
 
 namespace {
 
-struct Mallocator
-{
-    static void* alloc(size_t size, size_t /*align*/)   { return ::malloc(size); }
-    static void  dealloc(void* ptr)                     { ::free(ptr); }
-};
-
 struct BaseClass
 {
     virtual ~BaseClass() {}

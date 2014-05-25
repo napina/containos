@@ -58,16 +58,16 @@ TEST_SUITE(UndoList)
     {
         int value = 100;
         c::UndoList<> list(10);
-        EXPECT_EQUAL(list.undoCount(), 0);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 0u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
         list.add<SetIntCommand>(&value, 23);
         EXPECT_EQUAL(value, 23);
-        EXPECT_EQUAL(list.undoCount(), 1);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 1u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
         list.undo();
         EXPECT_EQUAL(value, 100);
-        EXPECT_EQUAL(list.undoCount(), 0);
-        EXPECT_EQUAL(list.redoCount(), 1);
+        EXPECT_EQUAL(list.undoCount(), 0u);
+        EXPECT_EQUAL(list.redoCount(), 1u);
     }
 
     TEST(UndoRedo)
@@ -75,17 +75,17 @@ TEST_SUITE(UndoList)
         int value = 100;
         c::UndoList<> list(10);
         list.add<SetIntCommand>(&value, 23);
-        EXPECT_EQUAL(list.undoCount(), 1);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 1u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
         EXPECT_EQUAL(value, 23);
         list.undo();
-        EXPECT_EQUAL(list.undoCount(), 0);
-        EXPECT_EQUAL(list.redoCount(), 1);
+        EXPECT_EQUAL(list.undoCount(), 0u);
+        EXPECT_EQUAL(list.redoCount(), 1u);
         EXPECT_EQUAL(value, 100);
         list.redo();
         EXPECT_EQUAL(value, 23);
-        EXPECT_EQUAL(list.undoCount(), 1);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 1u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
     }
 
     TEST(UndoMultiple)
@@ -96,12 +96,12 @@ TEST_SUITE(UndoList)
             list.add<SetIntCommand>(&value, i);
         }
         EXPECT_EQUAL(value, 7);
-        EXPECT_EQUAL(list.undoCount(), 8);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 8u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
         list.undo(4);
         EXPECT_EQUAL(value, 3);
-        EXPECT_EQUAL(list.undoCount(), 4);
-        EXPECT_EQUAL(list.redoCount(), 4);
+        EXPECT_EQUAL(list.undoCount(), 4u);
+        EXPECT_EQUAL(list.redoCount(), 4u);
     }
 
     TEST(Clear)
@@ -110,8 +110,8 @@ TEST_SUITE(UndoList)
         c::UndoList<> list(10);
         list.add<SetIntCommand>(&value, 23);
         list.clear();
-        EXPECT_EQUAL(list.undoCount(), 0);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 0u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
         EXPECT_EQUAL(value, 23);
     }
 
@@ -125,11 +125,11 @@ TEST_SUITE(UndoList)
         EXPECT_EQUAL(value, 7);
         list.undo(4);
         EXPECT_EQUAL(value, 3);
-        EXPECT_EQUAL(list.undoCount(), 4);
-        EXPECT_EQUAL(list.redoCount(), 4);
+        EXPECT_EQUAL(list.undoCount(), 4u);
+        EXPECT_EQUAL(list.redoCount(), 4u);
         list.clearHistory();
-        EXPECT_EQUAL(list.undoCount(), 0);
-        EXPECT_EQUAL(list.redoCount(), 4);
+        EXPECT_EQUAL(list.undoCount(), 0u);
+        EXPECT_EQUAL(list.redoCount(), 4u);
     }
 
     TEST(ClearFuture)
@@ -142,11 +142,11 @@ TEST_SUITE(UndoList)
         EXPECT_EQUAL(value, 7);
         list.undo(4);
         EXPECT_EQUAL(value, 3);
-        EXPECT_EQUAL(list.undoCount(), 4);
-        EXPECT_EQUAL(list.redoCount(), 4);
+        EXPECT_EQUAL(list.undoCount(), 4u);
+        EXPECT_EQUAL(list.redoCount(), 4u);
         list.clearFuture();
-        EXPECT_EQUAL(list.undoCount(), 4);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 4u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
     }
 
     TEST(UndoMultipleAndDo)
@@ -157,15 +157,15 @@ TEST_SUITE(UndoList)
             list.add<SetIntCommand>(&value, i);
         }
         EXPECT_EQUAL(value, 7);
-        EXPECT_EQUAL(list.undoCount(), 8);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 8u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
         list.undo(4);
         EXPECT_EQUAL(value, 3);
-        EXPECT_EQUAL(list.undoCount(), 4);
-        EXPECT_EQUAL(list.redoCount(), 4);
+        EXPECT_EQUAL(list.undoCount(), 4u);
+        EXPECT_EQUAL(list.redoCount(), 4u);
         list.add<SetIntCommand>(&value, 50);
         EXPECT_EQUAL(value, 50);
-        EXPECT_EQUAL(list.undoCount(), 5);
-        EXPECT_EQUAL(list.redoCount(), 0);
+        EXPECT_EQUAL(list.undoCount(), 5u);
+        EXPECT_EQUAL(list.redoCount(), 0u);
     }
 }

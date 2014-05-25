@@ -52,49 +52,49 @@ TEST_SUITE(List)
 {
     TEST(Empty)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
-        EXPECT_EQUAL(list.size(), 0);
-        EXPECT_EQUAL(list.capasity(), 0);
+        c::List<IntWrap,c::ListGrowRule<0> > list;
+        EXPECT_EQUAL(list.size(), 0u);
+        EXPECT_EQUAL(list.capasity(), 0u);
     }
 
     TEST(Reserve)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
-        EXPECT_EQUAL(list.size(), 0);
-        EXPECT_EQUAL(list.capasity(), 0);
+        c::List<IntWrap,c::ListGrowRule<0> > list;
+        EXPECT_EQUAL(list.size(), 0u);
+        EXPECT_EQUAL(list.capasity(), 0u);
         list.reserve(10);
-        EXPECT_EQUAL(list.size(), 0);
-        EXPECT_EQUAL(list.capasity(), 10);
+        EXPECT_EQUAL(list.size(), 0u);
+        EXPECT_EQUAL(list.capasity(), 10u);
     }
 
     TEST(ReserveMore)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
-        EXPECT_EQUAL(list.size(), 0);
-        EXPECT_EQUAL(list.capasity(), 0);
+        c::List<IntWrap,c::ListGrowRule<0> > list;
+        EXPECT_EQUAL(list.size(), 0u);
+        EXPECT_EQUAL(list.capasity(), 0u);
         list.reserve(1);
         list.insert(13);
-        EXPECT_EQUAL(list.size(), 1);
-        EXPECT_EQUAL(list.capasity(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
+        EXPECT_EQUAL(list.capasity(), 1u);
         list.reserve(2);
-        EXPECT_EQUAL(list.size(), 1);
-        EXPECT_EQUAL(list.capasity(), 2);
+        EXPECT_EQUAL(list.size(), 1u);
+        EXPECT_EQUAL(list.capasity(), 2u);
         EXPECT_EQUAL(list[0], 13);
     }
 
     TEST(Copy)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(3);
         list.insert(3);
         list.insert(5);
         list.insert(15);
-        c::List<IntWrap,c::ListGrowRule<0>> list2;
+        c::List<IntWrap,c::ListGrowRule<0> > list2;
         list2.reserve(4);
         list2.insert(9);
         list2.insert(13);
         list2 = list;
-        EXPECT_EQUAL(list2.size(), 3);
+        EXPECT_EQUAL(list2.size(), 3u);
         EXPECT_EQUAL(list2[0], 3);
         EXPECT_EQUAL(list2[1], 5);
         EXPECT_EQUAL(list2[2], 15);
@@ -102,28 +102,28 @@ TEST_SUITE(List)
 
     TEST(Insert)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(2);
         list.insert(3);
-        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
         EXPECT_EQUAL(list[0], 3);
         list.insert(7);
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         EXPECT_EQUAL(list[1], 7);
     }
 
     TEST(InsertOther)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(3);
         list.insert(3);
         list.insert(5);
-        c::List<IntWrap,c::ListGrowRule<0>> list2;
+        c::List<IntWrap,c::ListGrowRule<0> > list2;
         list2.reserve(4);
         list2.insert(9);
         list2.insert(list);
         list2.insert(13);
-        EXPECT_EQUAL(list2.size(), 4);
+        EXPECT_EQUAL(list2.size(), 4u);
         EXPECT_EQUAL(list2[0], 9);
         EXPECT_EQUAL(list2[1], 3);
         EXPECT_EQUAL(list2[2], 5);
@@ -132,59 +132,59 @@ TEST_SUITE(List)
 
     TEST(Acquire)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(2);
         list.acquire() = 3;
-        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
         EXPECT_EQUAL(list[0], 3);
         list.acquire() = 7;
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         EXPECT_EQUAL(list[1], 7);
     }
 
     TEST(Remove)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(2);
         list.insert(3);
-        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
         list.remove(0);
-        EXPECT_EQUAL(list.size(), 0);
+        EXPECT_EQUAL(list.size(), 0u);
     }
 
     TEST(Clear)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(3);
         list.insert(3);
         list.insert(7);
         list.insert(4);
-        EXPECT_EQUAL(list.size(), 3);
+        EXPECT_EQUAL(list.size(), 3u);
         list.clear();
-        EXPECT_EQUAL(list.size(), 0);
+        EXPECT_EQUAL(list.size(), 0u);
     }
 
     TEST(ResizeToSmaller)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(2);
         list.insert(3);
         list.insert(5);
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         list.resize(1);
-        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
         EXPECT_EQUAL(list[0], 3);
     }
 
     TEST(ResizeToBigger)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(2);
         list.insert(3);
         list.insert(5);
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         list.resize(3);
-        EXPECT_EQUAL(list.size(), 3);
+        EXPECT_EQUAL(list.size(), 3u);
         EXPECT_EQUAL(list[0], 3);
         EXPECT_EQUAL(list[1], 5);
         EXPECT_EQUAL(list[2], 33);
@@ -192,24 +192,24 @@ TEST_SUITE(List)
 
     TEST(ResizeToZero)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(2);
         list.insert(3);
         list.insert(5);
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         list.resize(0);
-        EXPECT_EQUAL(list.size(), 0);
+        EXPECT_EQUAL(list.size(), 0u);
     }
 
     TEST(ResizeNoCopy)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(2);
         list.insert(3);
         list.insert(5);
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         list.resizeNoCopy(4);
-        EXPECT_EQUAL(list.size(), 4);
+        EXPECT_EQUAL(list.size(), 4u);
         EXPECT_EQUAL(list[0], 33);
         EXPECT_EQUAL(list[1], 33);
         EXPECT_EQUAL(list[2], 33);
@@ -218,28 +218,28 @@ TEST_SUITE(List)
 
     TEST(ResizeWithIterator)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(5);
         list.insert(1);
         list.insert(2);
         list.insert(3);
         list.insert(4);
-        EXPECT_EQUAL(list.size(), 4);
-        c::List<IntWrap,c::ListGrowRule<0>>::iterator it = list.begin();
+        EXPECT_EQUAL(list.size(), 4u);
+        c::List<IntWrap,c::ListGrowRule<0> >::iterator it = list.begin();
         list.resize(++it);
-        EXPECT_EQUAL(list.size(), 1);
+        EXPECT_EQUAL(list.size(), 1u);
         EXPECT_EQUAL(list[0], 1);
     }
 
     TEST(Iterate)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(3);
         list.insert(0);
         list.insert(1);
         list.insert(2);
-        c::List<IntWrap,c::ListGrowRule<0>>::iterator it = list.begin();
-        c::List<IntWrap,c::ListGrowRule<0>>::iterator end = list.end();
+        c::List<IntWrap,c::ListGrowRule<0> >::iterator it = list.begin();
+        c::List<IntWrap,c::ListGrowRule<0> >::iterator end = list.end();
         int i = 0;
         for( ; it != end; ++it, ++i ) {
             EXPECT_EQUAL(*it, i);
@@ -249,13 +249,13 @@ TEST_SUITE(List)
 
     TEST(ConstIterate)
     {
-        c::List<IntWrap,c::ListGrowRule<0>> list;
+        c::List<IntWrap,c::ListGrowRule<0> > list;
         list.reserve(3);
         list.insert(0);
         list.insert(1);
         list.insert(2);
-        c::List<IntWrap,c::ListGrowRule<0>>::const_iterator it = list.begin();
-        c::List<IntWrap,c::ListGrowRule<0>>::const_iterator end = list.end();
+        c::List<IntWrap,c::ListGrowRule<0> >::const_iterator it = list.begin();
+        c::List<IntWrap,c::ListGrowRule<0> >::const_iterator end = list.end();
         int i = 0;
         for( ; it != end; ++it, ++i ) {
             EXPECT_EQUAL(*it, i);
@@ -273,7 +273,7 @@ TEST_SUITE(List)
         c::List<IntWrap>::iterator it = list.begin();
         ++it;
         list.remove(it);
-        EXPECT_EQUAL(list.size(), 2);
+        EXPECT_EQUAL(list.size(), 2u);
         EXPECT_EQUAL(list[0], 0);
         EXPECT_EQUAL(list[1], 2);
     }
@@ -284,8 +284,8 @@ TEST_SUITE(List)
         list.insert(0);
         list.insert(1);
         list.insert(2);
-        EXPECT_EQUAL(list.size(), 3);
-        EXPECT_EQUAL(list.capasity(), 8);
+        EXPECT_EQUAL(list.size(), 3u);
+        EXPECT_EQUAL(list.capasity(), 8u);
         EXPECT_EQUAL(list[0], 0);
         EXPECT_EQUAL(list[1], 1);
         EXPECT_EQUAL(list[2], 2);
