@@ -90,7 +90,7 @@ __forceinline uint32_t bitset32::acquire()
 
 __forceinline uint32_t bitset32::pop()
 {
-    uint32_t index =  highest();
+    uint32_t index = highest();
     m_mask |= (1U << index);
     return index;
 }
