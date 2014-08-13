@@ -26,15 +26,15 @@ IN THE SOFTWARE.
 #define containos_ref_inl
 
 #define REF_STORAGE_IMPL(ClassType,SizeType)\
-    friend class containos::Ref<ClassType>;\
+    friend struct containos::internal::modify_reference<ClassType,false>;\
     mutable SizeType m_refCount
 
 #define REF_STORAGE_BITS_IMPL(ClassType,SizeType,Bits)\
-    friend class containos::Ref<ClassType>;\
+    friend struct containos::internal::modify_reference<ClassType,false>;\
     mutable SizeType m_refCount : Bits
 
 #define REF_DERIVED_IMPL(ClassType)\
-    friend class containos::Ref<ClassType>;
+    friend struct containos::internal::modify_reference<ClassType,false>;
 
 #define REF_STORAGE_INIT_IMPL()\
     m_refCount(0)
@@ -43,6 +43,33 @@ IN THE SOFTWARE.
     m_refCount = 0
 
 namespace containos {
+namespace internal {
+    struct true_type  { enum { value = true  }; };
+    struct false_type { enum { value = false }; };
+
+    template<typename T>
+    struct has_reference_override
+    {
+        template<typename C> static true_type test(decltype(&T::addReference));
+        template<typename C> static false_type test(...);
+        typedef decltype(test<T>(nullptr)) type;
+        static const bool value = type::value;
+    };
+
+    template<typename T,bool Override>
+    struct modify_reference
+    {
+        inline static void add(T* ptr)         { ++(ptr->m_refCount); }
+        inline static uint32_t remove(T* ptr)  { return --(ptr->m_refCount); }
+    };
+
+    template<typename T>
+    struct modify_reference<T,true>
+    {
+        inline static void add(T* ptr)         { ptr->addReference(); }
+        inline static uint32_t remove(T* ptr)  { return ptr->removeReference(); }
+    };
+}
 
 template<typename T>
 __forceinline Ref<T>::~Ref()
@@ -63,28 +90,28 @@ __forceinline Ref<T>::Ref(nullptr_t)
 }
 
 template<typename T>
-__forceinline Ref<T>::Ref(T const* ptr)
+__forceinline Ref<T>::Ref(T* ptr)
 {
     set(ptr);
 }
 
 template<typename T>
-__forceinline Ref<T>::Ref(Ref<T> const& handle)
+__forceinline Ref<T>::Ref(Ref<T>& other)
 {
-    set(handle.m_mem);
+    set(other.m_mem);
 }
 
 template<typename T>
-__forceinline Ref<T>& Ref<T>::operator=(T const* ptr)
+__forceinline Ref<T>& Ref<T>::operator=(T* ptr)
 {
     reset(ptr);
     return *this;
 }
 
 template<typename T>
-__forceinline Ref<T>& Ref<T>::operator=(Ref<T> const& handle)
+__forceinline Ref<T>& Ref<T>::operator=(Ref<T>& other)
 {
-    reset(handle.m_mem);
+    reset(other.m_mem);
     return *this;
 }
 
@@ -193,7 +220,7 @@ __forceinline T2* Ref<T>::cast()
 }
 
 template<typename T>
-__forceinline void Ref<T>::reset(T const* ptr)
+__forceinline void Ref<T>::reset(T* ptr)
 {
     removeRef();
     set(ptr);
@@ -208,11 +235,12 @@ __forceinline T* Ref<T>::release()
 }
 
 template<typename T>
-__forceinline void Ref<T>::set(T const* ptr)
+__forceinline void Ref<T>::set(T* ptr)
 {
     m_mem = const_cast<T*>(ptr);
     if(m_mem) {
-        ++(m_mem->m_refCount);
+        typedef internal::has_reference_override<T> has_override;
+        internal::modify_reference<T,has_override::value>::add(m_mem);
     }
 }
 
@@ -220,8 +248,9 @@ template<typename T>
 __forceinline void Ref<T>::removeRef()
 {
     if(m_mem) {
-        --(m_mem->m_refCount);
-        if(m_mem->m_refCount == 0) {
+        typedef internal::has_reference_override<T> has_override;
+        uint32_t newCount = internal::modify_reference<T,has_override::value>::remove(m_mem);
+        if(newCount == 0) {
             containos_delete(m_mem);
         }
         m_mem = nullptr;

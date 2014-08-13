@@ -29,6 +29,9 @@ IN THE SOFTWARE.
 
 namespace containos {
 
+// Reference counted smart pointer. Add storage macros to classes or use override by defining
+// void addReference() and uint32_t removeReference()
+
 // add this to class header. this needs to be protected member to support derived access
 #define REF_STORAGE(ClassType,SizeType)             REF_STORAGE_IMPL(ClassType,SizeType)
 // add this to class header. this needs to be protected member to support derived access
@@ -48,11 +51,11 @@ public:
     ~Ref();
     Ref();
     Ref(nullptr_t);
-    Ref(T const* __restrict ptr);
-    Ref(Ref<T> const& handle);
+    Ref(T* __restrict ptr);
+    explicit Ref(Ref<T>& other);
 
-    Ref<T>& operator=(T const* ptr);
-    Ref<T>& operator=(Ref<T> const& handle);
+    Ref<T>& operator=(T* ptr);
+    Ref<T>& operator=(Ref<T>& other);
     Ref<T>& operator=(nullptr_t);
     bool operator==(Ref<T> const& other) const;
     bool operator!=(Ref<T> const& other) const;
@@ -73,12 +76,12 @@ public:
 
     template<typename T2> T2* cast();
 
-    void reset(T const* ptr = nullptr);
+    void reset(T* ptr = nullptr);
     /// doesn't delete
     T* release();
 
 private:
-    void set(T const* ptr);
+    void set(T* ptr);
     void removeRef();
 
 private:

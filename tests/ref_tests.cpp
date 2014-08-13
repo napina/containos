@@ -59,6 +59,21 @@ private:
     REF_DERIVED(DerivedClass);
 };
 
+struct OverrideClass
+{
+    OverrideClass()
+        : m_count(0)
+    {
+    }
+
+    void addReference()         { ++m_count; }
+    uint32_t removeReference()  { return --m_count; }
+    uint32_t count()            { return m_count; }
+
+protected:
+    int m_count;
+};
+
 }
 
 TEST_SUITE(Ref)
@@ -102,6 +117,19 @@ TEST_SUITE(Ref)
         EXPECT_FALSE(ptr == nullptr);
         EXPECT_TRUE(ptr != nullptr);
         EXPECT_FALSE(ptr.get() == nullptr);
+        ptr = nullptr;
+        EXPECT_FALSE(ptr.isValid());
+    }
+
+    TEST(CreateOverride)
+    {
+        c::Ref<OverrideClass> ptr;
+        ptr = new OverrideClass();
+        EXPECT_TRUE(ptr.isValid());
+        EXPECT_FALSE(ptr == nullptr);
+        EXPECT_TRUE(ptr != nullptr);
+        EXPECT_FALSE(ptr.get() == nullptr);
+        EXPECT_EQUAL(ptr->count(), 1u);
         ptr = nullptr;
         EXPECT_FALSE(ptr.isValid());
     }
