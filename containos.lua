@@ -1,18 +1,17 @@
-project "containos_unittest"
-	uuid "135746F6-9F4A-4289-A0B8-B7391F959B1D"
-	kind "ConsoleApp"
+project "containos"
+	uuid "C9A550D0-4F61-435F-935F-AB95E86B3D53"
+	kind "StaticLib"
 	language "C++"
-	files {
-	    "include/containos/*.h",
-	    "include/containos/*.inl",
-		"tests/*.h",
-		"tests/*.cpp",
+	files { 
+		"include/**.h",
+		"include/**.inl",
+		"src/*.h",
+		"src/*.cpp",
 	}
-	includedirs { "include", "../unitos/include" }
-	links { "containos", "unitos" }
+	includedirs { "include", "../reflectos/include" }
 	objdir( "build/" .. _ACTION )
 	location( "build/" .. _ACTION )
-	targetdir( "build/" .. _ACTION )
+	targetdir "lib"
 	targetname "%{prj.name}_%{cfg.platform}"
 
 	flags { "FatalWarnings", "NoBufferSecurityCheck", "NoEditAndContinue", "NoIncrementalLink", "NoPCH", "NoRTTI" }
@@ -28,6 +27,3 @@ project "containos_unittest"
 		flags { "NoRuntimeChecks" }
 		optimize "Speed"
 		targetsuffix "_r"
-
-	configuration { "vs*"}
-		postbuildcommands { "\"$(TargetPath)\"" }

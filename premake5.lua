@@ -4,5 +4,6 @@ solution "containos"
 	platforms { "x32", "x64" }
 	startproject "containos_unittest"
 
+	include "containos.lua"
 	include "containos_unittest.lua"
 	include "../unitos/unitos.lua"
