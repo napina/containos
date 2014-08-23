@@ -31,15 +31,19 @@ IN THE SOFTWARE.
 #if defined(__linux__) && defined(__ELF__)
 #   define CONTAINOS_LINUX
 #   define CONTAINOS_ARCH32
+#   define CONTAINOS_WCHAR_IS uint32_t
 #elif defined(__APPLE__) && defined(__MACH__)
 #   define CONTAINOS_MACOSX
 #   define CONTAINOS_ARCH32
+#   define CONTAINOS_WCHAR_IS uint32_t
 #elif defined(_WIN64) || defined(_M_X64)
 #   define CONTAINOS_WINDOWS
 #   define CONTAINOS_ARCH64
+#   define CONTAINOS_WCHAR_IS uint16_t
 #elif defined(_WIN32) || defined(_M_IX86)
 #   define CONTAINOS_WINDOWS
 #   define CONTAINOS_ARCH32
+#   define CONTAINOS_WCHAR_IS uint16_t
 #endif
 
 #define containos_tostring_impl(x)      #x
@@ -90,7 +94,7 @@ IN THE SOFTWARE.
 #define containos_placement_new6(ptr,t,a,b,c,d,e,f)     containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f)
 #define containos_placement_new7(ptr,t,a,b,c,d,e,f,g)   containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f,g)
 #define containos_placement_new8(ptr,t,a,b,c,d,e,f,g,h) containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f,g,h)
-#define containos_placement_copy(ptr,t,other)           containos::internal::placement_new<t,std::is_pod<t>::value>::copy(ptr,other)
+#define containos_placement_copy(dest,t,src)            containos::internal::placement_new<t,std::is_pod<t>::value>::copy(dest,src)
 #define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,!std::has_trivial_destructor<t>::value>::destroy(ptr)
 //----------------------------------------------------------------------------
 
@@ -107,7 +111,6 @@ typedef unsigned char uint8_t;
 typedef unsigned short uint16_t;
 typedef unsigned int uint32_t;
 typedef unsigned long long uint64_t;
-typedef char char_t; // TODO change to uint16
 
 struct Mallocator
 {
@@ -144,8 +147,8 @@ struct placement_new<T,false> {
     template<typename A, typename B, typename C, typename D, typename E, typename F, typename G, typename H>
     static T* create(void* ptr,A a,B b,C c,D d,E e,F f,G g,H h) { return ::new (ptr) T(a,b,c,d,e,f,g,h); }
 
-    static T* copy(void* ptr, T& other)                         { return ::new (ptr) T(other); }
-    static T* copy(void* ptr, T const& other)                   { return ::new (ptr) T(other); }
+    static T* copy(void* dest, T& src)                          { return ::new (dest) T(src); }
+    static T* copy(void* dest, T const& src)                    { return ::new (dest) T(src); }
 };
 //----------------------------------------------------------------------------
 
