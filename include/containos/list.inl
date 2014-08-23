@@ -156,6 +156,19 @@ __forceinline void List<T,GrowRule,Allocator>::removeLast()
 }
 
 template<typename T,typename GrowRule,typename Allocator>
+__forceinline bool List<T,GrowRule,Allocator>::pop(T& result)
+{
+    if(m_size > 0) {
+        --m_size;
+        containos_placement_delete(&result, T);
+        containos_placement_copy(&result, T, m_mem[m_size]);
+        containos_placement_delete(&m_mem[m_size], T);
+        return true;
+    }
+    return false;
+}
+
+template<typename T,typename GrowRule,typename Allocator>
 inline void List<T,GrowRule,Allocator>::resize(size_t newSize)
 {
     T* newMem = nullptr;

@@ -152,6 +152,22 @@ TEST_SUITE(List)
         EXPECT_EQUAL(list.size(), 0u);
     }
 
+    TEST(Pop)
+    {
+        c::List<IntWrap,c::ListGrowRule<0> > list;
+        list.reserve(2);
+        list.insert(3);
+        list.insert(7);
+        EXPECT_EQUAL(list.size(), 2u);
+        IntWrap result = 1;
+        EXPECT_TRUE(list.pop(result));
+        EXPECT_EQUAL(result, 7);
+        EXPECT_EQUAL(list.size(), 1u);
+        EXPECT_TRUE(list.pop(result));
+        EXPECT_EQUAL(result, 3);
+        EXPECT_EQUAL(list.size(), 0u);
+    }
+
     TEST(Clear)
     {
         c::List<IntWrap,c::ListGrowRule<0> > list;

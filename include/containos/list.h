@@ -60,6 +60,7 @@ public:
     void remove(size_t index);
     void remove(iterator& ite);
     void removeLast();
+    bool pop(T& result);
 
     void resize(size_t newSize);
     void resize(iterator& newEnd);
