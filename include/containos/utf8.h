@@ -25,62 +25,93 @@ IN THE SOFTWARE.
 #ifndef containos_utf8_h
 #define containos_utf8_h
 
-#include "containos/container.h"
+#include "containos/common.h"
+#include "containos/allocator.h"
 
 namespace containos {
 
 // Utf8 container
-template<typename Allocator=Mallocator>
-class Utf8 : protected Container<Allocator>
+class Utf8
 {
-    typedef Container<Allocator> Base;
 public:
-    struct iterator {
-        bool operator==(iterator const& other) const;
-        bool operator!=(iterator const& other) const;
-        char_t operator*() const;
-        void operator++();
-    };
     struct const_iterator {
+        const_iterator(uint8_t* ptr);
         bool operator==(const_iterator const& other) const;
         bool operator!=(const_iterator const& other) const;
-        char_t operator*() const;
+        uint8_t const* ptr() const;
+        uint32_t operator*() const;
         void operator++();
+    private:
+        uint8_t* m_ptr;
     };
 
     ~Utf8();
     Utf8();
+    Utf8(Utf8 const& other);
+    explicit Utf8(char const* str, size_t length);
+    explicit Utf8(wchar_t const* str, size_t length);
     explicit Utf8(uint8_t const* str, size_t byteCount);
     explicit Utf8(uint16_t const* str, size_t byteCount);
-    explicit Utf8(uint32_t const* str, size_t byteCount);
-    explicit Utf8(wchar_t const* wstr, size_t length);
+    explicit Utf8(uint32_t const* str, size_t length);
+    template<size_t Count> Utf8(char const (&str)[Count]);
+    template<size_t Count> Utf8(wchar_t const (&str)[Count]);
 
-    template<typename Allocator2> Utf8(Utf8<Allocator2> const& other);
-    template<typename Allocator2> void operator=(Utf8<Allocator2> const& other);
-    void operator=(Utf8<Allocator> const& other);
+    void reserve(size_t capasity);
+    void fix(uint8_t replacement);
 
+    void set(Utf8 const& other);
+    void set(char const* str);
+    void set(char const* str, size_t length);
+    void set(wchar_t const* str);
+    void set(wchar_t const* str, size_t length);
+    void set(uint8_t const* str);
     void set(uint8_t const* str, size_t byteCount);
+    void set(uint16_t const* str);
     void set(uint16_t const* str, size_t byteCount);
-    void set(uint32_t const* str, size_t byteCount);
-    void set(wchar_t const* wstr, size_t length);
+    void set(uint32_t const* str);
+    void set(uint32_t const* str, size_t length);
+    template<size_t Count> void set(char const (&str)[Count]);
+    template<size_t Count> void set(wchar_t const (&str)[Count]);
 
-    iterator begin();
-    iterator end();
+    void append(uint32_t ch);
+    void append(Utf8 const& other);
+    void append(char const* str);
+    void append(char const* str, size_t length);
+    void append(wchar_t const* str);
+    void append(wchar_t const* str, size_t length);
+    void append(uint8_t const* str);
+    void append(uint8_t const* str, size_t byteCount);
+    void append(uint16_t const* str);
+    void append(uint16_t const* str, size_t byteCount);
+    void append(uint32_t const* str);
+    void append(uint32_t const* str, size_t length);
+    template<size_t Count> void append(char const (&str)[Count]);
+    template<size_t Count> void append(wchar_t const (&str)[Count]);
+    void terminate();
+
     const_iterator begin() const;
     const_iterator end() const;
+    const_iterator findFirst(uint32_t ch) const;
+    const_iterator findLast(uint32_t ch) const;
+    Utf8 substring(const_iterator begin, const_iterator end) const;
+    Utf8 substring(const_iterator end) const;
 
-    char_t& operator[](size_t index);
-    char_t operator[](size_t index) const;
-    uint8_t const* mem() const;
-    size_t size() const;
+    uint32_t operator[](size_t index) const;
+    uint8_t const* data() const;
+    size_t dataSize() const;
+    size_t length() const;
+    bool isValid() const;
 
 private:
-    uint8_t* m_mem;
-    size_t m_size;
+    void destruct();
+
+    struct Buffer;
+    Buffer* m_buffer;
+    size_t m_length;
 };
 
 } // end of containos
 
-//#include "containos/utf8.inl"
+#include "containos/utf8.inl"
 
 #endif

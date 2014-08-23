@@ -22,324 +22,157 @@ IN THE SOFTWARE.
 
 =============================================================================*/
 #pragma once
-#ifndef containos_list_inl
-#define containos_list_inl
+#ifndef containos_utf8_inl
+#define containos_utf8_inl
 
-#pragma warning(disable:4127)
+#include "containos/utfutils.h"
 
 namespace containos {
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline List<T,GrowRule,Allocator>::~List()
+struct Utf8::Buffer
 {
-    clearAndFree();
+    uint32_t m_refCount;
+    uint32_t m_capasity;
+    uint8_t m_data[1];
+};
+
+inline Utf8::const_iterator::const_iterator(uint8_t* ptr)
+    : m_ptr(ptr)
+{   
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline List<T,GrowRule,Allocator>::List()
-    : Base()
-    , m_mem(nullptr)
-    , m_size(0)
-    , m_capasity(0)
+inline bool Utf8::const_iterator::operator==(const_iterator const& other) const
 {
+    return m_ptr == other.m_ptr;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline List<T,GrowRule,Allocator>::List(size_t capasity)
-    : Base()
-    , m_mem(nullptr)
-    , m_size(0)
-    , m_capasity(0)
+__forceinline bool Utf8::const_iterator::operator!=(const_iterator const& other) const
 {
-    reserve(capasity);
+    return m_ptr != other.m_ptr;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-template<typename Allocator2, typename GrowRule2>
-inline List<T,GrowRule,Allocator>::List(List<T,GrowRule2,Allocator2> const& other)
-    : Base()
-    , m_mem(nullptr)
-    , m_size(0)
-    , m_capasity(0)
+__forceinline uint8_t const* Utf8::const_iterator::ptr() const
 {
-    copy(other);
+    return m_ptr;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::operator=(List<T,GrowRule,Allocator> const& other)
+__forceinline uint32_t Utf8::const_iterator::operator*() const
 {
-    clearAndFree();
-    copy(other);
+    const uint32_t value = 5;//extractUtfCharacter(m_ptr);
+    return value;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-template<typename Allocator2, typename GrowRule2>
-__forceinline void List<T,GrowRule,Allocator>::operator=(List<T,GrowRule2,Allocator2> const& other)
+__forceinline void Utf8::const_iterator::operator++()
 {
-    clearAndFree();
-    copy(other);
+    ++m_ptr;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T& List<T,GrowRule,Allocator>::acquire()
+__forceinline Utf8::~Utf8()
 {
-    if(GrowRule::enabled && m_size >= m_capasity) {
-        reserve(m_capasity + GrowRule::count);
-    }
-    containos_assert(m_size < m_capasity);
-    containos_placement_new(&m_mem[m_size], T);
-    return m_mem[m_size++];
+    destruct();
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::insert(T& item)
+__forceinline Utf8::Utf8()
 {
-    if(GrowRule::enabled && m_size >= m_capasity) {
-        reserve(m_capasity + GrowRule::count);
-    }
-    containos_assert(m_size < m_capasity);
-    containos_placement_copy(&m_mem[m_size], T, item);
-    ++m_size;
+    m_buffer = nullptr;
+    m_length = 0;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::insert(T const& item)
+__forceinline Utf8::Utf8(char const* str, size_t length)
 {
-    if(GrowRule::enabled && m_size >= m_capasity) {
-        reserve(m_capasity + GrowRule::count);
-    }
-    containos_assert(m_size < m_capasity);
-    containos_placement_copy(&m_mem[m_size], T, item);
-    ++m_size;
+    m_buffer = nullptr;
+    m_length = 0;
+    set(str, length);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-template<typename Allocator2, typename GrowRule2>
-inline void List<T,GrowRule,Allocator>::insert(List<T,GrowRule2,Allocator2> const& other)
+__forceinline Utf8::Utf8(wchar_t const* str, size_t length)
 {
-    size_t count = other.size();
-    if(GrowRule::enabled && (m_size + count) >= m_capasity) {
-        reserve(m_capasity + count + GrowRule::count);
-    }
-    containos_assert((m_size + count) <= m_capasity);
-    for(size_t i = 0; i < count; ++i) {
-        containos_placement_copy(&m_mem[m_size++], T, other[i]);
-    }
+    m_buffer = nullptr;
+    m_length = 0;
+    set(str, length);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::remove(size_t index)
+__forceinline Utf8::Utf8(uint8_t const* str, size_t byteCount)
 {
-    containos_assert(index < m_size);
-    containos_placement_delete(&m_mem[index], T);
-    --m_size;
-    //m_mem[index] = m_mem[m_size];
-    containos_memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
+    m_buffer = nullptr;
+    m_length = 0;
+    set(str, byteCount);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::remove(iterator& ite)
+__forceinline Utf8::Utf8(uint16_t const* str, size_t byteCount)
 {
-    containos_assert(ite != end());
-    ptrdiff_t index = ite - m_mem;
-    containos_placement_delete(&m_mem[index], T);
-    --m_size;
-    containos_memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
+    m_buffer = nullptr;
+    m_length = 0;
+    set(str, byteCount);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::removeLast()
+__forceinline Utf8::Utf8(uint32_t const* str, size_t length)
 {
-    containos_assert(m_size > 0);
-    --m_size;
-    containos_placement_delete(&m_mem[m_size], T);
+    m_buffer = nullptr;
+    m_length = 0;
+    set(str, length);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-inline void List<T,GrowRule,Allocator>::resize(size_t newSize)
+template<size_t Count> __forceinline Utf8::Utf8(char const (&str)[Count])
 {
-    T* newMem = nullptr;
-    size_t copyCount = m_size < newSize ? m_size : newSize;
-    if(newSize > 0) {
-        newMem = Base::template constructArray<T>(newSize);
-        if(copy_rule::allowed) {
-            containos_memcpy(newMem, m_mem, copyCount * sizeof(T));
-            for(size_t i = copyCount; i < newSize; ++i) {
-                containos_placement_new(&newMem[i], T);
-            }
-        } else {
-            for(size_t i = 0; i < copyCount; ++i) {
-                containos_placement_copy(&newMem[i], T, m_mem[i]);
-            }
-            for(size_t i = copyCount; i < newSize; ++i) {
-                containos_placement_new(&newMem[i], T);
-            }
-            copyCount = 0;
-        }
-    }
-    for(size_t i = copyCount; i < m_size; ++i) {
-        containos_placement_delete(&m_mem[i], T);
-    }
-    Base::template destructArray<T>(m_mem, m_capasity);
-
-    m_mem = newMem;
-    m_capasity = newSize;
-    m_size = newSize;
+    m_buffer = nullptr;
+    m_length = 0;
+    set(str, Count);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::resize(iterator& newEnd)
+template<size_t Count> __forceinline Utf8::Utf8(wchar_t const (&str)[Count])
 {
-    ptrdiff_t size = newEnd - m_mem;
-    resize(size);
+    m_buffer = nullptr;
+    m_length = 0;
+    set(str, Count);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-inline void List<T,GrowRule,Allocator>::resizeNoCopy(size_t newSize)
+__forceinline Utf8::Utf8(Utf8 const& other)
 {
-    clearAndFree();
-
-    if(newSize == 0)
-        return;
-
-    m_mem = Base::template constructArray<T>(newSize);
-    m_capasity = newSize;
-    m_size = newSize;
-    for(size_t i = 0; i < newSize; ++i) {
-        containos_placement_new(&m_mem[i], T);
-    }
+    m_buffer = other.m_buffer;
+    m_length = other.m_length;
+    if(m_buffer != nullptr)
+        ++(m_buffer->m_refCount);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::resizeNoCopy(iterator& newEnd)
+__forceinline void Utf8::set(wchar_t const* str, size_t length)
 {
-    ptrdiff_t size = newEnd - m_mem;
-    resizeNoCopy(size);
+    set(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str), length);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-inline void List<T,GrowRule,Allocator>::reserve(size_t newCapasity)
+template<size_t Count> __forceinline void Utf8::set(char const (&str)[Count])
 {
-    if(newCapasity <= m_capasity)
-        return;
-
-    T* newMem = Base::template constructArray<T>(newCapasity);
-    if(m_mem != nullptr) {
-        if(copy_rule::allowed) {
-            containos_memcpy(newMem, m_mem, m_size * sizeof(T));
-        } else {
-            for(size_t i = 0; i < m_size; ++i) {
-                containos_placement_copy(&newMem[i], T, m_mem[i]);
-            }
-        }
-        for(size_t i = 0; i < m_size; ++i) {
-            containos_placement_delete(&m_mem[i], T);
-        }
-        Base::template destructArray<T>(m_mem, m_capasity);
-    }
-    m_mem = newMem;
-    m_capasity = newCapasity;
+    set(str, Count);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-inline void List<T,GrowRule,Allocator>::clearAndFree()
+template<size_t Count> __forceinline void Utf8::set(wchar_t const (&str)[Count])
 {
-    if(m_mem == nullptr)
-        return;
-
-    for(size_t i = 0; i < m_size; ++i) {
-        containos_placement_delete(&m_mem[i], T);
-    }
-    Base::template destructArray<T>(m_mem, m_capasity);
-    m_mem = nullptr;
-    m_size = 0;
-    m_capasity = 0;
+    set(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str), Count);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::clear()
+__forceinline Utf8::const_iterator Utf8::begin() const
 {
-    for(size_t i = 0; i < m_size; ++i) {
-        containos_placement_delete(&m_mem[i], T);
-    }
-    m_size = 0;
+    return const_iterator(m_buffer->m_data);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline typename List<T,GrowRule,Allocator>::iterator List<T,GrowRule,Allocator>::begin()
+__forceinline Utf8::const_iterator Utf8::end() const
 {
-    return m_mem;
+    return const_iterator(m_buffer->m_data + m_length);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline typename List<T,GrowRule,Allocator>::iterator List<T,GrowRule,Allocator>::end()
+__forceinline uint8_t const* Utf8::data() const
 {
-    return m_mem + m_size;
+    return m_buffer->m_data;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline typename List<T,GrowRule,Allocator>::const_iterator List<T,GrowRule,Allocator>::begin() const
+__forceinline size_t Utf8::dataSize() const
 {
-    return m_mem;
+    return m_buffer->m_capasity;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline typename List<T,GrowRule,Allocator>::const_iterator List<T,GrowRule,Allocator>::end() const
+__forceinline size_t Utf8::length() const
 {
-    return m_mem + m_size;
-}
-
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T& List<T,GrowRule,Allocator>::operator[](size_t index)
-{
-    containos_assert(index < m_size);
-    return m_mem[index];
-}
-
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T const& List<T,GrowRule,Allocator>::operator[](size_t index) const
-{
-    containos_assert(index < m_size);
-    return m_mem[index];
-}
-
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T const* List<T,GrowRule,Allocator>::mem() const
-{
-    return m_mem;
-}
-
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T const& List<T,GrowRule,Allocator>::last() const
-{
-    containos_assert(m_size > 0);
-    return m_mem[m_size - 1];
-}
-
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline size_t List<T,GrowRule,Allocator>::size() const
-{
-    return m_size;
-}
-
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline size_t List<T,GrowRule,Allocator>::capasity() const
-{
-    return m_capasity;
-}
-
-template<typename T,typename GrowRule,typename Allocator>
-template<typename Allocator2,typename GrowRule2>
-inline void List<T,GrowRule,Allocator>::copy(List<T,GrowRule2,Allocator2> const& other)
-{
-    if(other.m_size > 0) {
-        m_mem = Base::template constructArray<T>(other.m_size);
-        m_capasity = other.m_size;
-        m_size = other.m_size;
-        for(size_t i = 0; i < m_size; ++i) {
-            containos_placement_copy(&m_mem[i], T, other.m_mem[i]);
-        }
-    }
+    return m_length;
 }
 
 } // end of containos
