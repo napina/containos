@@ -25,7 +25,8 @@ IN THE SOFTWARE.
 #ifndef containos_event_h
 #define containos_event_h
 
-#include "containos/FastDelegate.h"
+#include "containos/common.h"
+#include "containos/fastdelegate.h"
 #include "containos/list.h"
 
 namespace containos {
