@@ -107,7 +107,16 @@ __forceinline Delegate<R()>::Delegate()
     : internal::DelegateBase<Delegate<R()> >()
 {
 }
-
+/*
+template<typename R>
+__forceinline Delegate<R()>::Delegate()
+    : internal::DelegateBase<Delegate<R()> >(Delegate&& other)
+{
+    m_memento = other.m_memento;
+    m_delete = other.m_delete;
+    m_allocator = other.allocator;
+}
+*/
 template<typename R>
 __forceinline Delegate<R()>::~Delegate()
 {
@@ -198,114 +207,148 @@ __forceinline void Delegate<R(A)>::set(T* ptr, funcptr_t func)
 }
 //-----------------------------------------------------------------------------
 
-#if 0
 template<typename R,typename A,typename B>
-__forceinline Event<R(A,B)>::Event() : DelegateBase<Event<R(A,B)> >()
+__forceinline Delegate<R(A,B)>::Delegate()
+    : internal::DelegateBase<Delegate<R(A,B)> >()
 {
 }
 
 template<typename R,typename A,typename B>
-__forceinline bool Event<R(A,B)>::isValid() const
+__forceinline Delegate<R(A,B)>::~Delegate()
 {
-    return m_delegates.size() > 0;
+    unsubscribe();
 }
 
 template<typename R,typename A,typename B>
-__forceinline R Event<R(A,B)>::operator()(A a, B b)
+__forceinline bool Delegate<R(A,B)>::isValid() const
+{
+    return m_memento.isValid();
+}
+
+template<typename R,typename A,typename B>
+__forceinline R Delegate<R(A,B)>::operator()(A a, B b)
 {
     DelegateType invoker;
-    for(size_t i = 0; i < m_delegates.size(); ++i) {
-        invoker.SetMemento(m_delegates[i]);
-        invoker(a, b);
-    }
+    invoker.SetMemento(m_memento);
+    return invoker(a, b);
+}
+
+template<typename R,typename A,typename B>
+template<typename lambda_t>
+__forceinline void Delegate<R(A,B)>::set(const lambda_t& lambda, Allocator* allocator)
+{
+    subscribe(lambda, allocator);
 }
 
 template<typename R,typename A,typename B>
 template<typename funcptr_t>
-__forceinline void Event<R(A,B)>::add(funcptr_t func)
+__forceinline void Delegate<R(A,B)>::set(funcptr_t func)
 {
     subscribe(func);
 }
 
 template<typename R,typename A,typename B>
 template<typename T,typename funcptr_t>
-__forceinline void Event<R(A,B)>::add(T* ptr, funcptr_t func)
+__forceinline void Delegate<R(A,B)>::set(T* ptr, funcptr_t func)
 {
     subscribe(ptr, func);
 }
 //-----------------------------------------------------------------------------
 
 template<typename R,typename A,typename B,typename C>
-__forceinline Event<R(A,B,C)>::Event() : DelegateBase<Event<R(A,B,C)> >()
+__forceinline Delegate<R(A,B,C)>::Delegate()
+    : internal::DelegateBase<Delegate<R(A,B,C)> >()
 {
 }
 
 template<typename R,typename A,typename B,typename C>
-__forceinline bool Event<R(A,B,C)>::isValid() const
+__forceinline Delegate<R(A,B,C)>::~Delegate()
 {
-    return m_delegates.size() > 0;
+    unsubscribe();
 }
 
 template<typename R,typename A,typename B,typename C>
-__forceinline R Event<R(A,B,C)>::operator()(A a, B b, C c)
+__forceinline bool Delegate<R(A,B,C)>::isValid() const
+{
+    return m_memento.isValid();
+}
+
+template<typename R,typename A,typename B,typename C>
+__forceinline R Delegate<R(A,B,C)>::operator()(A a, B b, C c)
 {
     DelegateType invoker;
-    for(size_t i = 0; i < m_delegates.size(); ++i) {
-        invoker.SetMemento(m_delegates[i]);
-        invoker(a, b, c);
-    }
+    invoker.SetMemento(m_memento);
+    return invoker(a, b, c);
+}
+
+template<typename R,typename A,typename B,typename C>
+template<typename lambda_t>
+__forceinline void Delegate<R(A,B,C)>::set(const lambda_t& lambda, Allocator* allocator)
+{
+    subscribe(lambda, allocator);
 }
 
 template<typename R,typename A,typename B,typename C>
 template<typename funcptr_t>
-__forceinline void Event<R(A,B,C)>::add(funcptr_t func)
+__forceinline void Delegate<R(A,B,C)>::set(funcptr_t func)
 {
     subscribe(func);
 }
 
 template<typename R,typename A,typename B,typename C>
 template<typename T,typename funcptr_t>
-__forceinline void Event<R(A,B,C)>::add(T* ptr, funcptr_t func)
+__forceinline void Delegate<R(A,B,C)>::set(T* ptr, funcptr_t func)
 {
     subscribe(ptr, func);
 }
 //-----------------------------------------------------------------------------
 
 template<typename R,typename A,typename B,typename C,typename D>
-__forceinline Event<R(A,B,C,D)>::Event() : DelegateBase<Event<R(A,B,C,D)> >()
+__forceinline Delegate<R(A,B,C,D)>::Delegate()
+    : internal::DelegateBase<Delegate<R(A,B,C,D)> >()
 {
 }
 
 template<typename R,typename A,typename B,typename C,typename D>
-__forceinline bool Event<R(A,B,C,D)>::isValid() const
+__forceinline Delegate<R(A,B,C,D)>::~Delegate()
 {
-    return m_delegates.size() > 0;
+    unsubscribe();
 }
 
 template<typename R,typename A,typename B,typename C,typename D>
-__forceinline R Event<R(A,B,C,D)>::operator()(A a, B b, C c, D d)
+__forceinline bool Delegate<R(A,B,C,D)>::isValid() const
+{
+    return m_memento.isValid();
+}
+
+template<typename R,typename A,typename B,typename C,typename D>
+__forceinline R Delegate<R(A,B,C,D)>::operator()(A a, B b, C c, D d)
 {
     DelegateType invoker;
-    for(size_t i = 0; i < m_delegates.size(); ++i) {
-        invoker.SetMemento(m_delegates[i]);
-        invoker(a, b, c, d);
-    }
+    invoker.SetMemento(m_memento);
+    return invoker(a, b, c, d);
+}
+
+template<typename R,typename A,typename B,typename C,typename D>
+template<typename lambda_t>
+__forceinline void Delegate<R(A,B,C,D)>::set(const lambda_t& lambda, Allocator* allocator)
+{
+    subscribe(lambda, allocator);
 }
 
 template<typename R,typename A,typename B,typename C,typename D>
 template<typename funcptr_t>
-__forceinline void Event<R(A,B,C,D)>::add(funcptr_t func)
+__forceinline void Delegate<R(A,B,C,D)>::set(funcptr_t func)
 {
     subscribe(func);
 }
 
 template<typename R,typename A,typename B,typename C,typename D>
 template<typename T,typename funcptr_t>
-__forceinline void Event<R(A,B,C,D)>::add(T* ptr, funcptr_t func)
+__forceinline void Delegate<R(A,B,C,D)>::set(T* ptr, funcptr_t func)
 {
     subscribe(ptr, func);
 }
-#endif
 
 } // end of containos
 

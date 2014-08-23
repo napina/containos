@@ -45,6 +45,7 @@ struct Delegate<R()> : private internal::DelegateBase<Delegate<R()> >
     typedef fastdelegate::FastDelegate0<R> DelegateType;
 
     Delegate();
+    Delegate(Delegate&& other);
     ~Delegate();
     R operator()();
     bool isValid() const;
@@ -60,8 +61,57 @@ struct Delegate<R(A)> : private internal::DelegateBase<Delegate<R(A)> >
     typedef fastdelegate::FastDelegate1<A,R> DelegateType;
 
     Delegate();
+    Delegate(Delegate&& other);
     ~Delegate();
     R operator()(A a);
+    bool isValid() const;
+    template<typename lambda_t>             void set(const lambda_t& func, Allocator* allocator);
+    template<typename funcptr_t>            void set(funcptr_t func);
+    template<typename T,typename funcptr_t> void set(T* ptr, funcptr_t func);
+};
+//-----------------------------------------------------------------------------
+
+template<typename R,typename A,typename B>
+struct Delegate<R(A,B)> : private internal::DelegateBase<Delegate<R(A,B)> >
+{
+    typedef fastdelegate::FastDelegate2<A,B,R> DelegateType;
+
+    Delegate();
+    Delegate(Delegate&& other);
+    ~Delegate();
+    R operator()(A a, B b);
+    bool isValid() const;
+    template<typename lambda_t>             void set(const lambda_t& func, Allocator* allocator);
+    template<typename funcptr_t>            void set(funcptr_t func);
+    template<typename T,typename funcptr_t> void set(T* ptr, funcptr_t func);
+};
+//-----------------------------------------------------------------------------
+
+template<typename R,typename A,typename B, typename C>
+struct Delegate<R(A,B,C)> : private internal::DelegateBase<Delegate<R(A,B,C)> >
+{
+    typedef fastdelegate::FastDelegate3<A,B,C,R> DelegateType;
+
+    Delegate();
+    Delegate(Delegate&& other);
+    ~Delegate();
+    R operator()(A a, B b, C c);
+    bool isValid() const;
+    template<typename lambda_t>             void set(const lambda_t& func, Allocator* allocator);
+    template<typename funcptr_t>            void set(funcptr_t func);
+    template<typename T,typename funcptr_t> void set(T* ptr, funcptr_t func);
+};
+//-----------------------------------------------------------------------------
+
+template<typename R,typename A,typename B, typename C,typename D>
+struct Delegate<R(A,B,C,D)> : private internal::DelegateBase<Delegate<R(A,B,C,D)> >
+{
+    typedef fastdelegate::FastDelegate4<A,B,C,D,R> DelegateType;
+
+    Delegate();
+    Delegate(Delegate&& other);
+    ~Delegate();
+    R operator()(A a, B b, C c, D d);
     bool isValid() const;
     template<typename lambda_t>             void set(const lambda_t& func, Allocator* allocator);
     template<typename funcptr_t>            void set(funcptr_t func);

@@ -76,12 +76,36 @@ TEST_SUITE(Delegate)
         EXPECT_EQUAL(receiver.value, 777);
     }
 
-    TEST(StatelessLambda)
+    TEST(StatelessLambda1)
     {
         c::Delegate<int()> onEvent;
         onEvent.set([]() -> int { return 99; });
         int result = onEvent();
         EXPECT_EQUAL(result, 99);
+    }
+
+    TEST(StatelessLambda2)
+    {
+        c::Delegate<int(int,int)> onEvent;
+        onEvent.set([](int a, int b) -> int { return a + b; });
+        int result = onEvent(11, 7);
+        EXPECT_EQUAL(result, 18);
+    }
+
+    TEST(StatelessLambda3)
+    {
+        c::Delegate<int(int,int,int)> onEvent;
+        onEvent.set([](int a, int b, int c) -> int { return a + b + c; });
+        int result = onEvent(13, 21, 6);
+        EXPECT_EQUAL(result, 40);
+    }
+
+    TEST(StatelessLambda4)
+    {
+        c::Delegate<int(int,int,int,int)> onEvent;
+        onEvent.set([](int a, int b, int c, int d) -> int { return a + b + c + d; });
+        int result = onEvent(13, 21, 6, 5);
+        EXPECT_EQUAL(result, 45);
     }
 
     TEST(StatefulLambda)
@@ -98,6 +122,18 @@ TEST_SUITE(Delegate)
         EXPECT_EQUAL(result, 77);
     }
 
+    TEST(StatefulLambdaModify)
+    {
+        TestAllocator allocator;
+
+        int value = 123;
+        c::Delegate<void(int)> onEvent;
+        onEvent.set([&](int x) { value = x; }, &allocator);
+        EXPECT_EQUAL(value, 123);
+        onEvent(77);
+        EXPECT_EQUAL(value, 77);
+    }
+
     TEST(ListReferenceLambda)
     {
         TestAllocator allocator;
@@ -112,4 +148,26 @@ TEST_SUITE(Delegate)
         EXPECT_EQUAL(list.size(), 2u);
         EXPECT_EQUAL(list[1], 99);
     }
+
+    TEST(CopyStatelessLambda)
+    {
+        c::Delegate<int()> onEvent;
+        onEvent.set([]() -> int { return 99; });
+        c::Delegate<int()> onEventCopy(onEvent);
+        int result = onEventCopy();
+        EXPECT_EQUAL(result, 99);
+    }
+
+    /*TEST(CopyStatefulLambda)
+    {
+        TestAllocator allocator;
+
+        int value = 123;
+        c::Delegate<void(int)> onEvent;
+        onEvent.set([&](int x) { value = x; }, &allocator);
+        c::Delegate<void(int)> onEventCopy(onEvent);
+        EXPECT_EQUAL(value, 123);
+        onEventCopy(77);
+        EXPECT_EQUAL(value, 77);
+    }*/
 }
