@@ -37,7 +37,7 @@ void Utf8::reserve(size_t capasity)
     m_buffer->m_capasity = uint32_t(capasity);
 }
 
-inline void Utf8::destruct()
+void Utf8::destruct()
 {
     if(m_buffer == nullptr)
         return;
@@ -61,60 +61,119 @@ uint32_t Utf8::operator[](size_t index) const
     return 0;
 }
 
-inline void Utf8::set(char const* str, size_t length)
+void Utf8::set(char const* str)
 {
-    reserve(length);
-
-    containos_memcpy(m_buffer->m_data, str, length);
+    set(str, ::strlen(str));
 }
 
-void Utf8::set(uint8_t const* str, size_t length)
+void Utf8::set(char const* str, size_t length)
 {
-    length;
-    str;
-    /*
     // TODO figure out better way to allocate storage
-    reserve(length);
+    reserve(length * 2);
 
-    uint16_t* data = m_buffer->m_data;
+    uint8_t* ptr = m_buffer->m_data;
     for(size_t i = 0; i < length; ++i) {
-        const uint32_t ch = extractUtfCharacter(str);
-        if(ch <= 0xffff) {
-            *data++ = uint16_t(ch);
+        const uint8_t value = *str++;
+        if(value < 0x80) {
+            *ptr++ = value;
         } else {
-            *data++ = uint16_t(0xd800 + (ch >> 10));
-            *data++ = uint16_t(0xdc00 + (ch & 0x3ff));
+            *ptr++ = 0xc0u | ((value >> 6) & 0x1fu);
+            *ptr++ = 0x80u | (value & 0x3fu);
         }
-    }*/
+    }
+    *ptr = 0;
+    m_length = length;
 }
 
-void Utf8::set(uint16_t const* str, size_t byteCount)
+void Utf8::set(uint8_t const* str)
 {
-    byteCount;
-    str;
-    /*reserve(byteCount);
-    containos_memcpy(m_buffer->m_data, str, byteCount);
-    */
+    set(str, countUtfBytes(str));
+}
+
+void Utf8::set(uint8_t const* str, size_t count)
+{
+    reserve(count);
+
+    containos_memcpy(m_buffer->m_data, str, count);
+    m_buffer->m_data[count] = 0;
+    m_length = countUtfLength(m_buffer->m_data);
+}
+
+void Utf8::set(uint16_t const* str)
+{
+    set(str, countUtfBytes(str) / 2);
+}
+
+void Utf8::set(uint16_t const* str, size_t count)
+{
+    // TODO figure out better way to allocate storage
+    reserve(count * 3);
+    m_length = 0;
+
+    uint8_t* ptr = m_buffer->m_data;
+    uint32_t state = decodestate_accept;
+    uint32_t codepoint = 0;
+    while(*str != 0) {
+        if(decodeUtfCharacter(state, codepoint, *str++) == decodestate_accept) {
+            ++m_length;
+            if(codepoint < 0x80u) {
+                *ptr++ = uint8_t(codepoint);
+            } else if(codepoint < 0x800u) {
+                *ptr++ = uint8_t(0xc0u | ((codepoint >> 6) & 0x1fu));
+                *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
+            } else if(codepoint < 0x10000u) {
+                *ptr++ = uint8_t(0xe0u | ((codepoint >> 12) & 0x1fu));
+                *ptr++ = uint8_t(0x80u | ((codepoint >> 6) & 0x3fu));
+                *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
+            } else {
+                *ptr++ = uint8_t(0xf0u | ((codepoint >> 18) & 0x1fu));
+                *ptr++ = uint8_t(0x80u | ((codepoint >> 12) & 0x3fu));
+                *ptr++ = uint8_t(0x80u | ((codepoint >> 6) & 0x3fu));
+                *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
+            }
+        } else if(state == decodestate_reject) {
+            state = decodestate_accept;
+        }
+    }
+    *ptr = 0;
+}
+
+void Utf8::set(uint32_t const* str)
+{
+    set(str, countUtfLength(str) / 4 );
 }
 
 void Utf8::set(uint32_t const* str, size_t length)
 {
-    str;
-    length;
-    /*
     // TODO figure out better way to allocate storage
-    reserve(length * 2);
+    reserve(length * 4);
 
-    uint16_t* data = m_buffer->m_data;
-    for(size_t i = 0; i < length; ++i) {
-        const uint32_t ch = *str++;
-        if(ch <= 0xffff) {
-            *data++ = uint16_t(ch);
-        } else {
-            *data++ = uint16_t(0xd800 + (ch >> 10));
-            *data++ = uint16_t(0xdc00 + (ch & 0x3ff));
+    uint8_t* ptr = m_buffer->m_data;
+    uint32_t state = decodestate_accept;
+    uint32_t codepoint = 0;
+    while(*str != 0) {
+        if(decodeUtfCharacter(state, codepoint, *str++) == decodestate_accept) {
+            ++m_length;
+            if(codepoint < 0x80u) {
+                *ptr++ = uint8_t(codepoint);
+            } else if(codepoint < 0x800u) {
+                *ptr++ = uint8_t(0xc0u | ((codepoint >> 6) & 0x1fu));
+                *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
+            } else if(codepoint < 0x800u) {
+                *ptr++ = uint8_t(0xe0u | ((codepoint >> 12) & 0x1fu));
+                *ptr++ = uint8_t(0x80u | ((codepoint >> 6) & 0x3fu));
+                *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
+            } else {
+                *ptr++ = uint8_t(0xf0u | ((codepoint >> 18) & 0x1fu));
+                *ptr++ = uint8_t(0x80u | ((codepoint >> 12) & 0x3fu));
+                *ptr++ = uint8_t(0x80u | ((codepoint >> 6) & 0x3fu));
+                *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
+            }
+        } else if(state == decodestate_reject) {
+            state = decodestate_accept;
         }
-    }*/
+    }
+    *ptr = 0;
 }
 
 Utf8::const_iterator Utf8::findFirst(uint32_t ch) const
@@ -154,6 +213,37 @@ Utf8 Utf8::substring(const_iterator end) const
         result.m_length = countUtfLength(m_buffer->m_data, end.ptr());;
     }
     return result;
+}
+
+bool Utf8::isValid() const
+{
+    return m_buffer != nullptr && isValidUtfString(m_buffer->m_data);
+}
+
+void Utf8::fix()
+{
+    if(m_buffer == nullptr)
+        return;
+    m_length = 0;
+
+    uint8_t* readPtr = m_buffer->m_data;
+    uint8_t* writePtr = m_buffer->m_data;
+    uint32_t state = decodestate_accept;
+    while(*readPtr != 0) {
+        const uint32_t value = *readPtr++;
+        const uint32_t type = internal::s_utf8decode[value];
+        state = internal::s_utf8decode[256 + state + type];
+        
+        if(state == decodestate_accept) {
+            *writePtr++ = uint8_t(value);
+            ++m_length;
+        } else if(state != decodestate_reject) {
+            *writePtr++ = uint8_t(value);
+        } else {
+            state = decodestate_accept;
+        }
+    }
+    *writePtr = 0;
 }
 
 } // end of containos

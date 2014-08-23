@@ -49,25 +49,25 @@ public:
     Utf8();
     Utf8(Utf8 const& other);
     explicit Utf8(char const* str, size_t length);
-    explicit Utf8(wchar_t const* str, size_t length);
-    explicit Utf8(uint8_t const* str, size_t byteCount);
-    explicit Utf8(uint16_t const* str, size_t byteCount);
+    explicit Utf8(wchar_t const* str, size_t count);
+    explicit Utf8(uint8_t const* str, size_t count);
+    explicit Utf8(uint16_t const* str, size_t count);
     explicit Utf8(uint32_t const* str, size_t length);
     template<size_t Count> Utf8(char const (&str)[Count]);
     template<size_t Count> Utf8(wchar_t const (&str)[Count]);
 
     void reserve(size_t capasity);
-    void fix(uint8_t replacement);
+    void fix();
 
     void set(Utf8 const& other);
     void set(char const* str);
     void set(char const* str, size_t length);
     void set(wchar_t const* str);
-    void set(wchar_t const* str, size_t length);
+    void set(wchar_t const* str, size_t count);
     void set(uint8_t const* str);
-    void set(uint8_t const* str, size_t byteCount);
+    void set(uint8_t const* str, size_t count);
     void set(uint16_t const* str);
-    void set(uint16_t const* str, size_t byteCount);
+    void set(uint16_t const* str, size_t count);
     void set(uint32_t const* str);
     void set(uint32_t const* str, size_t length);
     template<size_t Count> void set(char const (&str)[Count]);
@@ -78,11 +78,11 @@ public:
     void append(char const* str);
     void append(char const* str, size_t length);
     void append(wchar_t const* str);
-    void append(wchar_t const* str, size_t length);
+    void append(wchar_t const* str, size_t count);
     void append(uint8_t const* str);
-    void append(uint8_t const* str, size_t byteCount);
+    void append(uint8_t const* str, size_t count);
     void append(uint16_t const* str);
-    void append(uint16_t const* str, size_t byteCount);
+    void append(uint16_t const* str, size_t count);
     void append(uint32_t const* str);
     void append(uint32_t const* str, size_t length);
     template<size_t Count> void append(char const (&str)[Count]);
@@ -98,7 +98,8 @@ public:
 
     uint32_t operator[](size_t index) const;
     uint8_t const* data() const;
-    size_t dataSize() const;
+    size_t dataCount() const;
+    size_t capasity() const;
     size_t length() const;
     bool isValid() const;
 

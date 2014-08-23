@@ -22,7 +22,6 @@ IN THE SOFTWARE.
 
 =============================================================================*/
 #include "unitos/unitos.h"
-#if 0
 #include "containos/utf8.h"
 
 // http://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
@@ -31,15 +30,49 @@ namespace c = containos;
 
 TEST_SUITE(Utf8)
 {
-    TEST(CountFirst)
+    TEST(SetChar)
     {
-        c::char_t test[] = { 0x00000000, 0x00000080, 0x00000800, 0x00010000, 0x00200000, 0x04000000 };
-        for(size_t i = 0; i < 6; ++i) {
-            c::Utf8<> str(&test[i], 1);
-            EXPECT_EQUAL(str.size(), i+1);
-        }
+        const char buffer[] = { 0xa2u, 0x24u, 0xffu, 0xc0u, 0 };
+        c::Utf8 utf8;
+        utf8.set(buffer);
+        EXPECT_TRUE(utf8.isValid());
+        EXPECT_EQUAL(utf8.length(), 4);
+        EXPECT_EQUAL(utf8.dataCount(), 7);
     }
 
+    TEST(SetWChar)
+    {
+        const wchar_t* buffer = L"a½-~€ib";
+        c::Utf8 utf8;
+        utf8.set(buffer);
+        EXPECT_TRUE(utf8.isValid());
+        EXPECT_EQUAL(utf8.length(), 7);
+        EXPECT_EQUAL(utf8.dataCount(), 10);
+    }
+    
+    TEST(SetUtf8)
+    {
+        const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0x24u, 0xc2u, 0xa2u, 0xe2u, 0x82u, 0xacu, 0 };
+        c::Utf8 utf8;
+        utf8.set(buffer);
+        EXPECT_TRUE(utf8.isValid());
+        EXPECT_EQUAL(utf8.length(), 4);
+        EXPECT_EQUAL(utf8.dataCount(), 10);
+    }
+
+    TEST(Fix)
+    {
+        const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0xff, 0x24u, 0xc2u, 0xa2u, 0xe2u, 0x82u, 0xacu, 0 };
+        c::Utf8 utf8;
+        utf8.set(buffer, sizeof(buffer));
+        EXPECT_FALSE(utf8.isValid());
+        utf8.fix();
+        EXPECT_TRUE(utf8.isValid());
+        EXPECT_EQUAL(utf8.length(), 4);
+        EXPECT_EQUAL(utf8.dataCount(), 10);
+    }
+
+#if 0
     TEST(CountLast)
     {
         c::char_t test[] = { 0x0000007F, 0x000007FF, 0x0000FFFF, 0x001FFFFF, 0x03FFFFFF, 0x7FFFFFFF };
@@ -77,5 +110,5 @@ TEST_SUITE(Utf8)
             EXPECT_EQUAL(str[i], test[i]);
         }
     }
-}
 #endif
+}
