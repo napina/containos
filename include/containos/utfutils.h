@@ -29,11 +29,12 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-bool isUtfInRange(uint32_t ch, uint32_t lo, uint32_t hi);
-bool isUtfSurrogate(uint32_t ch);
-bool isUtfNoncharacter(uint32_t ch);
-bool isInvalidUtfChar(uint32_t ch);
-bool isValidUtfChar(uint32_t ch);
+bool isUtfInRange(uint32_t codepoint, uint32_t lo, uint32_t hi);
+bool isUtfSurrogate(uint32_t codepoint);
+bool isUtfNoncharacter(uint32_t codepoint);
+bool isInvalidUtfChar(uint32_t codepoint);
+bool isValidUtfChar(uint32_t codepoint);
+bool isPrivateUtfChar(uint32_t codepoint);
 
 bool isValidUtfString(uint8_t const* str);
 bool isValidUtfString(uint16_t const* str);

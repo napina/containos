@@ -57,12 +57,17 @@ __forceinline bool isUtfOutOfRange(uint32_t codepoint)
 
 inline bool isInvalidUtfChar(uint32_t codepoint)
 {
-    return isUtfSurrogate(codepoint) || isUtfNoncharacter(codepoint) || isUtfReserved(codepoint) || isUtfOutOfRange(codepoint);
+    return isUtfSurrogate(codepoint) || isUtfOutOfRange(codepoint);
 }
 
 inline bool isValidUtfChar(uint32_t codepoint)
 {
-    return !isUtfSurrogate(codepoint) && !isUtfNoncharacter(codepoint) && !isUtfReserved(codepoint) && !isUtfOutOfRange(codepoint);
+    return !isUtfSurrogate(codepoint) && !isUtfOutOfRange(codepoint);
+}
+
+inline bool isPrivateUtfChar(uint32_t codepoint)
+{
+    return isUtfNoncharacter(codepoint) || isUtfReserved(codepoint);
 }
 
 __forceinline uint32_t decodeUtfCharacter(uint32_t& state, uint32_t& codepoint, uint8_t value)
