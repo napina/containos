@@ -70,6 +70,41 @@ inline bool isPrivateUtfChar(uint32_t codepoint)
     return isUtfNoncharacter(codepoint) || isUtfReserved(codepoint);
 }
 
+__forceinline size_t countUtfBytes(uint8_t const* str, uint8_t const* end)
+{
+    return ptrdiff_t(end) - ptrdiff_t(str);
+}
+
+__forceinline size_t countUtfBytes(uint16_t const* str, uint16_t const* end)
+{
+    return ptrdiff_t(end) - ptrdiff_t(str);
+}
+
+__forceinline size_t countUtfBytes(uint32_t const* str, uint32_t const* end)
+{
+    return ptrdiff_t(end) - ptrdiff_t(str);
+}
+
+__forceinline size_t countUtfElements(uint8_t const* str, uint8_t const* end)
+{
+    return ptrdiff_t(end) - ptrdiff_t(str);
+}
+
+__forceinline size_t countUtfElements(uint16_t const* str, uint16_t const* end)
+{
+    return (ptrdiff_t(end) - ptrdiff_t(str)) >> 1;
+}
+
+__forceinline size_t countUtfElements(uint32_t const* str, uint32_t const* end)
+{
+    return (ptrdiff_t(end) - ptrdiff_t(str)) >> 2;
+}
+
+__forceinline size_t countUtfLength(uint32_t const* str, uint32_t const* end)
+{
+    return (ptrdiff_t(end) - ptrdiff_t(str)) >> 2;
+}
+
 __forceinline uint32_t decodeUtfCharacter(uint32_t& state, uint32_t& codepoint, uint8_t value)
 {
     // TODO make branchless
@@ -104,11 +139,6 @@ __forceinline uint32_t decodeUtfCharacter(uint32_t& state, uint32_t& codepoint, 
     codepoint = value;
     state = isValidUtfChar(codepoint) ? decodestate_accept : decodestate_reject;
     return state;
-}
-
-__forceinline size_t countUtfLength(uint32_t const* str, uint32_t const* end)
-{
-    return (ptrdiff_t(end) - ptrdiff_t(str)) / 4;
 }
 
 } // end of containos

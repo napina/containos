@@ -136,6 +136,33 @@ size_t countUtfBytes(uint32_t const* str)
     return count * 4;
 }
 
+size_t countUtfElements(uint8_t const* str)
+{
+    size_t count = 0;
+    while(*str++ != 0) {
+        ++count;
+    }
+    return count;
+}
+
+size_t countUtfElements(uint16_t const* str)
+{
+    size_t count = 0;
+    while(*str++ != 0) {
+        ++count;
+    }
+    return count;
+}
+
+size_t countUtfElements(uint32_t const* str)
+{
+    size_t count = 0;
+    while(*str++ != 0) {
+        ++count;
+    }
+    return count;
+}
+
 size_t countUtfLength(uint8_t const* str)
 {
     size_t length = 0;

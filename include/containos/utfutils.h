@@ -41,8 +41,18 @@ bool isValidUtfString(uint16_t const* str);
 bool isValidUtfString(uint32_t const* str);
 
 size_t countUtfBytes(uint8_t const* str);
+size_t countUtfBytes(uint8_t const* str, uint8_t const* end);
 size_t countUtfBytes(uint16_t const* str);
+size_t countUtfBytes(uint16_t const* str, uint16_t const* end);
 size_t countUtfBytes(uint32_t const* str);
+size_t countUtfBytes(uint32_t const* str, uint32_t const* end);
+
+size_t countUtfElements(uint8_t const* str);
+size_t countUtfElements(uint8_t const* str, uint8_t const* end);
+size_t countUtfElements(uint16_t const* str);
+size_t countUtfElements(uint16_t const* str, uint16_t const* end);
+size_t countUtfElements(uint32_t const* str);
+size_t countUtfElements(uint32_t const* str, uint32_t const* end);
 
 size_t countUtfLength(uint8_t const* str);
 size_t countUtfLength(uint8_t const* str, uint8_t const* end);
