@@ -33,6 +33,7 @@ struct Utf8::Buffer
 {
     uint32_t m_refCount;
     uint32_t m_capasity;
+    uint32_t m_dataCount;
     uint8_t m_data[1];
 };
 
@@ -73,52 +74,75 @@ __forceinline Utf8::Utf8()
     m_length = 0;
 }
 
-__forceinline Utf8::Utf8(char const* str, size_t length)
+__forceinline Utf8::Utf8(char const* str)
 {
     m_buffer = nullptr;
-    m_length = 0;
-    set(str, length);
+    set(str);
+}
+
+__forceinline Utf8::Utf8(char const* str, size_t count)
+{
+    m_buffer = nullptr;
+    set(str, count);
+}
+
+__forceinline Utf8::Utf8(wchar_t const* str)
+{
+    m_buffer = nullptr;
+    set(str);
 }
 
 __forceinline Utf8::Utf8(wchar_t const* str, size_t count)
 {
     m_buffer = nullptr;
-    m_length = 0;
     set(str, count);
+}
+
+__forceinline Utf8::Utf8(uint8_t const* str)
+{
+    m_buffer = nullptr;
+    set(str);
 }
 
 __forceinline Utf8::Utf8(uint8_t const* str, size_t count)
 {
     m_buffer = nullptr;
-    m_length = 0;
     set(str, count);
+}
+
+__forceinline Utf8::Utf8(uint16_t const* str)
+{
+    m_buffer = nullptr;
+    set(str);
 }
 
 __forceinline Utf8::Utf8(uint16_t const* str, size_t count)
 {
     m_buffer = nullptr;
-    m_length = 0;
     set(str, count);
 }
 
-__forceinline Utf8::Utf8(uint32_t const* str, size_t length)
+__forceinline Utf8::Utf8(uint32_t const* str)
 {
     m_buffer = nullptr;
-    m_length = 0;
-    set(str, length);
+    set(str);
+}
+
+__forceinline Utf8::Utf8(uint32_t const* str, size_t count)
+{
+    m_buffer = nullptr;
+    set(str, count);
 }
 
 template<size_t Count> __forceinline Utf8::Utf8(char const (&str)[Count])
 {
     m_buffer = nullptr;
-    m_length = 0;
     set(str, Count);
 }
 
 template<size_t Count> __forceinline Utf8::Utf8(wchar_t const (&str)[Count])
 {
     m_buffer = nullptr;
-    m_length = 0;
     set(str, Count);
 }
 
@@ -150,6 +174,21 @@ template<size_t Count> __forceinline void Utf8::set(wchar_t const (&str)[Count])
     set(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str), Count);
 }
 
+__forceinline void Utf8::append(uint8_t const* str)
+{
+    append(str, countUtfElements(str));
+}
+
+__forceinline void Utf8::append(uint16_t const* str)
+{
+    append(str, countUtfElements(str));
+}
+
+__forceinline void Utf8::append(uint32_t const* str)
+{
+    append(str, countUtfElements(str));
+}
+
 __forceinline void Utf8::append(wchar_t const* str)
 {
     append(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str));
@@ -177,7 +216,7 @@ __forceinline Utf8::const_iterator Utf8::begin() const
 
 __forceinline Utf8::const_iterator Utf8::end() const
 {
-    return const_iterator(m_buffer->m_data + dataCount());
+    return const_iterator(m_buffer->m_data + m_buffer->m_dataCount);
 }
 
 __forceinline uint8_t const* Utf8::data() const
@@ -187,8 +226,7 @@ __forceinline uint8_t const* Utf8::data() const
 
 __forceinline size_t Utf8::dataCount() const
 {
-    // TODO
-    return countUtfBytes(m_buffer->m_data);//, m_buffer->m_data + m_length);
+    return m_buffer->m_dataCount;
 }
 
 __forceinline size_t Utf8::capasity() const

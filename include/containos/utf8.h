@@ -50,11 +50,16 @@ public:
     ~Utf8();
     Utf8();
     Utf8(Utf8 const& other);
-    explicit Utf8(char const* str, size_t length);
+    explicit Utf8(char const* str);
+    explicit Utf8(char const* str, size_t count);
+    explicit Utf8(wchar_t const* str);
     explicit Utf8(wchar_t const* str, size_t count);
+    explicit Utf8(uint8_t const* str);
     explicit Utf8(uint8_t const* str, size_t count);
+    explicit Utf8(uint16_t const* str);
     explicit Utf8(uint16_t const* str, size_t count);
-    explicit Utf8(uint32_t const* str, size_t length);
+    explicit Utf8(uint32_t const* str);
+    explicit Utf8(uint32_t const* str, size_t count);
     template<size_t Count> Utf8(char const (&str)[Count]);
     template<size_t Count> Utf8(wchar_t const (&str)[Count]);
 
@@ -62,7 +67,7 @@ public:
 
     void set(Utf8 const& other);
     void set(char const* str);
-    void set(char const* str, size_t length);
+    void set(char const* str, size_t count);
     void set(wchar_t const* str);
     void set(wchar_t const* str, size_t count);
     void set(uint8_t const* str);
@@ -70,14 +75,14 @@ public:
     void set(uint16_t const* str);
     void set(uint16_t const* str, size_t count);
     void set(uint32_t const* str);
-    void set(uint32_t const* str, size_t length);
+    void set(uint32_t const* str, size_t count);
     template<size_t Count> void set(char const (&str)[Count]);
     template<size_t Count> void set(wchar_t const (&str)[Count]);
 
     void append(uint32_t ch);
     void append(Utf8 const& other);
     void append(char const* str);
-    void append(char const* str, size_t length);
+    void append(char const* str, size_t count);
     void append(wchar_t const* str);
     void append(wchar_t const* str, size_t count);
     void append(uint8_t const* str);
@@ -85,18 +90,17 @@ public:
     void append(uint16_t const* str);
     void append(uint16_t const* str, size_t count);
     void append(uint32_t const* str);
-    void append(uint32_t const* str, size_t length);
+    void append(uint32_t const* str, size_t count);
     template<size_t Count> void append(char const (&str)[Count]);
     template<size_t Count> void append(wchar_t const (&str)[Count]);
-    void terminate();
 
     void replace(uint32_t from, uint8_t to);
     void fix();
 
     const_iterator begin() const;
     const_iterator end() const;
-    const_iterator findFirst(uint32_t ch) const;
-    const_iterator findLast(uint32_t ch) const;
+    const_iterator findFirst(uint32_t codepoint) const;
+    const_iterator findLast(uint32_t codepoint) const;
     Utf8 substring(const_iterator begin, const_iterator end) const;
     Utf8 substring(const_iterator end) const;
 
@@ -105,6 +109,10 @@ public:
     size_t capasity() const;
     size_t length() const;
     bool isValid() const;
+
+    bool operator==(Utf8 const& other) const;
+    bool operator==(char const* str) const;
+    bool operator==(wchar_t const* str) const;
 
 private:
     void destruct();
