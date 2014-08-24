@@ -24,9 +24,37 @@ IN THE SOFTWARE.
 //#include "stdafx.h"
 #include "containos/utf8.h"
 
+// TODO get rid of this
 #include <malloc.h>
 
 namespace containos {
+
+uint32_t Utf8::const_iterator::operator*() const
+{
+    uint8_t* ptr = m_ptr;
+    uint32_t state = m_state;
+    uint32_t codepoint = 0;
+    while(*ptr != 0) {
+        if(decodeUtfCharacter(state, codepoint, *ptr++) == decodestate_accept) {
+            break;
+        } else if(state == decodestate_reject) {
+            break;
+        }
+    }
+    return codepoint;
+}
+
+void Utf8::const_iterator::operator++()
+{
+    uint32_t state = decodestate_accept;
+    while(*m_ptr != 0) {
+        const uint32_t type = internal::s_utf8decode[*m_ptr++];
+        state = internal::s_utf8decode[256 + state + type];
+        if(state == decodestate_accept || state == decodestate_reject) {
+            return;
+        }
+    }
+}
 
 void Utf8::reserve(size_t capasity)
 {
@@ -49,16 +77,6 @@ void Utf8::destruct()
     ::free(m_buffer);
     m_buffer = nullptr;
     m_length = 0;
-}
-
-uint32_t Utf8::operator[](size_t index) const
-{
-    const_iterator it = begin();
-    for(size_t i = 0; it != end(); ++it, ++i) {
-        if(i == index)
-            return *it;
-    }
-    return 0;
 }
 
 void Utf8::set(char const* str)
@@ -140,13 +158,14 @@ void Utf8::set(uint16_t const* str, size_t count)
 
 void Utf8::set(uint32_t const* str)
 {
-    set(str, countUtfLength(str) / 4 );
+    set(str, countUtfLength(str));
 }
 
 void Utf8::set(uint32_t const* str, size_t length)
 {
     // TODO figure out better way to allocate storage
     reserve(length * 4);
+    m_length = 0;
 
     uint8_t* ptr = m_buffer->m_data;
     uint32_t state = decodestate_accept;
@@ -159,7 +178,7 @@ void Utf8::set(uint32_t const* str, size_t length)
             } else if(codepoint < 0x800u) {
                 *ptr++ = uint8_t(0xc0u | ((codepoint >> 6) & 0x1fu));
                 *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
-            } else if(codepoint < 0x800u) {
+            } else if(codepoint < 0x10000u) {
                 *ptr++ = uint8_t(0xe0u | ((codepoint >> 12) & 0x1fu));
                 *ptr++ = uint8_t(0x80u | ((codepoint >> 6) & 0x3fu));
                 *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
@@ -215,9 +234,28 @@ Utf8 Utf8::substring(const_iterator end) const
     return result;
 }
 
-bool Utf8::isValid() const
+void Utf8::replace(uint32_t from, uint8_t to)
 {
-    return m_buffer != nullptr && isValidUtfString(m_buffer->m_data);
+    // TODO
+    if(to > 0x7f)
+        return;
+
+    uint8_t* readPtr = m_buffer->m_data;
+    uint8_t* writePtr = m_buffer->m_data;
+    uint32_t state = decodestate_accept;
+    uint32_t codepoint = 0;
+    while(*readPtr != 0) {
+        if(decodeUtfCharacter(state, codepoint, *readPtr++) == decodestate_accept) {
+            if(codepoint != from)
+                continue;
+            *writePtr++ = to;
+        } else if(state != decodestate_reject) {
+            writePtr++;
+        } else {
+            state = decodestate_accept;
+        }
+    }
+    *writePtr = 0;
 }
 
 void Utf8::fix()
@@ -244,6 +282,11 @@ void Utf8::fix()
         }
     }
     *writePtr = 0;
+}
+
+bool Utf8::isValid() const
+{
+    return m_buffer != nullptr && isValidUtfString(m_buffer->m_data);
 }
 
 } // end of containos

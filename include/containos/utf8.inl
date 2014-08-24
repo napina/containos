@@ -38,10 +38,11 @@ struct Utf8::Buffer
 
 inline Utf8::const_iterator::const_iterator(uint8_t* ptr)
     : m_ptr(ptr)
+    , m_state(decodestate_accept)
 {
 }
 
-inline bool Utf8::const_iterator::operator==(const_iterator const& other) const
+__forceinline bool Utf8::const_iterator::operator==(const_iterator const& other) const
 {
     return m_ptr == other.m_ptr;
 }
@@ -56,15 +57,9 @@ __forceinline uint8_t const* Utf8::const_iterator::ptr() const
     return m_ptr;
 }
 
-__forceinline uint32_t Utf8::const_iterator::operator*() const
+__forceinline bool Utf8::const_iterator::isRejected() const
 {
-    const uint32_t value = 5;//extractUtfCharacter(m_ptr);
-    return value;
-}
-
-__forceinline void Utf8::const_iterator::operator++()
-{
-    ++m_ptr;
+    return m_state == decodestate_reject;
 }
 
 __forceinline Utf8::~Utf8()
@@ -182,7 +177,7 @@ __forceinline Utf8::const_iterator Utf8::begin() const
 
 __forceinline Utf8::const_iterator Utf8::end() const
 {
-    return const_iterator(m_buffer->m_data + m_length);
+    return const_iterator(m_buffer->m_data + dataCount());
 }
 
 __forceinline uint8_t const* Utf8::data() const

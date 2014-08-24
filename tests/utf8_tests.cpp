@@ -25,6 +25,10 @@ IN THE SOFTWARE.
 #include "containos/utf8.h"
 
 // http://www.cl.cam.ac.uk/~mgk25/ucs/examples/UTF-8-test.txt
+// http://en.wikipedia.org/wiki/UTF-8
+// http://en.wikipedia.org/wiki/UTF-16
+// http://en.wikipedia.org/wiki/UTF-32
+// http://en.wikipedia.org/wiki/Unicode
 
 namespace c = containos;
 
@@ -52,63 +56,101 @@ TEST_SUITE(Utf8)
     
     TEST(SetUtf8)
     {
-        const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0x24u, 0xc2u, 0xa2u, 0xe2u, 0x82u, 0xacu, 0 };
+        const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0x24u, 0xc2u, 0xa2u, 0xe2u, 0x82u, 0xacu, 0u };
         c::Utf8 utf8;
         utf8.set(buffer);
         EXPECT_TRUE(utf8.isValid());
         EXPECT_EQUAL(utf8.length(), 4);
         EXPECT_EQUAL(utf8.dataCount(), 10);
+        c::Utf8::const_iterator it = utf8.begin();
+        EXPECT_EQUAL(*it, 0x24b62u);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(*it, 0x24u);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(*it, 0xa2u);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(*it, 0x20acu);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(it, utf8.end());
+    }
+
+    TEST(SetUtf32)
+    {
+        const c::uint32_t buffer[] = { 0x10000u, 0xd800u, 0x10fffdu, 0xdc00u, 0x6c34u, 0x24u, 0xfdd0u, 0xffffu, 0u };
+        c::Utf8 utf8;
+        utf8.set(buffer);
+        EXPECT_TRUE(utf8.isValid());
+        EXPECT_EQUAL(utf8.length(), 6);
+        EXPECT_EQUAL(utf8.dataCount(), 18);
+        c::Utf8::const_iterator it = utf8.begin();
+        EXPECT_EQUAL(*it, 0x10000u);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(*it, 0x10fffdu);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(*it, 0x6c34u);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(*it, 0x24u);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(*it, 0xfdd0u);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(*it, 0xffffu);
+        EXPECT_NOTEQUAL(it, utf8.end());
+        ++it;
+        EXPECT_EQUAL(it, utf8.end());
+    }
+
+    TEST(Replace)
+    {
+        c::Utf8 utf8("test\\replace/folder\\slashes");
+        EXPECT_TRUE(utf8.isValid());
+        EXPECT_NOTEQUAL(utf8.findFirst('\\'), utf8.end());
+        utf8.replace('\\', '/');
+        EXPECT_TRUE(utf8.isValid());
+        EXPECT_EQUAL(utf8.findFirst('\\'), utf8.end());
     }
 
     TEST(Fix)
     {
-        const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0xff, 0x24u, 0xc2u, 0xa2u, 0xe2u, 0x82u, 0xacu, 0 };
+        const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0xff, 0x24u, 0xc2u, 0xa2u, 0xf8u, 0xe2u, 0x82u, 0xacu, 0u };
         c::Utf8 utf8;
-        utf8.set(buffer, sizeof(buffer));
+        utf8.set(buffer);
         EXPECT_FALSE(utf8.isValid());
         utf8.fix();
         EXPECT_TRUE(utf8.isValid());
         EXPECT_EQUAL(utf8.length(), 4);
         EXPECT_EQUAL(utf8.dataCount(), 10);
+        c::Utf8::const_iterator it = utf8.begin();
+        EXPECT_EQUAL(*it, 0x24b62u);
+        ++it;
+        EXPECT_EQUAL(*it, 0x24u);
+        ++it;
+        EXPECT_EQUAL(*it, 0xa2u);
+        ++it;
+        EXPECT_EQUAL(*it, 0x20acu);
+        ++it;
+        EXPECT_EQUAL(it, utf8.end());
     }
 
-#if 0
-    TEST(CountLast)
+    TEST(FindFirstLast)
     {
-        c::char_t test[] = { 0x0000007F, 0x000007FF, 0x0000FFFF, 0x001FFFFF, 0x03FFFFFF, 0x7FFFFFFF };
-        for(size_t i = 0; i < 6; ++i) {
-            c::Utf8<> str(&test[i], 1);
-            EXPECT_EQUAL(str.size(), i+1);
-        }
+        const c::uint32_t buffer[] = { 0x10000u, 0xd800u, 0x10fffdu, 0xdc00u, 0x6c34u, 0x10fffdu, 0xfdd0u, 0xffffu, 0u };
+        c::Utf8 utf8;
+        utf8.set(buffer);
+        c::Utf8::const_iterator firstit = utf8.findFirst(0x10fffdu);
+        EXPECT_NOTEQUAL(firstit, utf8.end());
+        EXPECT_EQUAL(*firstit, 0x10fffdu);
+        c::Utf8::const_iterator lastit = utf8.findLast(0x10fffdu);
+        EXPECT_NOTEQUAL(lastit, utf8.end());
+        EXPECT_NOTEQUAL(lastit, firstit);
+        EXPECT_EQUAL(*lastit, 0x10fffdu);
     }
-
-    TEST(Iterator)
-    {
-        c::char_t test[] = { 0x0008213, 0x00101392, 0x00002282, 0x00028C92 };
-        c::Utf8<> str(test, 4);
-        size_t i = 0;
-        for(c::Utf8<>::iterator it = str.begin(); it != str.end(); ++it, ++i) {
-            EXPECT_EQUAL(*it, test[i]);
-        }
-    }
-
-    TEST(ConstIterator)
-    {
-        c::char_t test[] = { 0x0008213, 0x00101392, 0x00002282, 0x00028C92 };
-        c::Utf8<> str(test, 4);
-        size_t i = 0;
-        for(c::Utf8<>::const_iterator it = str.begin(); it != str.end(); ++it, ++i) {
-            EXPECT_EQUAL(*it, test[i]);
-        }
-    }
-
-    TEST(Index)
-    {
-        c::char_t test[] = { 0x0008213, 0x00101392, 0x00002282, 0x00028C92 };
-        c::Utf8<> str(test, 4);
-        for(size_t i = 0; i < str.size(); ++i) {
-            EXPECT_EQUAL(str[i], test[i]);
-        }
-    }
-#endif
 }

@@ -40,9 +40,11 @@ public:
         bool operator!=(const_iterator const& other) const;
         uint8_t const* ptr() const;
         uint32_t operator*() const;
+        bool isRejected() const;
         void operator++();
     private:
         uint8_t* m_ptr;
+        uint32_t m_state;
     };
 
     ~Utf8();
@@ -57,7 +59,6 @@ public:
     template<size_t Count> Utf8(wchar_t const (&str)[Count]);
 
     void reserve(size_t capasity);
-    void fix();
 
     void set(Utf8 const& other);
     void set(char const* str);
@@ -89,6 +90,9 @@ public:
     template<size_t Count> void append(wchar_t const (&str)[Count]);
     void terminate();
 
+    void replace(uint32_t from, uint8_t to);
+    void fix();
+
     const_iterator begin() const;
     const_iterator end() const;
     const_iterator findFirst(uint32_t ch) const;
@@ -96,7 +100,6 @@ public:
     Utf8 substring(const_iterator begin, const_iterator end) const;
     Utf8 substring(const_iterator end) const;
 
-    uint32_t operator[](size_t index) const;
     uint8_t const* data() const;
     size_t dataCount() const;
     size_t capasity() const;
