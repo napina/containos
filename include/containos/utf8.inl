@@ -74,6 +74,20 @@ __forceinline Utf8::Utf8()
     m_length = 0;
 }
 
+__forceinline Utf8::Utf8(Utf8 const& other)
+{
+    m_buffer = other.m_buffer;
+    m_length = other.m_length;
+    if(m_buffer != nullptr)
+        ++(m_buffer->m_refCount);
+}
+
+__forceinline Utf8::Utf8(Utf8Slice const& slice)
+{
+    m_buffer = nullptr;
+    set(slice.m_begin, countUtfElements(slice.m_begin, slice.m_end));
+}
+
 __forceinline Utf8::Utf8(char const* str)
 {
     m_buffer = nullptr;
@@ -146,12 +160,9 @@ template<size_t Count> __forceinline Utf8::Utf8(wchar_t const (&str)[Count])
     set(str, Count);
 }
 
-__forceinline Utf8::Utf8(Utf8 const& other)
+__forceinline void Utf8::set(Utf8Slice const& slice)
 {
-    m_buffer = other.m_buffer;
-    m_length = other.m_length;
-    if(m_buffer != nullptr)
-        ++(m_buffer->m_refCount);
+    set(slice.m_begin, countUtfElements(slice.m_begin, slice.m_end));
 }
 
 __forceinline void Utf8::set(wchar_t const* str)
@@ -219,9 +230,35 @@ __forceinline Utf8::const_iterator Utf8::end() const
     return const_iterator(m_buffer->m_data + m_buffer->m_dataCount);
 }
 
+__forceinline Utf8Slice Utf8::slice(const_iterator begin, const_iterator end) const
+{
+    Utf8Slice result;
+    result.m_begin = begin.ptr();
+    result.m_end = end.ptr();
+    return result;
+}
+
+__forceinline Utf8Slice Utf8::slice(const_iterator end) const
+{
+    Utf8Slice result;
+    result.m_begin = m_buffer->m_data;
+    result.m_end = end.ptr();
+    return result;
+}
+
+__forceinline Utf8Slice Utf8::slice() const
+{
+    Utf8Slice result;
+    result.m_begin = m_buffer->m_data;
+    result.m_end = m_buffer->m_data + m_buffer->m_dataCount;
+    return result;
+}
+
 __forceinline uint8_t const* Utf8::data() const
 {
-    return m_buffer->m_data;
+    if(m_buffer != nullptr)
+        return m_buffer->m_data;
+    return nullptr;
 }
 
 __forceinline size_t Utf8::dataCount() const
@@ -237,6 +274,16 @@ __forceinline size_t Utf8::capasity() const
 __forceinline size_t Utf8::length() const
 {
     return m_length;
+}
+
+__forceinline bool Utf8::operator==(Utf8 const& other) const
+{
+    return operator==(other.data());
+}
+
+__forceinline bool Utf8::operator==(wchar_t const* str) const
+{
+    return operator==(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str));
 }
 
 } // end of containos

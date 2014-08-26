@@ -37,28 +37,27 @@ TEST_SUITE(Utf8)
     TEST(SetChar)
     {
         const char buffer[] = { 0xa2u, 0x24u, 0xffu, 0xc0u, 0 };
-        c::Utf8 utf8;
-        utf8.set(buffer);
+        c::Utf8 utf8(buffer);
         EXPECT_TRUE(utf8.isValid());
         EXPECT_EQUAL(utf8.length(), 4);
         EXPECT_EQUAL(utf8.dataCount(), 7);
+        EXPECT_EQUAL(utf8, buffer);
     }
 
     TEST(SetWChar)
     {
         const wchar_t* buffer = L"a½-~€ib";
-        c::Utf8 utf8;
-        utf8.set(buffer);
+        c::Utf8 utf8(buffer);
         EXPECT_TRUE(utf8.isValid());
         EXPECT_EQUAL(utf8.length(), 7);
         EXPECT_EQUAL(utf8.dataCount(), 10);
+        EXPECT_EQUAL(utf8, buffer);
     }
     
     TEST(SetUtf8)
     {
         const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0x24u, 0xc2u, 0xa2u, 0xe2u, 0x82u, 0xacu, 0u };
-        c::Utf8 utf8;
-        utf8.set(buffer);
+        c::Utf8 utf8(buffer);
         EXPECT_TRUE(utf8.isValid());
         EXPECT_EQUAL(utf8.length(), 4);
         EXPECT_EQUAL(utf8.dataCount(), 10);
@@ -76,13 +75,13 @@ TEST_SUITE(Utf8)
         EXPECT_NOTEQUAL(it, utf8.end());
         ++it;
         EXPECT_EQUAL(it, utf8.end());
+        EXPECT_EQUAL(utf8, buffer);
     }
 
     TEST(SetUtf32)
     {
         const c::uint32_t buffer[] = { 0x10000u, 0xd800u, 0x10fffdu, 0xdc00u, 0x6c34u, 0x24u, 0xfdd0u, 0xffffu, 0u };
-        c::Utf8 utf8;
-        utf8.set(buffer);
+        c::Utf8 utf8(buffer);
         EXPECT_TRUE(utf8.isValid());
         EXPECT_EQUAL(utf8.length(), 6);
         EXPECT_EQUAL(utf8.dataCount(), 18);
@@ -106,6 +105,7 @@ TEST_SUITE(Utf8)
         EXPECT_NOTEQUAL(it, utf8.end());
         ++it;
         EXPECT_EQUAL(it, utf8.end());
+        EXPECT_EQUAL(utf8, buffer);
     }
 
     TEST(Replace)
@@ -116,13 +116,13 @@ TEST_SUITE(Utf8)
         utf8.replace('\\', '/');
         EXPECT_TRUE(utf8.isValid());
         EXPECT_EQUAL(utf8.findFirst('\\'), utf8.end());
+        EXPECT_EQUAL(utf8, "test/replace/folder/slashes");
     }
 
     TEST(Fix)
     {
         const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0xff, 0x24u, 0xc2u, 0xa2u, 0xf8u, 0xe2u, 0x82u, 0xacu, 0u };
-        c::Utf8 utf8;
-        utf8.set(buffer);
+        c::Utf8 utf8(buffer);
         EXPECT_FALSE(utf8.isValid());
         utf8.fix();
         EXPECT_TRUE(utf8.isValid());
@@ -138,13 +138,13 @@ TEST_SUITE(Utf8)
         EXPECT_EQUAL(*it, 0x20acu);
         ++it;
         EXPECT_EQUAL(it, utf8.end());
+        EXPECT_EQUAL(utf8, buffer);
     }
 
     TEST(FindFirstLast)
     {
         const c::uint32_t buffer[] = { 0x10000u, 0xd800u, 0x10fffdu, 0xdc00u, 0x6c34u, 0x10fffdu, 0xfdd0u, 0xffffu, 0u };
-        c::Utf8 utf8;
-        utf8.set(buffer);
+        c::Utf8 utf8(buffer);
         c::Utf8::const_iterator firstit = utf8.findFirst(0x10fffdu);
         EXPECT_NOTEQUAL(firstit, utf8.end());
         EXPECT_EQUAL(*firstit, 0x10fffdu);
@@ -152,5 +152,23 @@ TEST_SUITE(Utf8)
         EXPECT_NOTEQUAL(lastit, utf8.end());
         EXPECT_NOTEQUAL(lastit, firstit);
         EXPECT_EQUAL(*lastit, 0x10fffdu);
+    }
+
+    TEST(FullSlice)
+    {
+        c::Utf8 utf8("this.is.test.string");
+        c::Utf8Slice slice = utf8.slice();
+        EXPECT_EQUAL(slice, "this.is.test.string");
+    }
+
+    TEST(Slice)
+    {
+        c::Utf8 utf8("this.is.test.string");
+        c::Utf8::const_iterator first = utf8.findFirst('.');
+        c::Utf8::const_iterator last = utf8.findLast('.');
+        EXPECT_NOTEQUAL(first, utf8.end());
+        EXPECT_NOTEQUAL(last, utf8.end());
+        c::Utf8Slice slice = utf8.slice(first, last);
+        EXPECT_EQUAL(slice, ".is.test");
     }
 }

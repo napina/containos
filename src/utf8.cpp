@@ -29,6 +29,25 @@ IN THE SOFTWARE.
 
 namespace containos {
 
+bool Utf8Slice::operator==(char const* str) const
+{
+    uint8_t const* ptr = m_begin;
+    uint32_t state = decodestate_accept;
+    uint32_t codepoint = 0;
+    while(ptr != m_end) {
+        if(*str == 0)
+            return false;
+        if(decodeUtfCharacter(state, codepoint, *ptr++) == decodestate_accept) {
+            const uint32_t test = uint8_t(*str++);
+            if(test != codepoint)
+                return false;
+        } else if(state == decodestate_reject) {
+            state = decodestate_accept;
+        }
+    }
+    return *str == 0;
+}
+
 uint32_t Utf8::const_iterator::operator*() const
 {
     uint8_t* ptr = m_ptr;
@@ -58,6 +77,11 @@ void Utf8::const_iterator::operator++()
 
 void Utf8::reserve(size_t capasity)
 {
+    if(m_buffer != nullptr && capasity <= m_buffer->m_capasity) {
+        m_buffer->m_dataCount = 0;   
+        return;
+    }
+
     destruct();
 
     m_buffer = (Utf8::Buffer*)::malloc(sizeof(Utf8::Buffer) + sizeof(uint8_t) * capasity);
@@ -260,6 +284,16 @@ Utf8::const_iterator Utf8::findFirst(uint32_t codepoint) const
     return end();
 }
 
+Utf8::const_iterator Utf8::findFirst(const_iterator start, uint32_t codepoint) const
+{
+    const_iterator it = start;
+    for(; it != end(); ++it) {
+        if(*it == codepoint)
+            return it;
+    }
+    return end();
+}
+
 Utf8::const_iterator Utf8::findLast(uint32_t codepoint) const
 {
     const_iterator it = begin();
@@ -271,42 +305,46 @@ Utf8::const_iterator Utf8::findLast(uint32_t codepoint) const
     return result;
 }
 
-Utf8 Utf8::substring(const_iterator begin, const_iterator end) const
+Utf8::const_iterator Utf8::findLast(const_iterator start, uint32_t codepoint) const
 {
-    const size_t length = countUtfLength(begin.ptr(), end.ptr());
-    return Utf8(begin.ptr(), length);
-}
-
-Utf8 Utf8::substring(const_iterator end) const
-{
-    Utf8 result;
-    result.m_buffer = m_buffer;
-    result.m_length = 0;
-    if(m_buffer != nullptr) {
-        ++(m_buffer->m_refCount);
-        result.m_length = countUtfLength(m_buffer->m_data, end.ptr());;
+    const_iterator it = start;
+    const_iterator result = end();
+    for(; it != end(); ++it) {
+        if(*it == codepoint)
+            result = it;
     }
     return result;
 }
 
-void Utf8::replace(uint32_t from, uint8_t to)
+void Utf8::replace(char from, char to)
 {
-    // TODO
-    if(to > 0x7f)
+    if(from > 0x7f || to > 0x7f)
         return;
 
     uint8_t* ptr = m_buffer->m_data;
-    uint32_t state = decodestate_accept;
-    uint32_t codepoint = 0;
     while(*ptr != 0) {
-        if(decodeUtfCharacter(state, codepoint, *ptr) == decodestate_accept) {
-            if(codepoint == from)
-                *ptr = to;
-        } else if(state == decodestate_reject) {
-            state = decodestate_accept;
-        }
+        if(*ptr == from)
+            *ptr = to;
         ++ptr;
     }
+}
+
+void Utf8::trim(Utf8Slice const& slice)
+{
+    if(m_buffer == nullptr)
+        return;
+
+    if(slice.m_begin < m_buffer->m_data)
+        return;
+
+    if(slice.m_end > m_buffer->m_data + m_buffer->m_dataCount)
+        return;
+
+    const size_t newDataCount = countUtfElements(slice.m_begin, slice.m_end);
+    if(slice.m_begin != m_buffer->m_data)
+        ::memcpy(m_buffer->m_data, slice.m_begin, newDataCount);
+    m_buffer->m_data[newDataCount] = 0;
+    m_buffer->m_dataCount = uint32_t(newDataCount);
 }
 
 void Utf8::fix()
@@ -341,27 +379,6 @@ bool Utf8::isValid() const
     return m_buffer != nullptr && isValidUtfString(m_buffer->m_data);
 }
 
-bool Utf8::operator==(Utf8 const& other) const
-{
-    if(m_buffer == other.m_buffer)
-        return true;
-
-    if(m_length != other.m_length)
-        return false;
-
-    uint8_t const* aptr = m_buffer->m_data;
-    uint8_t const* bptr = other.m_buffer->m_data;
-    uint32_t astate = decodestate_accept;
-    uint32_t bstate = decodestate_accept;
-    uint32_t acodepoint = 0;
-    uint32_t bcodepoint = 0;
-    while(*aptr != 0) {
-        decodeUtfCharacter(astate, acodepoint, *aptr++);
-        decodeUtfCharacter(bstate, bcodepoint, *bptr++);
-    }
-    return false;
-}
-
 bool Utf8::operator==(char const* str) const
 {
     uint8_t const* ptr = m_buffer->m_data;
@@ -371,7 +388,7 @@ bool Utf8::operator==(char const* str) const
         if(*str == 0)
             return false;
         if(decodeUtfCharacter(state, codepoint, *ptr++) == decodestate_accept) {
-            const uint32_t test = uint32_t(*str++);
+            const uint32_t test = uint8_t(*str++);
             if(test != codepoint)
                 return false;
         } else if(state == decodestate_reject) {
@@ -381,10 +398,97 @@ bool Utf8::operator==(char const* str) const
     return *str == 0;
 }
 
-bool Utf8::operator==(wchar_t const* str) const
+bool Utf8::operator==(uint8_t const* str) const
 {
-    str;
-    return false;
+    uint8_t const* aptr = m_buffer->m_data;
+    uint8_t const* bptr = str;
+    uint32_t astate = decodestate_accept;
+    uint32_t bstate = decodestate_accept;
+    uint32_t acodepoint = 0;
+    uint32_t bcodepoint = 0;
+    // decode this in top loop
+    while(*aptr != 0) {
+        if(decodeUtfCharacter(astate, acodepoint, *aptr++) == decodestate_accept) {
+            // now we have this codepoint so decode from str
+            while(*bptr != 0) {
+                if(decodeUtfCharacter(bstate, bcodepoint, *bptr++) == decodestate_accept) {
+                    if(acodepoint == bcodepoint)
+                        break;
+                    return false;
+                } else if(bstate == decodestate_reject) {
+                    bstate = decodestate_accept;
+                }
+            }
+            if(*bptr != 0)
+                continue;
+            break;
+        } else if(astate == decodestate_reject) {
+            astate = decodestate_accept;
+        }
+    }
+    return *aptr == 0 && *bptr == 0;
+}
+
+bool Utf8::operator==(uint16_t const* str) const
+{
+    uint8_t const* aptr = m_buffer->m_data;
+    uint16_t const* bptr = str;
+    uint32_t astate = decodestate_accept;
+    uint32_t bstate = decodestate_accept;
+    uint32_t acodepoint = 0;
+    uint32_t bcodepoint = 0;
+    // decode this in top loop
+    while(*aptr != 0) {
+        if(decodeUtfCharacter(astate, acodepoint, *aptr++) == decodestate_accept) {
+            // now we have this codepoint so decode from str
+            while(*bptr != 0) {
+                if(decodeUtfCharacter(bstate, bcodepoint, *bptr++) == decodestate_accept) {
+                    if(acodepoint == bcodepoint)
+                        break;
+                    return false;
+                } else if(bstate == decodestate_reject) {
+                    bstate = decodestate_accept;
+                }
+            }
+            if(*bptr != 0)
+                continue;
+            break;
+        } else if(astate == decodestate_reject) {
+            astate = decodestate_accept;
+        }
+    }
+    return *aptr == 0 && *bptr == 0;
+}
+
+bool Utf8::operator==(uint32_t const* str) const
+{
+    uint8_t const* aptr = m_buffer->m_data;
+    uint32_t const* bptr = str;
+    uint32_t astate = decodestate_accept;
+    uint32_t bstate = decodestate_accept;
+    uint32_t acodepoint = 0;
+    uint32_t bcodepoint = 0;
+    // decode this in top loop
+    while(*aptr != 0) {
+        if(decodeUtfCharacter(astate, acodepoint, *aptr++) == decodestate_accept) {
+            // now we have this codepoint so decode from str
+            while(*bptr != 0) {
+                if(decodeUtfCharacter(bstate, bcodepoint, *bptr++) == decodestate_accept) {
+                    if(acodepoint == bcodepoint)
+                        break;
+                    return false;
+                } else if(bstate == decodestate_reject) {
+                    bstate = decodestate_accept;
+                }
+            }
+            if(*bptr != 0)
+                continue;
+            break;
+        } else if(astate == decodestate_reject) {
+            astate = decodestate_accept;
+        }
+    }
+    return *aptr == 0 && *bptr == 0;
 }
 
 } // end of containos

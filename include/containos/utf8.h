@@ -30,6 +30,17 @@ IN THE SOFTWARE.
 
 namespace containos {
 
+// Slice of utf8 container
+struct Utf8Slice
+{
+    bool operator==(Utf8Slice const& slice) const;
+    bool operator==(char const* str) const;
+    bool operator==(wchar_t const* str) const;
+
+    uint8_t const* m_begin;
+    uint8_t const* m_end;
+};
+
 // Utf8 container
 class Utf8
 {
@@ -50,6 +61,7 @@ public:
     ~Utf8();
     Utf8();
     Utf8(Utf8 const& other);
+    Utf8(Utf8Slice const& other);
     explicit Utf8(char const* str);
     explicit Utf8(char const* str, size_t count);
     explicit Utf8(wchar_t const* str);
@@ -66,6 +78,7 @@ public:
     void reserve(size_t capasity);
 
     void set(Utf8 const& other);
+    void set(Utf8Slice const& other);
     void set(char const* str);
     void set(char const* str, size_t count);
     void set(wchar_t const* str);
@@ -81,6 +94,7 @@ public:
 
     void append(uint32_t ch);
     void append(Utf8 const& other);
+    void append(Utf8Slice const& slice);
     void append(char const* str);
     void append(char const* str, size_t count);
     void append(wchar_t const* str);
@@ -94,15 +108,19 @@ public:
     template<size_t Count> void append(char const (&str)[Count]);
     template<size_t Count> void append(wchar_t const (&str)[Count]);
 
-    void replace(uint32_t from, uint8_t to);
+    void replace(char from, char to);
+    void trim(Utf8Slice const& slice);
     void fix();
 
     const_iterator begin() const;
     const_iterator end() const;
     const_iterator findFirst(uint32_t codepoint) const;
     const_iterator findLast(uint32_t codepoint) const;
-    Utf8 substring(const_iterator begin, const_iterator end) const;
-    Utf8 substring(const_iterator end) const;
+    const_iterator findFirst(const_iterator start, uint32_t codepoint) const;
+    const_iterator findLast(const_iterator start, uint32_t codepoint) const;
+    Utf8Slice slice(const_iterator begin, const_iterator end) const;
+    Utf8Slice slice(const_iterator end) const;
+    Utf8Slice slice() const;
 
     uint8_t const* data() const;
     size_t dataCount() const;
@@ -111,8 +129,12 @@ public:
     bool isValid() const;
 
     bool operator==(Utf8 const& other) const;
+    bool operator==(Utf8Slice const& slice) const;
     bool operator==(char const* str) const;
     bool operator==(wchar_t const* str) const;
+    bool operator==(uint8_t const* str) const;
+    bool operator==(uint16_t const* str) const;
+    bool operator==(uint32_t const* str) const;
 
 private:
     void destruct();
