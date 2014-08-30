@@ -51,11 +51,11 @@ public:
     ~Ref();
     Ref();
     Ref(nullptr_t);
-    Ref(T* __restrict ptr);
-    explicit Ref(Ref<T>& other);
+    Ref(T const* ptr);
+    explicit Ref(Ref<T> const& other);
 
-    Ref<T>& operator=(T* ptr);
-    Ref<T>& operator=(Ref<T>& other);
+    Ref<T>& operator=(T const* ptr);
+    Ref<T>& operator=(Ref<T> const& other);
     Ref<T>& operator=(nullptr_t);
     bool operator==(Ref<T> const& other) const;
     bool operator!=(Ref<T> const& other) const;
@@ -76,12 +76,13 @@ public:
 
     template<typename T2> T2* cast();
 
-    void reset(T* ptr = nullptr);
-    /// doesn't delete
+    void reset(T const* ptr);
+    void reset();
+    // doesn't delete
     T* release();
 
 private:
-    void set(T* ptr);
+    void set(T const* ptr);
     void removeRef();
 
 private:
