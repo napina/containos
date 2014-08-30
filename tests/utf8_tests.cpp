@@ -108,6 +108,21 @@ TEST_SUITE(Utf8)
         EXPECT_EQUAL(utf8, buffer);
     }
 
+    TEST(PlacementCopy)
+    {
+        c::Utf8 copy;
+        {
+            c::Utf8 utf8("this.should be-shared");
+            copy = utf8;
+            EXPECT_TRUE(utf8.isValid());
+            EXPECT_TRUE(copy.isValid());
+            EXPECT_EQUAL(utf8, "this.should be-shared");
+            EXPECT_EQUAL(copy, "this.should be-shared");
+        }
+        EXPECT_TRUE(copy.isValid());
+        EXPECT_EQUAL(copy, "this.should be-shared");
+    }
+
     TEST(Replace)
     {
         c::Utf8 utf8("test\\replace/folder\\slashes");

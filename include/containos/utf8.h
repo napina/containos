@@ -128,6 +128,9 @@ public:
     size_t length() const;
     bool isValid() const;
 
+    void operator=(Utf8 const& other);
+    void operator=(Utf8Slice const& slice);
+
     bool operator==(Utf8 const& other) const;
     bool operator==(Utf8Slice const& slice) const;
     bool operator==(char const* str) const;

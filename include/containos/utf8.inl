@@ -160,6 +160,15 @@ template<size_t Count> __forceinline Utf8::Utf8(wchar_t const (&str)[Count])
     set(str, Count);
 }
 
+__forceinline void Utf8::set(Utf8 const& other)
+{
+    destruct();
+    m_buffer = other.m_buffer;
+    m_length = other.m_length;
+    if(m_buffer != nullptr)
+        ++(m_buffer->m_refCount);
+}
+
 __forceinline void Utf8::set(Utf8Slice const& slice)
 {
     set(slice.m_begin, countUtfElements(slice.m_begin, slice.m_end));
@@ -274,6 +283,16 @@ __forceinline size_t Utf8::capasity() const
 __forceinline size_t Utf8::length() const
 {
     return m_length;
+}
+
+__forceinline void Utf8::operator=(Utf8 const& other)
+{
+    set(other);
+}
+
+__forceinline void Utf8::operator=(Utf8Slice const& slice)
+{
+    set(slice);
 }
 
 __forceinline bool Utf8::operator==(Utf8 const& other) const
