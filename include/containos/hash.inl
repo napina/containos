@@ -99,6 +99,29 @@ __forceinline uint64_t hash64(ConstCharWrapper wrapper)
 }
 //-----------------------------------------------------------------------------
 
+__forceinline uint32_t hash32(uint8_t const* str)
+{
+    uint32_t value = 2166136261u; // basis
+    while(*str != 0) {
+        value ^= str[0];
+        value *= 16777619u; // prime
+        ++str;
+    }
+    return value;
+}
+
+__forceinline uint64_t hash64(uint8_t const* str)
+{
+    uint64_t value = 14695981039346656037ull; // basis
+    while(*str != 0) {
+        value ^= str[0];
+        value *= 1099511628211ull; // prime
+        ++str;
+    }
+    return value;
+}
+//-----------------------------------------------------------------------------
+
 __forceinline uint32_t hash32(void const* data, size_t size)
 {
     char const* ptr = reinterpret_cast<char const*>(data);

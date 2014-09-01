@@ -42,6 +42,10 @@ struct ConstCharWrapper {
 // These are for dynamic null terminated strings
 uint32_t hash32(ConstCharWrapper str);
 uint64_t hash64(ConstCharWrapper str);
+
+// These are for dynamic null terminated utf8 strings
+uint32_t hash32(uint8_t const* str);
+uint64_t hash64(uint8_t const* str);
 //-----------------------------------------------------------------------------
 
 // These are for generic data
