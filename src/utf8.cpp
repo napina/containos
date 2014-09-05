@@ -374,6 +374,58 @@ void Utf8::fix()
     m_buffer->m_dataCount = uint32_t(ptrdiff_t(writePtr) - ptrdiff_t(m_buffer->m_data));
 }
 
+bool Utf8::convertTo(char* buffer, size_t count) const
+{
+    count;
+    uint8_t* readPtr = m_buffer->m_data;
+    char* writePtr = buffer;
+    uint32_t state = decodestate_accept;
+    uint32_t codepoint = 0;
+    while(*readPtr != 0) {
+        if(decodeUtfCharacter(state, codepoint, *readPtr++) == decodestate_accept && codepoint < 256) {
+            *writePtr++ = char(codepoint);
+        }
+    }
+    *writePtr = 0;
+    return true;
+}
+
+void Utf8::convertTo(uint16_t* buffer, size_t count) const
+{
+    count;
+    uint8_t* readPtr = m_buffer->m_data;
+    uint16_t* writePtr = buffer;
+    uint32_t state = decodestate_accept;
+    uint32_t codepoint = 0;
+    while(*readPtr != 0) {
+        if(decodeUtfCharacter(state, codepoint, *readPtr++) == decodestate_accept) {
+            if(codepoint < 0x10000) {
+                *writePtr++ = uint16_t(codepoint);
+            } else {
+                codepoint -= 0x10000u;
+                *writePtr++ = 0xd800u + uint16_t(codepoint >> 10u);
+                *writePtr++ = 0xdc00u + uint16_t(codepoint & 0x03ffu);
+            }
+        }
+    }
+    *writePtr = 0;
+}
+
+void Utf8::convertTo(uint32_t* buffer, size_t count) const
+{
+    count;
+    uint8_t* readPtr = m_buffer->m_data;
+    uint32_t* writePtr = buffer;
+    uint32_t state = decodestate_accept;
+    uint32_t codepoint = 0;
+    while(*readPtr != 0) {
+        if(decodeUtfCharacter(state, codepoint, *readPtr++) == decodestate_accept) {
+            *writePtr++ = codepoint;
+        }
+    }
+    *writePtr = 0;
+}
+
 bool Utf8::isValid() const
 {
     return m_buffer != nullptr && isValidUtfString(m_buffer->m_data);

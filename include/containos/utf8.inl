@@ -229,6 +229,11 @@ template<size_t Count> __forceinline void Utf8::append(wchar_t const (&str)[Coun
     append(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str), Count);
 }
 
+__forceinline void Utf8::convertTo(wchar_t* buffer, size_t count) const
+{
+    convertTo(reinterpret_cast<CONTAINOS_WCHAR_IS*>(buffer), count);
+}
+
 __forceinline Utf8::const_iterator Utf8::begin() const
 {
     return const_iterator(m_buffer->m_data);

@@ -156,6 +156,54 @@ TEST_SUITE(Utf8)
         EXPECT_EQUAL(utf8, buffer);
     }
 
+    TEST(ConvertToChar)
+    {
+        const char buffer[] = "test ½ string";
+        c::Utf8 utf8(buffer);
+        EXPECT_TRUE(utf8.isValid());
+        char buffer2[100];
+        utf8.convertTo(buffer2, 100);
+        for(size_t i = 0; i < 14; ++i) {
+            EXPECT_EQUAL(buffer[i], buffer2[i]);
+        }
+    }
+
+    TEST(ConvertToWchar)
+    {
+        const wchar_t buffer[] = L"Test € äöe |";
+        c::Utf8 utf8(buffer);
+        EXPECT_TRUE(utf8.isValid());
+        wchar_t buffer2[100];
+        utf8.convertTo(buffer2, 100);
+        for(size_t i = 0; i < 13; ++i) {
+            EXPECT_EQUAL(buffer[i], buffer2[i]);
+        }
+    }
+
+    TEST(ConvertToUtf16)
+    {
+        const c::uint16_t buffer[] = { 0xd800u, 0xdc00u, 0xfeffu, 0x6c34u, 0xd834u, 0xdd1eu, 0u };
+        c::Utf8 utf8(buffer);
+        EXPECT_TRUE(utf8.isValid());
+        c::uint16_t buffer2[100];
+        utf8.convertTo(buffer2, 100);
+        for(size_t i = 0; i < 9; ++i) {
+            EXPECT_EQUAL(buffer[i], buffer2[i]);
+        }
+    }
+
+    TEST(ConvertToUtf32)
+    {
+        const c::uint32_t buffer[] = { 0x10000u, 0x10fffdu, 0x6c34u, 0x24u, 0xfdd0u, 0xffffu, 0u };
+        c::Utf8 utf8(buffer);
+        EXPECT_TRUE(utf8.isValid());
+        c::uint32_t buffer2[100];
+        utf8.convertTo(buffer2, 100);
+        for(size_t i = 0; i < 9; ++i) {
+            EXPECT_EQUAL(buffer[i], buffer2[i]);
+        }
+    }
+
     TEST(FindFirstLast)
     {
         const c::uint32_t buffer[] = { 0x10000u, 0xd800u, 0x10fffdu, 0xdc00u, 0x6c34u, 0x10fffdu, 0xfdd0u, 0xffffu, 0u };

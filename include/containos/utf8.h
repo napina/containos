@@ -112,6 +112,11 @@ public:
     void trim(Utf8Slice const& slice);
     void fix();
 
+    bool convertTo(char* buffer, size_t count) const;
+    void convertTo(wchar_t* buffer, size_t count) const;
+    void convertTo(uint16_t* buffer, size_t count) const;
+    void convertTo(uint32_t* buffer, size_t count) const;
+
     const_iterator begin() const;
     const_iterator end() const;
     const_iterator findFirst(uint32_t codepoint) const;
