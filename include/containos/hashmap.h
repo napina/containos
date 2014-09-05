@@ -25,6 +25,7 @@ IN THE SOFTWARE.
 #ifndef containos_hashmap_h
 #define containos_hashmap_h
 
+#include "containos/common.h"
 #include "containos/container.h"
 
 namespace containos {
@@ -37,8 +38,6 @@ namespace containos {
         HashMap<void*,Data> pointerToData;
         HashMap<HashedString,Data,DataPool> stringToData;
 */
-
-typedef unsigned int uint32;
 
 namespace internal {
 
@@ -65,7 +64,7 @@ public:
         typedef HashMapNode<Key,T> NodeType;
 
         iterator(MapType* map);
-        iterator(MapType* map, NodeType* node, uint32 bucketIndex);
+        iterator(MapType* map, NodeType* node, uint32_t bucketIndex);
         iterator(iterator const& other);
 
         void next();
@@ -81,7 +80,7 @@ public:
         friend struct const_iterator;
         MapType* m_map;
         NodeType* m_node;
-        uint32 m_bucketIndex;
+        uint32_t m_bucketIndex;
     };
 
     struct const_iterator
@@ -91,7 +90,7 @@ public:
         typedef HashMapNode<Key,T> NodeType;
 
         const_iterator(MapType const* map);
-        const_iterator(MapType const* map, NodeType* node, uint32 bucketIndex);
+        const_iterator(MapType const* map, NodeType* node, uint32_t bucketIndex);
         const_iterator(iterator const& other);
         const_iterator(const_iterator const& other);
 
@@ -107,18 +106,18 @@ public:
     private:
         MapType const* m_map;
         NodeType const* m_node;
-        uint32 m_bucketIndex;
+        uint32_t m_bucketIndex;
     };
 
     ~HashMapBase();
-    HashMapBase(uint32 bucketCount);
+    HashMapBase(uint32_t bucketCount);
 
     bool insert(Key const& key, T& value);
     bool insert(Key const& key, T const& value);
     void remove(Key const& key);
     void clear();
 
-    uint32 size() const;
+    uint32_t size() const;
 
     iterator begin();
     iterator end();
@@ -133,8 +132,8 @@ private:
 
 private:
     NodeType** m_buckets;
-    uint32 m_bucketCount;
-    uint32 m_size;
+    uint32_t m_bucketCount;
+    uint32_t m_size;
 };
 
 } // end of internal
@@ -144,7 +143,7 @@ struct HashMap :
     public internal::HashMapBase<Key,T,internal::HashedKeyToBucket<Key>,Allocator>
 {
     ~HashMap();
-    HashMap(uint32 bucketCount);
+    HashMap(uint32_t bucketCount);
 };
 
 template<typename Key,typename T,typename Allocator>
@@ -152,15 +151,15 @@ struct HashMap<Key*,T,Allocator> :
     public internal::HashMapBase<Key*,T,internal::PointerKeyToBucket<Key*>,Allocator>
 {
     ~HashMap();
-    HashMap(uint32 bucketCount);
+    HashMap(uint32_t bucketCount);
 };
 
 template<typename T,typename Allocator>
-struct HashMap<uint32,T,Allocator> :
-    public internal::HashMapBase<uint32,T,internal::IntegerKeyToBucket<uint32>,Allocator>
+struct HashMap<uint32_t,T,Allocator> :
+    public internal::HashMapBase<uint32_t,T,internal::IntegerKeyToBucket<uint32_t>,Allocator>
 {
     ~HashMap();
-    HashMap(uint32 bucketCount);
+    HashMap(uint32_t bucketCount);
 };
 
 } // end of korppu
