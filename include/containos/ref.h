@@ -87,6 +87,9 @@ private:
 
 private:
     T* m_mem;
+
+    REFLECT_CLASS(Ref<T>,1)
+    REFLECT_END()
 };
 
 } // end of containos
