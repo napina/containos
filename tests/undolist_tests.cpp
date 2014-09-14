@@ -57,7 +57,7 @@ TEST_SUITE(UndoList)
     TEST(Undo)
     {
         int value = 100;
-        c::UndoList<> list(10);
+        c::UndoList list(10);
         EXPECT_EQUAL(list.undoCount(), 0u);
         EXPECT_EQUAL(list.redoCount(), 0u);
         list.add<SetIntCommand>(&value, 23);
@@ -73,7 +73,7 @@ TEST_SUITE(UndoList)
     TEST(UndoRedo)
     {
         int value = 100;
-        c::UndoList<> list(10);
+        c::UndoList list(10);
         list.add<SetIntCommand>(&value, 23);
         EXPECT_EQUAL(list.undoCount(), 1u);
         EXPECT_EQUAL(list.redoCount(), 0u);
@@ -90,7 +90,7 @@ TEST_SUITE(UndoList)
 
     TEST(UndoMultiple)
     {
-        c::UndoList<> list(10);
+        c::UndoList list(10);
         int value = 100;
         for(int i = 0; i < 8; ++i) {
             list.add<SetIntCommand>(&value, i);
@@ -107,7 +107,7 @@ TEST_SUITE(UndoList)
     TEST(Clear)
     {
         int value = 100;
-        c::UndoList<> list(10);
+        c::UndoList list(10);
         list.add<SetIntCommand>(&value, 23);
         list.clear();
         EXPECT_EQUAL(list.undoCount(), 0u);
@@ -117,7 +117,7 @@ TEST_SUITE(UndoList)
 
     TEST(ClearHistory)
     {
-        c::UndoList<> list(10);
+        c::UndoList list(10);
         int value = 100;
         for(int i = 0; i < 8; ++i) {
             list.add<SetIntCommand>(&value, i);
@@ -134,7 +134,7 @@ TEST_SUITE(UndoList)
 
     TEST(ClearFuture)
     {
-        c::UndoList<> list(10);
+        c::UndoList list(10);
         int value = 100;
         for(int i = 0; i < 8; ++i) {
             list.add<SetIntCommand>(&value, i);
@@ -151,7 +151,7 @@ TEST_SUITE(UndoList)
 
     TEST(UndoMultipleAndDo)
     {
-        c::UndoList<> list(10);
+        c::UndoList list(10);
         int value = 100;
         for(int i = 0; i < 8; ++i) {
             list.add<SetIntCommand>(&value, i);

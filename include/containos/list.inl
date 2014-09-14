@@ -25,63 +25,65 @@ IN THE SOFTWARE.
 #ifndef containos_list_inl
 #define containos_list_inl
 
+#include "containos/allocator.h"
+
 #pragma warning(disable:4127)
 
 namespace containos {
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline List<T,GrowRule,Allocator>::~List()
+template<typename T,typename GrowRule>
+__forceinline List<T,GrowRule>::~List()
 {
     clearAndFree();
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline List<T,GrowRule,Allocator>::List()
-    : Base()
-    , m_mem(nullptr)
+template<typename T,typename GrowRule>
+__forceinline List<T,GrowRule>::List()
+    : m_mem(nullptr)
     , m_size(0)
     , m_capasity(0)
+    , m_allocator(DefaultAllocator::instance())
 {
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline List<T,GrowRule,Allocator>::List(size_t capasity)
-    : Base()
-    , m_mem(nullptr)
+template<typename T,typename GrowRule>
+__forceinline List<T,GrowRule>::List(size_t capasity)
+    : m_mem(nullptr)
     , m_size(0)
     , m_capasity(0)
+    , m_allocator(DefaultAllocator::instance())
 {
     reserve(capasity);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-template<typename Allocator2, typename GrowRule2>
-inline List<T,GrowRule,Allocator>::List(List<T,GrowRule2,Allocator2> const& other)
-    : Base()
-    , m_mem(nullptr)
+template<typename T,typename GrowRule>
+template<typename GrowRule2>
+inline List<T,GrowRule>::List(List<T,GrowRule2> const& other)
+    : m_mem(nullptr)
     , m_size(0)
     , m_capasity(0)
+    , m_allocator(DefaultAllocator::instance())
 {
     copy(other);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::operator=(List<T,GrowRule,Allocator> const& other)
-{
-    clearAndFree();
-    copy(other);
-}
-
-template<typename T,typename GrowRule,typename Allocator>
-template<typename Allocator2, typename GrowRule2>
-__forceinline void List<T,GrowRule,Allocator>::operator=(List<T,GrowRule2,Allocator2> const& other)
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::operator=(List<T,GrowRule> const& other)
 {
     clearAndFree();
     copy(other);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T& List<T,GrowRule,Allocator>::acquire()
+template<typename T,typename GrowRule>
+template<typename GrowRule2>
+__forceinline void List<T,GrowRule>::operator=(List<T,GrowRule2> const& other)
+{
+    clearAndFree();
+    copy(other);
+}
+
+template<typename T,typename GrowRule>
+__forceinline T& List<T,GrowRule>::acquire()
 {
     if(GrowRule::enabled && m_size >= m_capasity) {
         reserve(m_capasity + GrowRule::count);
@@ -91,8 +93,8 @@ __forceinline T& List<T,GrowRule,Allocator>::acquire()
     return m_mem[m_size++];
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::insert(T& item)
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::insert(T& item)
 {
     if(GrowRule::enabled && m_size >= m_capasity) {
         reserve(m_capasity + GrowRule::count);
@@ -102,8 +104,8 @@ __forceinline void List<T,GrowRule,Allocator>::insert(T& item)
     ++m_size;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::insert(T const& item)
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::insert(T const& item)
 {
     if(GrowRule::enabled && m_size >= m_capasity) {
         reserve(m_capasity + GrowRule::count);
@@ -113,9 +115,9 @@ __forceinline void List<T,GrowRule,Allocator>::insert(T const& item)
     ++m_size;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-template<typename Allocator2, typename GrowRule2>
-inline void List<T,GrowRule,Allocator>::insert(List<T,GrowRule2,Allocator2> const& other)
+template<typename T,typename GrowRule>
+template<typename GrowRule2>
+inline void List<T,GrowRule>::insert(List<T,GrowRule2> const& other)
 {
     size_t count = other.size();
     if(GrowRule::enabled && (m_size + count) >= m_capasity) {
@@ -127,8 +129,8 @@ inline void List<T,GrowRule,Allocator>::insert(List<T,GrowRule2,Allocator2> cons
     }
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::remove(size_t index)
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::remove(size_t index)
 {
     containos_assert(index < m_size);
     containos_placement_delete(&m_mem[index], T);
@@ -137,8 +139,8 @@ __forceinline void List<T,GrowRule,Allocator>::remove(size_t index)
     containos_memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::remove(iterator& ite)
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::remove(iterator& ite)
 {
     containos_assert(ite != end());
     ptrdiff_t index = ite - m_mem;
@@ -147,16 +149,16 @@ __forceinline void List<T,GrowRule,Allocator>::remove(iterator& ite)
     containos_memcpy(&m_mem[index], &m_mem[m_size], sizeof(T));
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::removeLast()
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::removeLast()
 {
     containos_assert(m_size > 0);
     --m_size;
     containos_placement_delete(&m_mem[m_size], T);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline bool List<T,GrowRule,Allocator>::pop(T& result)
+template<typename T,typename GrowRule>
+__forceinline bool List<T,GrowRule>::pop(T& result)
 {
     if(m_size > 0) {
         --m_size;
@@ -168,13 +170,13 @@ __forceinline bool List<T,GrowRule,Allocator>::pop(T& result)
     return false;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-inline void List<T,GrowRule,Allocator>::resize(size_t newSize)
+template<typename T,typename GrowRule>
+inline void List<T,GrowRule>::resize(size_t newSize)
 {
     T* newMem = nullptr;
     size_t copyCount = m_size < newSize ? m_size : newSize;
     if(newSize > 0) {
-        newMem = Base::template constructArray<T>(newSize);
+        newMem = (T*)m_allocator->alloc(sizeof(T) * newSize,__alignof(T));
         if(copy_rule::allowed) {
             containos_memcpy(newMem, m_mem, copyCount * sizeof(T));
             for(size_t i = copyCount; i < newSize; ++i) {
@@ -193,29 +195,29 @@ inline void List<T,GrowRule,Allocator>::resize(size_t newSize)
     for(size_t i = copyCount; i < m_size; ++i) {
         containos_placement_delete(&m_mem[i], T);
     }
-    Base::template destructArray<T>(m_mem, m_capasity);
+    m_allocator->dealloc(m_mem);
 
     m_mem = newMem;
     m_capasity = newSize;
     m_size = newSize;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::resize(iterator& newEnd)
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::resize(iterator& newEnd)
 {
     ptrdiff_t size = newEnd - m_mem;
     resize(size);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-inline void List<T,GrowRule,Allocator>::resizeNoCopy(size_t newSize)
+template<typename T,typename GrowRule>
+inline void List<T,GrowRule>::resizeNoCopy(size_t newSize)
 {
     clearAndFree();
 
     if(newSize == 0)
         return;
 
-    m_mem = Base::template constructArray<T>(newSize);
+    m_mem = (T*)m_allocator->alloc(sizeof(T) * newSize,__alignof(T));
     m_capasity = newSize;
     m_size = newSize;
     for(size_t i = 0; i < newSize; ++i) {
@@ -223,20 +225,26 @@ inline void List<T,GrowRule,Allocator>::resizeNoCopy(size_t newSize)
     }
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::resizeNoCopy(iterator& newEnd)
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::resizeNoCopy(iterator& newEnd)
 {
     ptrdiff_t size = newEnd - m_mem;
     resizeNoCopy(size);
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-inline void List<T,GrowRule,Allocator>::reserve(size_t newCapasity)
+template<typename T,typename GrowRule>
+inline void List<T,GrowRule>::reserve(size_t newCapasity)
+{
+    reserve(newCapasity, DefaultAllocator::instance());
+}
+
+template<typename T,typename GrowRule>
+inline void List<T,GrowRule>::reserve(size_t newCapasity, Allocator* allocator)
 {
     if(newCapasity <= m_capasity)
         return;
 
-    T* newMem = Base::template constructArray<T>(newCapasity);
+    T* newMem = (T*)allocator->alloc(sizeof(T) * newCapasity,__alignof(T));
     if(m_mem != nullptr) {
         if(copy_rule::allowed) {
             containos_memcpy(newMem, m_mem, m_size * sizeof(T));
@@ -248,14 +256,15 @@ inline void List<T,GrowRule,Allocator>::reserve(size_t newCapasity)
         for(size_t i = 0; i < m_size; ++i) {
             containos_placement_delete(&m_mem[i], T);
         }
-        Base::template destructArray<T>(m_mem, m_capasity);
+        m_allocator->dealloc(m_mem);
     }
     m_mem = newMem;
     m_capasity = newCapasity;
+    m_allocator = allocator;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-inline void List<T,GrowRule,Allocator>::clearAndFree()
+template<typename T,typename GrowRule>
+inline void List<T,GrowRule>::clearAndFree()
 {
     if(m_mem == nullptr)
         return;
@@ -263,14 +272,14 @@ inline void List<T,GrowRule,Allocator>::clearAndFree()
     for(size_t i = 0; i < m_size; ++i) {
         containos_placement_delete(&m_mem[i], T);
     }
-    Base::template destructArray<T>(m_mem, m_capasity);
+    m_allocator->dealloc(m_mem);
     m_mem = nullptr;
     m_size = 0;
     m_capasity = 0;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline void List<T,GrowRule,Allocator>::clear()
+template<typename T,typename GrowRule>
+__forceinline void List<T,GrowRule>::clear()
 {
     for(size_t i = 0; i < m_size; ++i) {
         containos_placement_delete(&m_mem[i], T);
@@ -278,75 +287,82 @@ __forceinline void List<T,GrowRule,Allocator>::clear()
     m_size = 0;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline typename List<T,GrowRule,Allocator>::iterator List<T,GrowRule,Allocator>::begin()
+template<typename T,typename GrowRule>
+__forceinline typename List<T,GrowRule>::iterator List<T,GrowRule>::begin()
 {
     return m_mem;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline typename List<T,GrowRule,Allocator>::iterator List<T,GrowRule,Allocator>::end()
+template<typename T,typename GrowRule>
+__forceinline typename List<T,GrowRule>::iterator List<T,GrowRule>::end()
 {
     return m_mem + m_size;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline typename List<T,GrowRule,Allocator>::const_iterator List<T,GrowRule,Allocator>::begin() const
+template<typename T,typename GrowRule>
+__forceinline typename List<T,GrowRule>::const_iterator List<T,GrowRule>::begin() const
 {
     return m_mem;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline typename List<T,GrowRule,Allocator>::const_iterator List<T,GrowRule,Allocator>::end() const
+template<typename T,typename GrowRule>
+__forceinline typename List<T,GrowRule>::const_iterator List<T,GrowRule>::end() const
 {
     return m_mem + m_size;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T& List<T,GrowRule,Allocator>::operator[](size_t index)
+template<typename T,typename GrowRule>
+__forceinline T& List<T,GrowRule>::operator[](size_t index)
 {
     containos_assert(index < m_size);
     return m_mem[index];
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T const& List<T,GrowRule,Allocator>::operator[](size_t index) const
+template<typename T,typename GrowRule>
+__forceinline T const& List<T,GrowRule>::operator[](size_t index) const
 {
     containos_assert(index < m_size);
     return m_mem[index];
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T const* List<T,GrowRule,Allocator>::mem() const
+template<typename T,typename GrowRule>
+__forceinline T const* List<T,GrowRule>::mem() const
 {
     return m_mem;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline T const& List<T,GrowRule,Allocator>::last() const
+template<typename T,typename GrowRule>
+__forceinline T const& List<T,GrowRule>::last() const
 {
     containos_assert(m_size > 0);
     return m_mem[m_size - 1];
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline size_t List<T,GrowRule,Allocator>::size() const
+template<typename T,typename GrowRule>
+__forceinline size_t List<T,GrowRule>::size() const
 {
     return m_size;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-__forceinline size_t List<T,GrowRule,Allocator>::capasity() const
+template<typename T,typename GrowRule>
+__forceinline size_t List<T,GrowRule>::capasity() const
 {
     return m_capasity;
 }
 
-template<typename T,typename GrowRule,typename Allocator>
-template<typename Allocator2,typename GrowRule2>
-inline void List<T,GrowRule,Allocator>::copy(List<T,GrowRule2,Allocator2> const& other)
+template<typename T,typename GrowRule>
+__forceinline Allocator* List<T,GrowRule>::allocator()
+{
+    return m_allocator;
+}
+
+template<typename T,typename GrowRule>
+template<typename GrowRule2>
+inline void List<T,GrowRule>::copy(List<T,GrowRule2> const& other)
 {
     if(other.m_size > 0) {
-        m_mem = Base::template constructArray<T>(other.m_size);
+        m_allocator = other.m_allocator;
+        m_mem = (T*)m_allocator->alloc(sizeof(T) * other.m_size,__alignof(T));
         m_capasity = other.m_size;
         m_size = other.m_size;
         for(size_t i = 0; i < m_size; ++i) {

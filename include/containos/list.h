@@ -25,7 +25,7 @@ IN THE SOFTWARE.
 #ifndef containos_list_h
 #define containos_list_h
 
-#include "containos/container.h"
+#include "containos/common.h"
 
 namespace containos {
 
@@ -35,11 +35,12 @@ struct ListGrowRule {
     static const int count = Count;
 };
 
+class Allocator;
+
 // Simple continuous list of items
-template<typename T,typename GrowRule=ListGrowRule<32>,typename Allocator=Mallocator >
-class List : protected Container<Allocator>
+template<typename T,typename GrowRule=ListGrowRule<32>>
+class List
 {
-    typedef Container<Allocator> Base;
 public:
     typedef T* iterator;
     typedef T const* const_iterator;
@@ -49,14 +50,14 @@ public:
     List();
     List(size_t capasity);
 
-    void operator=(List<T,GrowRule,Allocator> const& other);
-    template<typename Allocator2,typename GrowRule2> List(List<T,GrowRule2,Allocator2> const& other);
-    template<typename Allocator2,typename GrowRule2> void operator=(List<T,GrowRule2,Allocator2> const& other);
+    void operator=(List<T,GrowRule> const& other);
+    template<typename GrowRule2> List(List<T,GrowRule2> const& other);
+    template<typename GrowRule2> void operator=(List<T,GrowRule2> const& other);
 
     T& acquire();
     void insert(T& item);
     void insert(T const& item);
-    template<typename Allocator2,typename GrowRule2> void insert(List<T,GrowRule2,Allocator2> const& other);
+    template<typename GrowRule2> void insert(List<T,GrowRule2> const& other);
     void remove(size_t index);
     void remove(iterator& ite);
     void removeLast();
@@ -67,6 +68,7 @@ public:
     void resizeNoCopy(size_t newSize);
     void resizeNoCopy(iterator& newEnd);
     void reserve(size_t capasity);
+    void reserve(size_t capasity, Allocator* allocator);
     void clearAndFree();
     void clear();
 
@@ -81,13 +83,15 @@ public:
     T const& last() const;
     size_t size() const;
     size_t capasity() const;
+    Allocator* allocator();
 
 private:
-    template<typename Allocator2,typename GrowRule2> void copy(List<T,GrowRule2,Allocator2> const& other);
+    template<typename GrowRule2> void copy(List<T,GrowRule2> const& other);
 
     T* m_mem;
     size_t m_size;
     size_t m_capasity;
+    Allocator* m_allocator;
 };
 
 } // end of containos

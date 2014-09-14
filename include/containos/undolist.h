@@ -25,7 +25,8 @@ IN THE SOFTWARE.
 #ifndef containos_undolist_h
 #define containos_undolist_h
 
-#include "containos/container.h"
+#include "containos/common.h"
+#include "containos/allocator.h"
 #include "containos/list.h"
 
 namespace containos {
@@ -37,10 +38,8 @@ public:
     virtual void reverse() = 0;
 };
 
-template<typename Allocator = Mallocator>
-class UndoList : protected Container<Allocator>
+class UndoList
 {
-    typedef Container<Allocator> Base;
 public:
     ~UndoList();
     UndoList(size_t capacity = 0);
@@ -68,7 +67,7 @@ public:
     bool isRedoAllowed() const;
 
 private:
-    typedef List<UndoCommand*,ListGrowRule<64>,Allocator> CommandStack;
+    typedef List<UndoCommand*,ListGrowRule<64> > CommandStack;
     CommandStack m_commandStack;
     size_t m_currentIndex;
 };

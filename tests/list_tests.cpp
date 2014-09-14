@@ -296,7 +296,7 @@ TEST_SUITE(List)
 
     TEST(GrowRule)
     {
-        c::List<IntWrap,c::ListGrowRule<8>,c::Mallocator> list;
+        c::List<IntWrap,c::ListGrowRule<8> > list;
         list.insert(0);
         list.insert(1);
         list.insert(2);

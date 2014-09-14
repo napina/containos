@@ -27,67 +27,68 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-template<typename Allocator>
-__forceinline UndoList<Allocator>::~UndoList()
+__forceinline UndoList::~UndoList()
 {
     clear();
 }
 
-template<typename Allocator>
-__forceinline UndoList<Allocator>::UndoList(size_t capacity)
-    : Base()
-    , m_commandStack(capacity)
+__forceinline UndoList::UndoList(size_t capacity)
+    : m_commandStack(capacity)
     , m_currentIndex(0)
 {
 }
 
-template<typename Allocator>
 template<typename T>
-__forceinline void UndoList<Allocator>::add()
+__forceinline void UndoList::add()
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>());
+    T* command = (T*)m_commandStack.allocator()->alloc(sizeof(T), __alignof(T));
+    containos_placement_new(command, T);
+    m_commandStack.insert(command);
     ++m_currentIndex;
 }
 
-template<typename Allocator>
 template<typename T,typename A>
-__forceinline void UndoList<Allocator>::add(A a)
+__forceinline void UndoList::add(A a)
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>(a));
+    T* command = (T*)m_commandStack.allocator()->alloc(sizeof(T), __alignof(T));
+    containos_placement_new1(command, T, a);
+    m_commandStack.insert(command);
     ++m_currentIndex;
 }
 
-template<typename Allocator>
 template<typename T,typename A,typename B>
-__forceinline void UndoList<Allocator>::add(A a, B b)
+__forceinline void UndoList::add(A a, B b)
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>(a, b));
+    T* command = (T*)m_commandStack.allocator()->alloc(sizeof(T), __alignof(T));
+    containos_placement_new2(command, T, a, b);
+    m_commandStack.insert(command);
     ++m_currentIndex;
 }
 
-template<typename Allocator>
 template<typename T,typename A,typename B,typename C>
-__forceinline void UndoList<Allocator>::add(A a, B b, C c)
+__forceinline void UndoList::add(A a, B b, C c)
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>(a, b, c));
+    T* command = (T*)m_commandStack.allocator()->alloc(sizeof(T), __alignof(T));
+    containos_placement_new3(command, T, a, b, c);
+    m_commandStack.insert(command);
     ++m_currentIndex;
 }
 
-template<typename Allocator>
 template<typename T,typename A,typename B,typename C,typename D>
-__forceinline void UndoList<Allocator>::add(A a, B b, C c, D d)
+__forceinline void UndoList::add(A a, B b, C c, D d)
 {
     clearFuture();
-    m_commandStack.insert(Base::template construct<T>(a, b, c, d));
+    T* command = (T*)m_commandStack.allocator()->alloc(sizeof(T), __alignof(T));
+    containos_placement_new4(command, T, a, b, c, d);
+    m_commandStack.insert(command);
     ++m_currentIndex;
 }
 
-template<typename Allocator>
-__forceinline void UndoList<Allocator>::undo(size_t count)
+__forceinline void UndoList::undo(size_t count)
 {
     containos_assert(count <= undoCount());
     for(size_t i = 0; i < count; ++i) {
@@ -96,8 +97,7 @@ __forceinline void UndoList<Allocator>::undo(size_t count)
     }
 }
 
-template<typename Allocator>
-__forceinline void UndoList<Allocator>::redo(size_t count)
+__forceinline void UndoList::redo(size_t count)
 {
     containos_assert(count <= redoCount());
     for(size_t i = 0; i < count; ++i) {
@@ -106,13 +106,13 @@ __forceinline void UndoList<Allocator>::redo(size_t count)
     }
 }
 
-template<typename Allocator>
-inline void UndoList<Allocator>::clearHistory()
+inline void UndoList::clearHistory()
 {
     size_t removeCount = undoCount();
     size_t newSize = redoCount();
     for(size_t i = 0; i < removeCount; ++i) {
-        Base::template destruct<UndoCommand>(m_commandStack[i]);
+        containos_placement_delete(m_commandStack[i], UndoCommand);
+        m_commandStack.allocator()->dealloc(m_commandStack[i]);
     }
     for(size_t i = 0; i < newSize; ++i) {
         m_commandStack[i] = m_commandStack[removeCount + i];
@@ -121,48 +121,44 @@ inline void UndoList<Allocator>::clearHistory()
     m_currentIndex = 0;
 }
 
-template<typename Allocator>
-inline void UndoList<Allocator>::clearFuture()
+inline void UndoList::clearFuture()
 {
     size_t oldSize = m_commandStack.size();
     for(size_t i = undoCount(); i < oldSize; ++i) {
-        Base::template destruct<UndoCommand>(m_commandStack[i]);
+        containos_placement_delete(m_commandStack[i], UndoCommand);
+        m_commandStack.allocator()->dealloc(m_commandStack[i]);
     }
     m_commandStack.resize(undoCount());
 }
 
-template<typename Allocator>
-inline void UndoList<Allocator>::clear()
+inline void UndoList::clear()
 {
     CommandStack::iterator ite = m_commandStack.begin();
     CommandStack::iterator endIte = m_commandStack.end();
     for(; ite != endIte; ++ite) {
-        Base::template destruct<UndoCommand>(*ite);
+        containos_placement_delete(*ite, UndoCommand);
+        m_commandStack.allocator()->dealloc(*ite);
     }
     m_commandStack.clear();
     m_currentIndex = 0;
 }
 
-template<typename Allocator>
-__forceinline size_t UndoList<Allocator>::undoCount() const
+__forceinline size_t UndoList::undoCount() const
 {
     return m_currentIndex;
 }
 
-template<typename Allocator>
-__forceinline size_t UndoList<Allocator>::redoCount() const
+__forceinline size_t UndoList::redoCount() const
 {
     return m_commandStack.size() - m_currentIndex;
 }
 
-template<typename Allocator>
-__forceinline bool UndoList<Allocator>::isUndoAllowed() const
+__forceinline bool UndoList::isUndoAllowed() const
 {
     return undoCount() > 0;
 }
 
-template<typename Alloc>
-__forceinline bool UndoList<Alloc>::isRedoAllowed() const
+__forceinline bool UndoList::isRedoAllowed() const
 {
     return redoCount() > 0;
 }
