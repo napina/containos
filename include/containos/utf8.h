@@ -76,6 +76,7 @@ public:
     template<size_t Count> Utf8(wchar_t const (&str)[Count]);
 
     void reserve(size_t capasity);
+    void reserve(size_t capasity, Allocator* allocator);
 
     void set(Utf8 const& other);
     void set(Utf8Slice const& other);

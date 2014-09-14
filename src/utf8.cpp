@@ -21,11 +21,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
 =============================================================================*/
-//#include "stdafx.h"
+#include "pch.h"
 #include "containos/utf8.h"
-
-// TODO get rid of this
-#include <malloc.h>
 
 namespace containos {
 
@@ -77,6 +74,11 @@ void Utf8::const_iterator::operator++()
 
 void Utf8::reserve(size_t capasity)
 {
+    reserve(capasity, DefaultAllocator::instance());
+}
+
+void Utf8::reserve(size_t capasity, Allocator* allocator)
+{
     if(m_buffer != nullptr && capasity <= m_buffer->m_capasity) {
         m_buffer->m_dataCount = 0;   
         return;
@@ -84,10 +86,11 @@ void Utf8::reserve(size_t capasity)
 
     destruct();
 
-    m_buffer = (Utf8::Buffer*)::malloc(sizeof(Utf8::Buffer) + sizeof(uint8_t) * capasity);
+    m_buffer = (Utf8::Buffer*)allocator->alloc(sizeof(Utf8::Buffer) + sizeof(uint8_t) * capasity, 4);
     m_buffer->m_refCount = 1;
     m_buffer->m_capasity = uint32_t(capasity);
     m_buffer->m_dataCount = 0;
+    m_buffer->m_allocator = allocator;
     m_length = 0;
 }
 
@@ -100,7 +103,7 @@ void Utf8::destruct()
     if(count > 0)
         return;
 
-    ::free(m_buffer);
+    m_buffer->m_allocator->dealloc(m_buffer);
     m_buffer = nullptr;
     m_length = 0;
 }

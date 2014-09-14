@@ -33,6 +33,7 @@ struct Utf8::Buffer
 {
     uint32_t m_refCount;
     uint32_t m_capasity;
+    Allocator* m_allocator;
     uint32_t m_dataCount;
     uint8_t m_data[1];
 };

@@ -1,6 +1,6 @@
 /*=============================================================================
 
-Copyright (c) 2013 Ville Ruusutie
+Copyright (c) 2014 Ville Ruusutie
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,34 +21,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 IN THE SOFTWARE.
 
 =============================================================================*/
-#pragma once
-#ifndef containos_allocator_h
-#define containos_allocator_h
-
-namespace containos {
-
-class Allocator
-{
-public:
-    virtual ~Allocator() {}
-
-    virtual void* alloc(size_t size, size_t alignment) = 0;
-    virtual void* realloc(void* oldPtr, size_t size, size_t alignment) = 0;
-    virtual void  dealloc(void* ptr) = 0;
-};
-//----------------------------------------------------------------------------
-
-struct DefaultAllocator : public Allocator
-{
-    virtual ~DefaultAllocator();
-
-    virtual void* alloc(size_t size, size_t alignment);
-    virtual void* realloc(void* oldPtr, size_t size, size_t alignment);
-    virtual void  dealloc(void* ptr);
-
-    static DefaultAllocator* instance();
-};
-
-} // end of containos
-
-#endif
+#include "pch.h"

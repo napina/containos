@@ -32,6 +32,7 @@ namespace {
 struct TestAllocator : c::Allocator
 {
     virtual void* alloc(size_t size, size_t align)   { align; return ::malloc(size); }
+    virtual void* realloc(void* oldPtr, size_t size, size_t alignment) { alignment; return ::realloc(oldPtr, size); }
     virtual void  dealloc(void* ptr)                 { ::free(ptr); }
 };
 //-----------------------------------------------------------------------------
