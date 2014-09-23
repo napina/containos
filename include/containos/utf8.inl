@@ -38,7 +38,17 @@ struct Utf8::Buffer
     uint8_t m_data[1];
 };
 
-inline Utf8::const_iterator::const_iterator(uint8_t* ptr)
+__forceinline uint8_t const* Utf8Slice::data() const
+{
+    return m_begin;
+}
+
+__forceinline size_t Utf8Slice::dataCount() const
+{
+    return ptrdiff_t(m_end) - ptrdiff_t(m_begin);
+}
+
+inline Utf8::const_iterator::const_iterator(uint8_t const* ptr)
     : m_ptr(ptr)
     , m_state(decodestate_accept)
 {
@@ -161,15 +171,6 @@ template<size_t Count> __forceinline Utf8::Utf8(wchar_t const (&str)[Count])
     set(str, Count);
 }
 
-__forceinline void Utf8::set(Utf8 const& other)
-{
-    destruct();
-    m_buffer = other.m_buffer;
-    m_length = other.m_length;
-    if(m_buffer != nullptr)
-        ++(m_buffer->m_refCount);
-}
-
 __forceinline void Utf8::set(Utf8Slice const& slice)
 {
     set(slice.m_begin, countUtfElements(slice.m_begin, slice.m_end));
@@ -193,6 +194,11 @@ template<size_t Count> __forceinline void Utf8::set(char const (&str)[Count])
 template<size_t Count> __forceinline void Utf8::set(wchar_t const (&str)[Count])
 {
     set(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str), Count);
+}
+
+__forceinline void Utf8::append(Utf8Slice const& str)
+{
+    append(str.m_begin, str.dataCount());
 }
 
 __forceinline void Utf8::append(uint8_t const* str)

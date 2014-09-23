@@ -47,7 +47,7 @@ bool Utf8Slice::operator==(char const* str) const
 
 uint32_t Utf8::const_iterator::operator*() const
 {
-    uint8_t* ptr = m_ptr;
+    uint8_t const* ptr = m_ptr;
     uint32_t state = m_state;
     uint32_t codepoint = 0;
     while(*ptr != 0) {
@@ -79,12 +79,12 @@ void Utf8::reserve(size_t capasity)
 
 void Utf8::reserve(size_t capasity, Allocator* allocator)
 {
-    if(m_buffer != nullptr && capasity <= m_buffer->m_capasity) {
-        m_buffer->m_dataCount = 0;   
-        return;
-    }
+    if(m_buffer != nullptr) {
+        if(capasity <= m_buffer->m_capasity)
+            return;
 
-    destruct();
+        destruct();
+    }
 
     m_buffer = (Utf8::Buffer*)allocator->alloc(sizeof(Utf8::Buffer) + sizeof(uint8_t) * capasity, 4);
     m_buffer->m_refCount = 1;
@@ -92,6 +92,14 @@ void Utf8::reserve(size_t capasity, Allocator* allocator)
     m_buffer->m_dataCount = 0;
     m_buffer->m_allocator = allocator;
     m_length = 0;
+}
+
+void Utf8::clear()
+{
+    if(m_buffer != nullptr) {
+        m_buffer->m_dataCount = 0;
+        m_length = 0;
+    }
 }
 
 void Utf8::destruct()
@@ -108,6 +116,15 @@ void Utf8::destruct()
     m_length = 0;
 }
 
+void Utf8::set(Utf8 const& other)
+{
+    destruct();
+    m_buffer = other.m_buffer;
+    m_length = other.m_length;
+    if(m_buffer != nullptr)
+        ++(m_buffer->m_refCount);
+}
+
 void Utf8::set(char const* str)
 {
     set(str, ::strlen(str));
@@ -117,6 +134,8 @@ void Utf8::set(char const* str, size_t count)
 {
     // TODO figure out better way to allocate storage
     reserve(count * 2);
+    m_buffer->m_dataCount = 0;
+    m_length = 0;
     append(str, count);
 }
 
@@ -128,6 +147,8 @@ void Utf8::set(uint8_t const* str)
 void Utf8::set(uint8_t const* str, size_t count)
 {
     reserve(count);
+    m_buffer->m_dataCount = 0;
+    m_length = 0;
     append(str, count);
 }
 
@@ -140,6 +161,8 @@ void Utf8::set(uint16_t const* str, size_t count)
 {
     // TODO figure out better way to allocate storage
     reserve(count * 3);
+    m_buffer->m_dataCount = 0;
+    m_length = 0;
     append(str, count);
 }
 
@@ -152,12 +175,29 @@ void Utf8::set(uint32_t const* str, size_t count)
 {
     // TODO figure out better way to allocate storage
     reserve(count * 4);
+    m_buffer->m_dataCount = 0;
+    m_length = 0;
     append(str, count);
+}
+
+void Utf8::append(char ch)
+{
+    const uint8_t codepoint = (uint8_t)ch;
+    uint8_t* ptr = m_buffer->m_data + m_buffer->m_dataCount;
+    if(codepoint < 0x80u) {
+        *ptr++ = codepoint;
+        ++m_buffer->m_dataCount;
+    } else if(codepoint < 0x800u) {
+        *ptr++ = uint8_t(0xc0u | ((codepoint >> 6) & 0x1fu));
+        *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
+        m_buffer->m_dataCount += 2;
+    }
+    ++m_length;
 }
 
 void Utf8::append(uint32_t codepoint)
 {
-    uint8_t* ptr = m_buffer->m_data;
+    uint8_t* ptr = m_buffer->m_data + m_buffer->m_dataCount;
     if(codepoint < 0x80u) {
         *ptr++ = uint8_t(codepoint);
     } else if(codepoint < 0x800u) {
@@ -173,7 +213,7 @@ void Utf8::append(uint32_t codepoint)
         *ptr++ = uint8_t(0x80u | ((codepoint >> 6) & 0x3fu));
         *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
     }
-    m_buffer->m_dataCount += uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
+    m_buffer->m_dataCount = uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
     ++m_length;
 }
 
@@ -190,7 +230,7 @@ void Utf8::append(char const* str)
 
 void Utf8::append(char const* str, size_t count)
 {
-    uint8_t* ptr = m_buffer->m_data;
+    uint8_t* ptr = m_buffer->m_data + m_buffer->m_dataCount;
     for(size_t i = 0; i < count; ++i) {
         const uint8_t value = *str++;
         if(value < 0x80) {
@@ -201,7 +241,7 @@ void Utf8::append(char const* str, size_t count)
         }
     }
     *ptr = 0;
-    m_buffer->m_dataCount += uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
+    m_buffer->m_dataCount = uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
     m_length += count;
 }
 
@@ -216,7 +256,7 @@ void Utf8::append(uint8_t const* str, size_t count)
 void Utf8::append(uint16_t const* str, size_t count)
 {
     uint16_t const* end = str + count;
-    uint8_t* ptr = m_buffer->m_data;
+    uint8_t* ptr = m_buffer->m_data + m_buffer->m_dataCount;
     uint32_t state = decodestate_accept;
     uint32_t codepoint = 0;
     while(str != end) {
@@ -242,13 +282,13 @@ void Utf8::append(uint16_t const* str, size_t count)
         }
     }
     *ptr = 0;
-    m_buffer->m_dataCount += uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
+    m_buffer->m_dataCount = uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
 }
 
 void Utf8::append(uint32_t const* str, size_t count)
 {
     uint32_t const* end = str + count;
-    uint8_t* ptr = m_buffer->m_data;
+    uint8_t* ptr = m_buffer->m_data + m_buffer->m_dataCount;
     uint32_t state = decodestate_accept;
     uint32_t codepoint = 0;
     while(str != end) {
@@ -274,7 +314,7 @@ void Utf8::append(uint32_t const* str, size_t count)
         }
     }
     *ptr = 0;
-    m_buffer->m_dataCount += uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
+    m_buffer->m_dataCount = uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
 }
 
 Utf8::const_iterator Utf8::findFirst(uint32_t codepoint) const
@@ -319,6 +359,11 @@ Utf8::const_iterator Utf8::findLast(const_iterator start, uint32_t codepoint) co
     return result;
 }
 
+void Utf8::clone(Utf8 const& from)
+{
+    set(from.m_buffer->m_data, from.m_buffer->m_dataCount);
+}
+
 void Utf8::replace(char from, char to)
 {
     if(from > 0x7f || to > 0x7f)
@@ -348,6 +393,8 @@ void Utf8::trim(Utf8Slice const& slice)
         ::memcpy(m_buffer->m_data, slice.m_begin, newDataCount);
     m_buffer->m_data[newDataCount] = 0;
     m_buffer->m_dataCount = uint32_t(newDataCount);
+    // todo
+    m_length = countUtfLength(m_buffer->m_data);
 }
 
 void Utf8::fix()

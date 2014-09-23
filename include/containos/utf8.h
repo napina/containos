@@ -37,6 +37,9 @@ struct Utf8Slice
     bool operator==(char const* str) const;
     bool operator==(wchar_t const* str) const;
 
+    uint8_t const* data() const;
+    size_t dataCount() const;
+
     uint8_t const* m_begin;
     uint8_t const* m_end;
 };
@@ -46,7 +49,7 @@ class Utf8
 {
 public:
     struct const_iterator {
-        const_iterator(uint8_t* ptr);
+        const_iterator(uint8_t const* ptr);
         bool operator==(const_iterator const& other) const;
         bool operator!=(const_iterator const& other) const;
         uint8_t const* ptr() const;
@@ -54,7 +57,7 @@ public:
         bool isRejected() const;
         void operator++();
     private:
-        uint8_t* m_ptr;
+        uint8_t const* m_ptr;
         uint32_t m_state;
     };
 
@@ -77,6 +80,7 @@ public:
 
     void reserve(size_t capasity);
     void reserve(size_t capasity, Allocator* allocator);
+    void clear();
 
     void set(Utf8 const& other);
     void set(Utf8Slice const& other);
@@ -93,7 +97,9 @@ public:
     template<size_t Count> void set(char const (&str)[Count]);
     template<size_t Count> void set(wchar_t const (&str)[Count]);
 
-    void append(uint32_t ch);
+    void append(char ch);
+    void append(wchar_t ch);
+    void append(uint32_t codepoint);
     void append(Utf8 const& other);
     void append(Utf8Slice const& slice);
     void append(char const* str);
@@ -109,6 +115,7 @@ public:
     template<size_t Count> void append(char const (&str)[Count]);
     template<size_t Count> void append(wchar_t const (&str)[Count]);
 
+    void clone(Utf8 const& from);
     void replace(char from, char to);
     void trim(Utf8Slice const& slice);
     void fix();
