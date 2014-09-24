@@ -192,6 +192,7 @@ void Utf8::append(char ch)
         *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
         m_buffer->m_dataCount += 2;
     }
+    *ptr = 0;
     ++m_length;
 }
 
@@ -213,6 +214,7 @@ void Utf8::append(uint32_t codepoint)
         *ptr++ = uint8_t(0x80u | ((codepoint >> 6) & 0x3fu));
         *ptr++ = uint8_t(0x80u | (codepoint & 0x3fu));
     }
+    *ptr = 0;
     m_buffer->m_dataCount = uint32_t(ptrdiff_t(ptr) - ptrdiff_t(m_buffer->m_data));
     ++m_length;
 }
@@ -250,7 +252,7 @@ void Utf8::append(uint8_t const* str, size_t count)
     containos_memcpy(m_buffer->m_data + m_buffer->m_dataCount, str, count);
     m_buffer->m_dataCount += uint32_t(count);
     m_buffer->m_data[m_buffer->m_dataCount] = 0;
-    m_length += countUtfLength(str);
+    m_length += countUtfLength(str, str + count);
 }
 
 void Utf8::append(uint16_t const* str, size_t count)
@@ -403,7 +405,7 @@ void Utf8::fix()
         return;
     m_length = 0;
 
-    uint8_t* readPtr = m_buffer->m_data;
+    uint8_t const* readPtr = m_buffer->m_data;
     uint8_t* writePtr = m_buffer->m_data;
     uint32_t state = decodestate_accept;
     while(*readPtr != 0) {
@@ -427,7 +429,7 @@ void Utf8::fix()
 bool Utf8::convertTo(char* buffer, size_t count) const
 {
     count;
-    uint8_t* readPtr = m_buffer->m_data;
+    uint8_t const* readPtr = m_buffer->m_data;
     char* writePtr = buffer;
     uint32_t state = decodestate_accept;
     uint32_t codepoint = 0;
@@ -443,7 +445,7 @@ bool Utf8::convertTo(char* buffer, size_t count) const
 void Utf8::convertTo(uint16_t* buffer, size_t count) const
 {
     count;
-    uint8_t* readPtr = m_buffer->m_data;
+    uint8_t const* readPtr = m_buffer->m_data;
     uint16_t* writePtr = buffer;
     uint32_t state = decodestate_accept;
     uint32_t codepoint = 0;
@@ -464,7 +466,7 @@ void Utf8::convertTo(uint16_t* buffer, size_t count) const
 void Utf8::convertTo(uint32_t* buffer, size_t count) const
 {
     count;
-    uint8_t* readPtr = m_buffer->m_data;
+    uint8_t const* readPtr = m_buffer->m_data;
     uint32_t* writePtr = buffer;
     uint32_t state = decodestate_accept;
     uint32_t codepoint = 0;

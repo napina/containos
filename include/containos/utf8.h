@@ -39,6 +39,7 @@ struct Utf8Slice
 
     uint8_t const* data() const;
     size_t dataCount() const;
+    size_t length() const;
 
     uint8_t const* m_begin;
     uint8_t const* m_end;
@@ -63,6 +64,8 @@ public:
 
     ~Utf8();
     Utf8();
+    Utf8(size_t capasity);
+    Utf8(size_t capasity, Allocator* allocator);
     Utf8(Utf8 const& other);
     Utf8(Utf8Slice const& other);
     explicit Utf8(char const* str);

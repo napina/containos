@@ -48,6 +48,11 @@ __forceinline size_t Utf8Slice::dataCount() const
     return ptrdiff_t(m_end) - ptrdiff_t(m_begin);
 }
 
+__forceinline size_t Utf8Slice::length() const
+{
+    return countUtfLength(m_begin, m_end);
+}
+
 inline Utf8::const_iterator::const_iterator(uint8_t const* ptr)
     : m_ptr(ptr)
     , m_state(decodestate_accept)
@@ -83,6 +88,20 @@ __forceinline Utf8::Utf8()
 {
     m_buffer = nullptr;
     m_length = 0;
+}
+
+__forceinline Utf8::Utf8(size_t capasity)
+{
+    m_buffer = nullptr;
+    m_length = 0;
+    reserve(capasity);
+}
+
+__forceinline Utf8::Utf8(size_t capasity, Allocator* allocator)
+{
+    m_buffer = nullptr;
+    m_length = 0;
+    reserve(capasity, allocator);
 }
 
 __forceinline Utf8::Utf8(Utf8 const& other)
