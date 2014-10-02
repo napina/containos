@@ -52,14 +52,30 @@ IN THE SOFTWARE.
 #if defined(_MSC_VER)
 #   define containos_lineinfo           __FILE__ "(" containos_tostring(__LINE__) ")"
 #   define containos_todo(msg)          __pragma(message(containos_lineinfo ": TODO " msg))
+#   if (_MSC_VER >= 1600)
+#       define containos_cxx11_rvalue_refs 1
+#   else
+#       define containos_cxx11_rvalue_refs 0
+#   endif
 #elif defined(__GNUC__)
 #   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
 #   define containos_todo(msg)          __Pragma(message("TODO " msg))
-#   define __forceinline                inline __attribute__((always_inline))
+#   define __forceinline                __inline__ __attribute__((always_inline))
 #   define __restrict                   __restrict__
+#   if ((__GNUC__ >= 400300) && defined(__GXX_EXPERIMENTAL_CXX0X__))
+#       define containos_cxx11_rvalue_refs 1
+#   else
+#       define containos_cxx11_rvalue_refs 0
+#   endif
+#elif defined(__clang__)
+#   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
+#   define containos_todo(msg)
+#   define containos_cxx11_rvalue_refs  __has_feature(cxx_rvalue_references)
+#   define __forceinline                __inline__ __attribute__((always_inline))
 #else
 #   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
 #   define containos_todo(msg)
+#   define containos_cxx11_rvalue_refs  0
 #   define __forceinline                inline
 #   define __restrict
 #endif
