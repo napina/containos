@@ -483,6 +483,38 @@ bool Utf8::isValid() const
     return m_buffer != nullptr && isValidUtfString(m_buffer->m_data);
 }
 
+bool Utf8::operator==(Utf8Slice const& slice) const
+{
+    uint8_t const* aptr = m_buffer->m_data;
+    uint8_t const* bptr = slice.m_begin;
+    uint8_t const* bend = slice.m_end;
+    uint32_t astate = decodestate_accept;
+    uint32_t bstate = decodestate_accept;
+    uint32_t acodepoint = 0;
+    uint32_t bcodepoint = 0;
+    // decode this in top loop
+    while(*aptr != 0) {
+        if(decodeUtfCharacter(astate, acodepoint, *aptr++) == decodestate_accept) {
+            // now we have this codepoint so decode from str
+            while(bptr != bend) {
+                if(decodeUtfCharacter(bstate, bcodepoint, *bptr++) == decodestate_accept) {
+                    if(acodepoint == bcodepoint)
+                        break;
+                    return false;
+                } else if(bstate == decodestate_reject) {
+                    bstate = decodestate_accept;
+                }
+            }
+            if(bptr != bend)
+                continue;
+            break;
+        } else if(astate == decodestate_reject) {
+            astate = decodestate_accept;
+        }
+    }
+    return *aptr == 0 && *bptr == 0;
+}
+
 bool Utf8::operator==(char const* str) const
 {
     uint8_t const* ptr = m_buffer->m_data;

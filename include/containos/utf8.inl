@@ -53,6 +53,16 @@ __forceinline size_t Utf8Slice::length() const
     return countUtfLength(m_begin, m_end);
 }
 
+__forceinline bool Utf8Slice::operator!=(char const* str) const
+{
+    return !operator==(str);
+}
+
+__forceinline bool Utf8Slice::operator!=(wchar_t const* str) const
+{
+    return !operator==(str);
+}
+
 inline Utf8::const_iterator::const_iterator(uint8_t const* ptr)
     : m_ptr(ptr)
     , m_state(decodestate_accept)
@@ -334,6 +344,41 @@ __forceinline bool Utf8::operator==(Utf8 const& other) const
 __forceinline bool Utf8::operator==(wchar_t const* str) const
 {
     return operator==(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str));
+}
+
+__forceinline bool Utf8::operator!=(Utf8 const& other) const
+{
+    return !operator==(other.data());
+}
+
+__forceinline bool Utf8::operator!=(Utf8Slice const& slice) const
+{
+    return !operator==(slice);
+}
+
+__forceinline bool Utf8::operator!=(char const* str) const
+{
+    return !operator==(str);
+}
+
+__forceinline bool Utf8::operator!=(wchar_t const* str) const
+{
+    return !operator==(reinterpret_cast<CONTAINOS_WCHAR_IS const*>(str));
+}
+
+__forceinline bool Utf8::operator!=(uint8_t const* str) const
+{
+    return !operator==(str);
+}
+
+__forceinline bool Utf8::operator!=(uint16_t const* str) const
+{
+    return !operator==(str);
+}
+
+__forceinline bool Utf8::operator!=(uint32_t const* str) const
+{
+    return !operator==(str);
 }
 
 } // end of containos

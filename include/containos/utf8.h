@@ -34,8 +34,11 @@ namespace containos {
 struct Utf8Slice
 {
     bool operator==(Utf8Slice const& slice) const;
+    bool operator!=(Utf8Slice const& slice) const;
     bool operator==(char const* str) const;
+    bool operator!=(char const* str) const;
     bool operator==(wchar_t const* str) const;
+    bool operator!=(wchar_t const* str) const;
 
     uint8_t const* data() const;
     size_t dataCount() const;
@@ -148,12 +151,19 @@ public:
     void operator=(Utf8Slice const& slice);
 
     bool operator==(Utf8 const& other) const;
+    bool operator!=(Utf8 const& other) const;
     bool operator==(Utf8Slice const& slice) const;
+    bool operator!=(Utf8Slice const& slice) const;
     bool operator==(char const* str) const;
+    bool operator!=(char const* str) const;
     bool operator==(wchar_t const* str) const;
+    bool operator!=(wchar_t const* str) const;
     bool operator==(uint8_t const* str) const;
+    bool operator!=(uint8_t const* str) const;
     bool operator==(uint16_t const* str) const;
+    bool operator!=(uint16_t const* str) const;
     bool operator==(uint32_t const* str) const;
+    bool operator!=(uint32_t const* str) const;
 
 private:
     void destruct();
