@@ -27,20 +27,20 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-template<typename T,size_t Capasity>
-inline FixedList<T,Capasity>::~FixedList()
+template<typename T,size_t Capacity>
+inline FixedList<T,Capacity>::~FixedList()
 {
     clear();
 }
 
-template<typename T,size_t Capasity>
-inline FixedList<T,Capasity>::FixedList()
+template<typename T,size_t Capacity>
+inline FixedList<T,Capacity>::FixedList()
     : m_size(0)
 {
 }
 
-template<typename T,size_t Capasity>
-inline FixedList<T,Capasity>::FixedList(FixedList const& other)
+template<typename T,size_t Capacity>
+inline FixedList<T,Capacity>::FixedList(FixedList const& other)
     : m_size(other.m_size)
 {
     for(size_t i = 0; i < other.m_size; ++i) {
@@ -48,85 +48,85 @@ inline FixedList<T,Capasity>::FixedList(FixedList const& other)
     }
 }
 
-template<typename T,size_t Capasity>
-__forceinline T& FixedList<T,Capasity>::acquire()
+template<typename T,size_t Capacity>
+__forceinline T& FixedList<T,Capacity>::acquire()
 {
-    containos_assert(m_size < Capasity);
+    containos_assert(m_size < Capacity);
     return m_items[m_size++];
 }
 
-template<typename T,size_t Capasity>
-__forceinline void FixedList<T,Capasity>::insert(T& item)
+template<typename T,size_t Capacity>
+__forceinline void FixedList<T,Capacity>::insert(T& item)
 {
-    containos_assert(m_size < Capasity);
+    containos_assert(m_size < Capacity);
     m_items[m_size] = item;
     ++m_size;
 }
 
-template<typename T,size_t Capasity>
-__forceinline void FixedList<T,Capasity>::insert(T const& item)
+template<typename T,size_t Capacity>
+__forceinline void FixedList<T,Capacity>::insert(T const& item)
 {
-    containos_assert(m_size < Capasity);
+    containos_assert(m_size < Capacity);
     m_items[m_size] = item;
     ++m_size;
 }
 
-template<typename T,size_t Capasity>
-inline void FixedList<T,Capasity>::remove(size_t index)
+template<typename T,size_t Capacity>
+inline void FixedList<T,Capacity>::remove(size_t index)
 {
     containos_assert(index < m_size);
     m_items[index] = m_items[--m_size];
 }
 
-template<typename T,size_t Capasity>
-inline void FixedList<T,Capasity>::removeLast()
+template<typename T,size_t Capacity>
+inline void FixedList<T,Capacity>::removeLast()
 {
     containos_assert(m_size > 0);
     --m_size;
 }
 
-template<typename T,size_t Capasity>
-__forceinline void FixedList<T,Capasity>::clear()
+template<typename T,size_t Capacity>
+__forceinline void FixedList<T,Capacity>::clear()
 {
     m_size = 0;
 }
 
-template<typename T,size_t Capasity>
-__forceinline T& FixedList<T,Capasity>::operator[](size_t index)
+template<typename T,size_t Capacity>
+__forceinline T& FixedList<T,Capacity>::operator[](size_t index)
 {
     containos_assert(index < m_size);
     return m_items[index];
 }
 
-template<typename T,size_t Capasity>
-__forceinline T const& FixedList<T,Capasity>::operator[](size_t index) const
+template<typename T,size_t Capacity>
+__forceinline T const& FixedList<T,Capacity>::operator[](size_t index) const
 {
     containos_assert(index < m_size);
     return m_items[index];
 }
 
-template<typename T,size_t Capasity>
-__forceinline size_t FixedList<T,Capasity>::size() const
+template<typename T,size_t Capacity>
+__forceinline size_t FixedList<T,Capacity>::size() const
 {
     return m_size;
 }
 
-template<typename T,size_t Capasity>
-__forceinline size_t FixedList<T,Capasity>::capasity() const
+template<typename T,size_t Capacity>
+__forceinline size_t FixedList<T,Capacity>::capacity() const
 {
-    return Capasity;
+    return Capacity;
 }
 
-template<typename T,size_t Capasity>
-__forceinline bool FixedList<T,Capasity>::isEmpty() const
+template<typename T,size_t Capacity>
+__forceinline bool FixedList<T,Capacity>::isEmpty() const
 {
     return m_size == 0;
 }
 
-template<typename T,size_t Capasity>
-__forceinline bool FixedList<T,Capasity>::hasSpace() const
+template<typename T,size_t Capacity>
+__forceinline bool FixedList<T,Capacity>::hasSpace() const
 {
-    return m_size < Capasity;
+    return m_size < Capacity;
 }
 
 } // end of containos

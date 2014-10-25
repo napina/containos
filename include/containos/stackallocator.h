@@ -35,7 +35,7 @@ namespace containos {
 //--------------------------------------------------------------------------*/
 struct StackAllocator
 {
-    StackAllocator(void* ptr, size_t capasity);
+    StackAllocator(void* ptr, size_t capacity);
 
     void* alloc(size_t size, size_t alignment);
     void  dealloc(void* ptr);
@@ -46,7 +46,7 @@ private:
 
     void* m_ptr;
     size_t m_size;
-    size_t m_capasity;
+    size_t m_capacity;
 };
 
 } // end of containos

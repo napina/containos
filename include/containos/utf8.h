@@ -67,8 +67,8 @@ public:
 
     ~Utf8();
     Utf8();
-    Utf8(size_t capasity);
-    Utf8(size_t capasity, Allocator* allocator);
+    Utf8(size_t capacity);
+    Utf8(size_t capacity, Allocator* allocator);
     Utf8(Utf8 const& other);
     Utf8(Utf8Slice const& other);
     explicit Utf8(char const* str);
@@ -84,8 +84,8 @@ public:
     template<size_t Count> Utf8(char const (&str)[Count]);
     template<size_t Count> Utf8(wchar_t const (&str)[Count]);
 
-    void reserve(size_t capasity);
-    void reserve(size_t capasity, Allocator* allocator);
+    void reserve(size_t capacity);
+    void reserve(size_t capacity, Allocator* allocator);
     void clear();
 
     void set(Utf8 const& other);
@@ -143,7 +143,7 @@ public:
 
     uint8_t const* data() const;
     size_t dataCount() const;
-    size_t capasity() const;
+    size_t capacity() const;
     size_t length() const;
     bool isValid() const;
 

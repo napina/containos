@@ -48,7 +48,7 @@ public:
 
     ~List();
     List();
-    List(size_t capasity);
+    List(size_t capacity);
 
     void operator=(List<T,GrowRule> const& other);
     template<typename GrowRule2> List(List<T,GrowRule2> const& other);
@@ -67,8 +67,8 @@ public:
     void resize(iterator& newEnd);
     void resizeNoCopy(size_t newSize);
     void resizeNoCopy(iterator& newEnd);
-    void reserve(size_t capasity);
-    void reserve(size_t capasity, Allocator* allocator);
+    void reserve(size_t capacity);
+    void reserve(size_t capacity, Allocator* allocator);
     void clearAndFree();
     void clear();
 
@@ -82,7 +82,7 @@ public:
     T const* mem() const;
     T const& last() const;
     size_t size() const;
-    size_t capasity() const;
+    size_t capacity() const;
     Allocator* allocator();
 
 private:
@@ -90,7 +90,7 @@ private:
 
     T* m_mem;
     size_t m_size;
-    size_t m_capasity;
+    size_t m_capacity;
     Allocator* m_allocator;
 };
 

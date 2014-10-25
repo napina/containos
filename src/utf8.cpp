@@ -72,23 +72,23 @@ void Utf8::const_iterator::operator++()
     }
 }
 
-void Utf8::reserve(size_t capasity)
+void Utf8::reserve(size_t capacity)
 {
-    reserve(capasity, DefaultAllocator::instance());
+    reserve(capacity, DefaultAllocator::instance());
 }
 
-void Utf8::reserve(size_t capasity, Allocator* allocator)
+void Utf8::reserve(size_t capacity, Allocator* allocator)
 {
     if(m_buffer != nullptr) {
-        if(capasity <= m_buffer->m_capasity)
+        if(capacity <= m_buffer->m_capacity)
             return;
 
         destruct();
     }
 
-    m_buffer = (Utf8::Buffer*)allocator->alloc(sizeof(Utf8::Buffer) + sizeof(uint8_t) * capasity, 4);
+    m_buffer = (Utf8::Buffer*)allocator->alloc(sizeof(Utf8::Buffer) + sizeof(uint8_t) * capacity, 4);
     m_buffer->m_refCount = 1;
-    m_buffer->m_capasity = uint32_t(capasity);
+    m_buffer->m_capacity = uint32_t(capacity);
     m_buffer->m_dataCount = 0;
     m_buffer->m_allocator = allocator;
     m_length = 0;

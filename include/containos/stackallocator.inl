@@ -30,14 +30,14 @@ namespace containos {
 __forceinline StackAllocator::StackAllocator(void* ptr, size_t size)
     : m_ptr(ptr)
     , m_size(size)
-    , m_capasity(0)
+    , m_capacity(0)
 {
 }
 
 __forceinline StackAllocator::StackAllocator(StackAllocator const& other)
     : m_ptr(other.m_ptr)
     , m_size(other.m_size)
-    , m_capasity(other.m_capasity)
+    , m_capacity(other.m_capacity)
 {
     // this is evil
 }

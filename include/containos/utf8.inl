@@ -32,7 +32,7 @@ namespace containos {
 struct Utf8::Buffer
 {
     uint32_t m_refCount;
-    uint32_t m_capasity;
+    uint32_t m_capacity;
     Allocator* m_allocator;
     uint32_t m_dataCount;
     uint8_t m_data[1];
@@ -100,18 +100,18 @@ __forceinline Utf8::Utf8()
     m_length = 0;
 }
 
-__forceinline Utf8::Utf8(size_t capasity)
+__forceinline Utf8::Utf8(size_t capacity)
 {
     m_buffer = nullptr;
     m_length = 0;
-    reserve(capasity);
+    reserve(capacity);
 }
 
-__forceinline Utf8::Utf8(size_t capasity, Allocator* allocator)
+__forceinline Utf8::Utf8(size_t capacity, Allocator* allocator)
 {
     m_buffer = nullptr;
     m_length = 0;
-    reserve(capasity, allocator);
+    reserve(capacity, allocator);
 }
 
 __forceinline Utf8::Utf8(Utf8 const& other)
@@ -316,9 +316,9 @@ __forceinline size_t Utf8::dataCount() const
     return m_buffer->m_dataCount;
 }
 
-__forceinline size_t Utf8::capasity() const
+__forceinline size_t Utf8::capacity() const
 {
-    return m_buffer->m_capasity;
+    return m_buffer->m_capacity;
 }
 
 __forceinline size_t Utf8::length() const

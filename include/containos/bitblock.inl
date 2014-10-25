@@ -170,7 +170,7 @@ __forceinline size_t BitBlock<T>::size() const
 }
 
 template<typename T>
-__forceinline size_t BitBlock<T>::capasity() const
+__forceinline size_t BitBlock<T>::capacity() const
 {
     return bitset::num_bits;
 }

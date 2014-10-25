@@ -32,7 +32,7 @@ TEST_SUITE(FixedList)
     {
         c::FixedList<int,4> list;
         EXPECT_EQUAL(list.size(), 0u);
-        EXPECT_EQUAL(list.capasity(), 4u);
+        EXPECT_EQUAL(list.capacity(), 4u);
     }
 
     TEST(Insert)

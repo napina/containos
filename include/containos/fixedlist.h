@@ -29,7 +29,7 @@ IN THE SOFTWARE.
 
 namespace containos {
 
-template<typename T,size_t Capasity>
+template<typename T,size_t Capacity>
 class FixedList
 {
 public:
@@ -46,13 +46,13 @@ public:
 
     T& operator[](size_t index);
     T const& operator[](size_t index) const;
-    size_t capasity() const;
+    size_t capacity() const;
     size_t size() const;
     bool isEmpty() const;
     bool hasSpace() const;
 
 private:
-    T m_items[Capasity];
+    T m_items[Capacity];
     size_t m_size;
 };
 

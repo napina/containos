@@ -28,7 +28,6 @@ IN THE SOFTWARE.
 #include "containos/common.h"
 #include "containos/allocator.h"
 #include "containos/fastdelegate.h"
-//#include <type_traits>
 
 namespace containos {
 namespace internal {

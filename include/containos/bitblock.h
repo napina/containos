@@ -55,7 +55,7 @@ struct BitBlock
     T& operator[](size_t index);
     T const& operator[](size_t index) const;
     size_t size() const;
-    size_t capasity() const;
+    size_t capacity() const;
 
 private:
     bitset m_mask;

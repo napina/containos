@@ -54,31 +54,31 @@ TEST_SUITE(List)
     {
         c::List<IntWrap,c::ListGrowRule<0> > list;
         EXPECT_EQUAL(list.size(), 0u);
-        EXPECT_EQUAL(list.capasity(), 0u);
+        EXPECT_EQUAL(list.capacity(), 0u);
     }
 
     TEST(Reserve)
     {
         c::List<IntWrap,c::ListGrowRule<0> > list;
         EXPECT_EQUAL(list.size(), 0u);
-        EXPECT_EQUAL(list.capasity(), 0u);
+        EXPECT_EQUAL(list.capacity(), 0u);
         list.reserve(10);
         EXPECT_EQUAL(list.size(), 0u);
-        EXPECT_EQUAL(list.capasity(), 10u);
+        EXPECT_EQUAL(list.capacity(), 10u);
     }
 
     TEST(ReserveMore)
     {
         c::List<IntWrap,c::ListGrowRule<0> > list;
         EXPECT_EQUAL(list.size(), 0u);
-        EXPECT_EQUAL(list.capasity(), 0u);
+        EXPECT_EQUAL(list.capacity(), 0u);
         list.reserve(1);
         list.insert(13);
         EXPECT_EQUAL(list.size(), 1u);
-        EXPECT_EQUAL(list.capasity(), 1u);
+        EXPECT_EQUAL(list.capacity(), 1u);
         list.reserve(2);
         EXPECT_EQUAL(list.size(), 1u);
-        EXPECT_EQUAL(list.capasity(), 2u);
+        EXPECT_EQUAL(list.capacity(), 2u);
         EXPECT_EQUAL(list[0], 13);
     }
 
@@ -301,7 +301,7 @@ TEST_SUITE(List)
         list.insert(1);
         list.insert(2);
         EXPECT_EQUAL(list.size(), 3u);
-        EXPECT_EQUAL(list.capasity(), 8u);
+        EXPECT_EQUAL(list.capacity(), 8u);
         EXPECT_EQUAL(list[0], 0);
         EXPECT_EQUAL(list[1], 1);
         EXPECT_EQUAL(list[2], 2);
