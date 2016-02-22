@@ -23,6 +23,7 @@ IN THE SOFTWARE.
 =============================================================================*/
 #include "pch.h"
 #include "containos/utf8.h"
+#include <string.h>
 
 namespace containos {
 

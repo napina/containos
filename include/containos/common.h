@@ -111,7 +111,7 @@ IN THE SOFTWARE.
 #define containos_placement_new7(ptr,t,a,b,c,d,e,f,g)   containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f,g)
 #define containos_placement_new8(ptr,t,a,b,c,d,e,f,g,h) containos::internal::placement_new<t,std::is_pod<t>::value>::create(ptr,a,b,c,d,e,f,g,h)
 #define containos_placement_copy(dest,t,src)            containos::internal::placement_new<t,std::is_pod<t>::value>::copy(dest,src)
-#define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,!std::has_trivial_destructor<t>::value>::destroy(ptr)
+#define containos_placement_delete(ptr,t)               containos::internal::placement_delete<t,!std::is_trivially_destructible<t>::value>::destroy(ptr)
 //----------------------------------------------------------------------------
 
 #ifndef REFLECT_CLASS

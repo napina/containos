@@ -77,24 +77,24 @@ TEST_SUITE(UtfUtils)
     {
         const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0x24u, 0xc2u, 0xa2u, 0xe2u, 0x82u, 0xacu, 0u };
         EXPECT_TRUE(c::isValidUtfString(buffer));
-        EXPECT_EQUAL(c::countUtfBytes(buffer), 10);
-        EXPECT_EQUAL(c::countUtfLength(buffer), 4);
+        EXPECT_EQUAL(c::countUtfBytes(buffer), 10u);
+        EXPECT_EQUAL(c::countUtfLength(buffer), 4u);
     }
 
     TEST(ValidUtf16)
     {
         const c::uint16_t buffer[] = { 0xd800u, 0xdc00u, 0xfeffu, 0x6c34u, 0xd834u, 0xdd1eu, 0u };
         EXPECT_TRUE(c::isValidUtfString(buffer));
-        EXPECT_EQUAL(c::countUtfBytes(buffer), 12);
-        EXPECT_EQUAL(c::countUtfLength(buffer), 4);
+        EXPECT_EQUAL(c::countUtfBytes(buffer), 12u);
+        EXPECT_EQUAL(c::countUtfLength(buffer), 4u);
     }
 
     TEST(ValidUtf32)
     {
         const c::uint32_t buffer[] = { 0xd7ffu, 0xe000u, 0xfdcfu, 0xfdf0u, 0xfffdu, 0x10000u, 0x10fffdu, 0u };
         EXPECT_TRUE(c::isValidUtfString(buffer));
-        EXPECT_EQUAL(c::countUtfBytes(buffer), 28);
-        EXPECT_EQUAL(c::countUtfLength(buffer), 7);
+        EXPECT_EQUAL(c::countUtfBytes(buffer), 28u);
+        EXPECT_EQUAL(c::countUtfLength(buffer), 7u);
     }
 
     TEST(DecodeUtf8Characters)

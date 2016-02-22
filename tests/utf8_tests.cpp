@@ -36,11 +36,11 @@ TEST_SUITE(Utf8)
 {
     TEST(SetChar)
     {
-        const char buffer[] = { 0xa2u, 0x24u, 0xffu, 0xc0u, 0 };
+        const char buffer[] = { (char)0xa2u, (char)0x24u, (char)0xffu, (char)0xc0u, (char)0u };
         c::Utf8 utf8(buffer);
         EXPECT_TRUE(utf8.isValid());
-        EXPECT_EQUAL(utf8.length(), 4);
-        EXPECT_EQUAL(utf8.dataCount(), 7);
+        EXPECT_EQUAL(utf8.length(), 4u);
+        EXPECT_EQUAL(utf8.dataCount(), 7u);
         EXPECT_EQUAL(utf8, buffer);
     }
 
@@ -49,8 +49,8 @@ TEST_SUITE(Utf8)
         const wchar_t* buffer = L"a½-~€ib";
         c::Utf8 utf8(buffer);
         EXPECT_TRUE(utf8.isValid());
-        EXPECT_EQUAL(utf8.length(), 7);
-        EXPECT_EQUAL(utf8.dataCount(), 10);
+        EXPECT_EQUAL(utf8.length(), 7u);
+        EXPECT_EQUAL(utf8.dataCount(), 10u);
         EXPECT_EQUAL(utf8, buffer);
     }
     
@@ -59,8 +59,8 @@ TEST_SUITE(Utf8)
         const c::uint8_t buffer[] = { 0xf0u, 0xa4u, 0xadu, 0xa2u, 0x24u, 0xc2u, 0xa2u, 0xe2u, 0x82u, 0xacu, 0u };
         c::Utf8 utf8(buffer);
         EXPECT_TRUE(utf8.isValid());
-        EXPECT_EQUAL(utf8.length(), 4);
-        EXPECT_EQUAL(utf8.dataCount(), 10);
+        EXPECT_EQUAL(utf8.length(), 4u);
+        EXPECT_EQUAL(utf8.dataCount(), 10u);
         c::Utf8::const_iterator it = utf8.begin();
         EXPECT_EQUAL(*it, 0x24b62u);
         EXPECT_NOTEQUAL(it, utf8.end());
@@ -83,8 +83,8 @@ TEST_SUITE(Utf8)
         const c::uint32_t buffer[] = { 0x10000u, 0xd800u, 0x10fffdu, 0xdc00u, 0x6c34u, 0x24u, 0xfdd0u, 0xffffu, 0u };
         c::Utf8 utf8(buffer);
         EXPECT_TRUE(utf8.isValid());
-        EXPECT_EQUAL(utf8.length(), 6);
-        EXPECT_EQUAL(utf8.dataCount(), 18);
+        EXPECT_EQUAL(utf8.length(), 6u);
+        EXPECT_EQUAL(utf8.dataCount(), 18u);
         c::Utf8::const_iterator it = utf8.begin();
         EXPECT_EQUAL(*it, 0x10000u);
         EXPECT_NOTEQUAL(it, utf8.end());
@@ -141,8 +141,8 @@ TEST_SUITE(Utf8)
         EXPECT_FALSE(utf8.isValid());
         utf8.fix();
         EXPECT_TRUE(utf8.isValid());
-        EXPECT_EQUAL(utf8.length(), 4);
-        EXPECT_EQUAL(utf8.dataCount(), 10);
+        EXPECT_EQUAL(utf8.length(), 4u);
+        EXPECT_EQUAL(utf8.dataCount(), 10u);
         c::Utf8::const_iterator it = utf8.begin();
         EXPECT_EQUAL(*it, 0x24b62u);
         ++it;

@@ -23,6 +23,7 @@ IN THE SOFTWARE.
 =============================================================================*/
 #include "unitos/unitos.h"
 #include "containos/undolist.h"
+#include <memory.h>
 
 namespace c = containos;
 
