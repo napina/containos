@@ -199,7 +199,7 @@ TEST_SUITE(Utf8)
         EXPECT_TRUE(utf8.isValid());
         c::uint32_t buffer2[100];
         utf8.convertTo(buffer2, 100);
-        for(size_t i = 0; i < 9; ++i) {
+        for(size_t i = 0; i < 7; ++i) {
             EXPECT_EQUAL(buffer[i], buffer2[i]);
         }
     }
