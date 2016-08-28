@@ -186,7 +186,7 @@ void Utf8::append(char ch)
     const uint32_t codepoint = (uint8_t)ch;
     uint8_t* ptr = m_buffer->m_data + m_buffer->m_dataCount;
     if(codepoint < 0x80u) {
-        *ptr++ = codepoint;
+        *ptr++ = (uint8_t)codepoint;
         ++m_buffer->m_dataCount;
     } else if(codepoint < 0x800u) {
         *ptr++ = uint8_t(0xc0u | ((codepoint >> 6) & 0x1fu));
