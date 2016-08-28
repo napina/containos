@@ -27,6 +27,7 @@ IN THE SOFTWARE.
 
 #include <type_traits>
 #include <new>
+#include <stdlib.h>
 
 #if defined(__linux__) && defined(__ELF__)
 #   define CONTAINOS_LINUX
@@ -57,6 +58,12 @@ IN THE SOFTWARE.
 #   else
 #       define containos_cxx11_rvalue_refs 0
 #   endif
+#elif defined(__clang__)
+#   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
+#   define containos_todo(msg)
+#   define containos_cxx11_rvalue_refs  __has_feature(cxx_rvalue_references)
+#   define __forceinline                __inline__ __attribute__((always_inline))
+typedef decltype(nullptr)               nullptr_t;
 #elif defined(__GNUC__)
 #   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
 #   define containos_todo(msg)          __Pragma(message("TODO " msg))
@@ -67,11 +74,6 @@ IN THE SOFTWARE.
 #   else
 #       define containos_cxx11_rvalue_refs 0
 #   endif
-#elif defined(__clang__)
-#   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
-#   define containos_todo(msg)
-#   define containos_cxx11_rvalue_refs  __has_feature(cxx_rvalue_references)
-#   define __forceinline                __inline__ __attribute__((always_inline))
 #else
 #   define containos_lineinfo           __FILE__ ":" containos_tostring(__LINE__)
 #   define containos_todo(msg)
@@ -138,8 +140,8 @@ typedef unsigned long long uint64_t;
 
 struct Mallocator
 {
-    static void* alloc(size_t size, size_t align)   { align; return ::malloc(size); }
-    static void  dealloc(void* ptr)                 { ::free(ptr); }
+    static void* alloc(size_t size, size_t /*align*/)   { return ::malloc(size); }
+    static void  dealloc(void* ptr)                     { ::free(ptr); }
 };
 
 namespace internal {

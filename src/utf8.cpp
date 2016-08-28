@@ -183,7 +183,7 @@ void Utf8::set(uint32_t const* str, size_t count)
 
 void Utf8::append(char ch)
 {
-    const uint8_t codepoint = (uint8_t)ch;
+    const uint32_t codepoint = (uint8_t)ch;
     uint8_t* ptr = m_buffer->m_data + m_buffer->m_dataCount;
     if(codepoint < 0x80u) {
         *ptr++ = codepoint;
@@ -427,9 +427,8 @@ void Utf8::fix()
     m_buffer->m_dataCount = uint32_t(ptrdiff_t(writePtr) - ptrdiff_t(m_buffer->m_data));
 }
 
-bool Utf8::convertTo(char* buffer, size_t count) const
+bool Utf8::convertTo(char* buffer, size_t /*count*/) const
 {
-    count;
     uint8_t const* readPtr = m_buffer->m_data;
     char* writePtr = buffer;
     uint32_t state = decodestate_accept;
@@ -443,9 +442,8 @@ bool Utf8::convertTo(char* buffer, size_t count) const
     return true;
 }
 
-void Utf8::convertTo(uint16_t* buffer, size_t count) const
+void Utf8::convertTo(uint16_t* buffer, size_t /*count*/) const
 {
-    count;
     uint8_t const* readPtr = m_buffer->m_data;
     uint16_t* writePtr = buffer;
     uint32_t state = decodestate_accept;
@@ -464,9 +462,8 @@ void Utf8::convertTo(uint16_t* buffer, size_t count) const
     *writePtr = 0;
 }
 
-void Utf8::convertTo(uint32_t* buffer, size_t count) const
+void Utf8::convertTo(uint32_t* buffer, size_t /*count*/) const
 {
-    count;
     uint8_t const* readPtr = m_buffer->m_data;
     uint32_t* writePtr = buffer;
     uint32_t state = decodestate_accept;

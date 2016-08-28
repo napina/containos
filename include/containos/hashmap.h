@@ -77,6 +77,7 @@ public:
         bool operator!=(iterator const& other) const;
 
     private:
+        friend class HashMapBase;
         friend struct const_iterator;
         MapType* m_map;
         NodeType* m_node;

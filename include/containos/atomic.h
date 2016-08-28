@@ -25,7 +25,7 @@ IN THE SOFTWARE.
 #ifndef containos_atomic_h
 #define containos_atomic_h
 
-#include "containos\common.h"
+#include "containos/common.h"
 
 namespace containos {
 

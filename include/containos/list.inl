@@ -26,6 +26,7 @@ IN THE SOFTWARE.
 #define containos_list_inl
 
 #include "containos/allocator.h"
+#include <memory.h>
 
 #pragma warning(disable:4127)
 

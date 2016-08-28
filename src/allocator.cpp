@@ -30,15 +30,13 @@ DefaultAllocator::~DefaultAllocator()
 {
 }
 
-void* DefaultAllocator::alloc(size_t size, size_t alignment)
+void* DefaultAllocator::alloc(size_t size, size_t /*alignment*/)
 {
-    alignment;
     return ::malloc(size);
 }
 
-void* DefaultAllocator::realloc(void* oldPtr, size_t size, size_t alignment)
+void* DefaultAllocator::realloc(void* oldPtr, size_t size, size_t /*alignment*/)
 {
-    alignment;
     return ::realloc(oldPtr, size);
 }
 

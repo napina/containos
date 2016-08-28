@@ -63,7 +63,7 @@ protected:
     {
         lambda_t* copy = reinterpret_cast<lambda_t*>(allocator->alloc(sizeof(lambda_t),std::alignment_of<lambda_t>::value));
         containos_placement_new1(copy, lambda_t, lambda);
-        D::DelegateType newDelegate(copy, &lambda_t::operator());
+        typename D::DelegateType newDelegate(copy, &lambda_t::operator());
         m_memento.set(newDelegate.GetMemento());
         m_delete = [](void* ptr) { containos_placement_delete(ptr, lambda_t); };
         m_allocator = allocator;
@@ -72,14 +72,14 @@ protected:
     template<typename funcptr_t>
     __forceinline void subscribe(funcptr_t func)
     {
-        D::DelegateType newDelegate(func);
+        typename D::DelegateType newDelegate(func);
         m_memento.set(newDelegate.GetMemento());
     }
 
     template<typename T,typename funcptr_t>
     __forceinline void subscribe(T* ptr, funcptr_t func)
     {
-        D::DelegateType newDelegate(ptr, func);
+        typename D::DelegateType newDelegate(ptr, func);
         m_memento.set(newDelegate.GetMemento());
     }
 
@@ -120,20 +120,20 @@ __forceinline Delegate<R()>::Delegate()
 template<typename R>
 __forceinline Delegate<R()>::~Delegate()
 {
-    unsubscribe();
+    Base::unsubscribe();
 }
 
 template<typename R>
 __forceinline bool Delegate<R()>::isValid() const
 {
-    return m_memento.isValid();
+    return Base::m_memento.isValid();
 }
 
 template<typename R>
 __forceinline R Delegate<R()>::operator()()
 {
     DelegateType invoker;
-    invoker.SetMemento(m_memento);
+    invoker.SetMemento(Base::m_memento);
     return invoker();
 }
 
@@ -168,20 +168,20 @@ __forceinline Delegate<R(A)>::Delegate()
 template<typename R,typename A>
 __forceinline Delegate<R(A)>::~Delegate()
 {
-    unsubscribe();
+    Base::unsubscribe();
 }
 
 template<typename R,typename A>
 __forceinline bool Delegate<R(A)>::isValid() const
 {
-    return m_memento.isValid();
+    return Base::m_memento.isValid();
 }
 
 template<typename R,typename A>
 __forceinline R Delegate<R(A)>::operator()(A a)
 {
     DelegateType invoker;
-    invoker.SetMemento(m_memento);
+    invoker.SetMemento(Base::m_memento);
     return invoker(a);
 }
 
@@ -216,20 +216,20 @@ __forceinline Delegate<R(A,B)>::Delegate()
 template<typename R,typename A,typename B>
 __forceinline Delegate<R(A,B)>::~Delegate()
 {
-    unsubscribe();
+    Base::unsubscribe();
 }
 
 template<typename R,typename A,typename B>
 __forceinline bool Delegate<R(A,B)>::isValid() const
 {
-    return m_memento.isValid();
+    return Base::m_memento.isValid();
 }
 
 template<typename R,typename A,typename B>
 __forceinline R Delegate<R(A,B)>::operator()(A a, B b)
 {
     DelegateType invoker;
-    invoker.SetMemento(m_memento);
+    invoker.SetMemento(Base::m_memento);
     return invoker(a, b);
 }
 
@@ -264,20 +264,20 @@ __forceinline Delegate<R(A,B,C)>::Delegate()
 template<typename R,typename A,typename B,typename C>
 __forceinline Delegate<R(A,B,C)>::~Delegate()
 {
-    unsubscribe();
+    Base::unsubscribe();
 }
 
 template<typename R,typename A,typename B,typename C>
 __forceinline bool Delegate<R(A,B,C)>::isValid() const
 {
-    return m_memento.isValid();
+    return Base::m_memento.isValid();
 }
 
 template<typename R,typename A,typename B,typename C>
 __forceinline R Delegate<R(A,B,C)>::operator()(A a, B b, C c)
 {
     DelegateType invoker;
-    invoker.SetMemento(m_memento);
+    invoker.SetMemento(Base::m_memento);
     return invoker(a, b, c);
 }
 
@@ -312,20 +312,20 @@ __forceinline Delegate<R(A,B,C,D)>::Delegate()
 template<typename R,typename A,typename B,typename C,typename D>
 __forceinline Delegate<R(A,B,C,D)>::~Delegate()
 {
-    unsubscribe();
+    Base::unsubscribe();
 }
 
 template<typename R,typename A,typename B,typename C,typename D>
 __forceinline bool Delegate<R(A,B,C,D)>::isValid() const
 {
-    return m_memento.isValid();
+    return Base::m_memento.isValid();
 }
 
 template<typename R,typename A,typename B,typename C,typename D>
 __forceinline R Delegate<R(A,B,C,D)>::operator()(A a, B b, C c, D d)
 {
     DelegateType invoker;
-    invoker.SetMemento(m_memento);
+    invoker.SetMemento(Base::m_memento);
     return invoker(a, b, c, d);
 }
 

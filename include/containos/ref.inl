@@ -50,7 +50,7 @@ namespace internal {
     template<typename T>
     struct has_reference_override
     {
-        template<typename C> static true_type test(decltype(&T::addReference));
+        template<typename C> static true_type test(decltype(&C::addReference));
         template<typename C> static false_type test(...);
         typedef decltype(test<T>(nullptr)) type;
         static const bool value = type::value;

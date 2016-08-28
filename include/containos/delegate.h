@@ -42,6 +42,7 @@ template<typename R>
 struct Delegate<R()> : private internal::DelegateBase<Delegate<R()> >
 {
     typedef fastdelegate::FastDelegate0<R> DelegateType;
+    typedef internal::DelegateBase<Delegate<R()> > Base;
 
     Delegate();
     Delegate(Delegate&& other);
@@ -58,6 +59,7 @@ template<typename R,typename A>
 struct Delegate<R(A)> : private internal::DelegateBase<Delegate<R(A)> >
 {
     typedef fastdelegate::FastDelegate1<A,R> DelegateType;
+    typedef internal::DelegateBase<Delegate<R(A)> > Base;
 
     Delegate();
     Delegate(Delegate&& other);
@@ -74,6 +76,7 @@ template<typename R,typename A,typename B>
 struct Delegate<R(A,B)> : private internal::DelegateBase<Delegate<R(A,B)> >
 {
     typedef fastdelegate::FastDelegate2<A,B,R> DelegateType;
+    typedef internal::DelegateBase<Delegate<R(A,B)> > Base;
 
     Delegate();
     Delegate(Delegate&& other);
@@ -90,6 +93,7 @@ template<typename R,typename A,typename B, typename C>
 struct Delegate<R(A,B,C)> : private internal::DelegateBase<Delegate<R(A,B,C)> >
 {
     typedef fastdelegate::FastDelegate3<A,B,C,R> DelegateType;
+    typedef internal::DelegateBase<Delegate<R(A,B,C)> > Base;
 
     Delegate();
     Delegate(Delegate&& other);
@@ -106,6 +110,7 @@ template<typename R,typename A,typename B, typename C,typename D>
 struct Delegate<R(A,B,C,D)> : private internal::DelegateBase<Delegate<R(A,B,C,D)> >
 {
     typedef fastdelegate::FastDelegate4<A,B,C,D,R> DelegateType;
+    typedef internal::DelegateBase<Delegate<R(A,B,C,D)> > Base;
 
     Delegate();
     Delegate(Delegate&& other);
