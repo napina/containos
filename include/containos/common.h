@@ -35,7 +35,11 @@ IN THE SOFTWARE.
 #   define CONTAINOS_WCHAR_IS uint32_t
 #elif defined(__APPLE__) && defined(__MACH__)
 #   define CONTAINOS_MACOSX
-#   define CONTAINOS_ARCH32
+#   if defined(__LP64__)
+#		define CONTAINOS_ARCH64
+#	else
+#		define CONTAINOS_ARCH32
+#	endif
 #   define CONTAINOS_WCHAR_IS uint32_t
 #elif defined(_WIN64) || defined(_M_X64)
 #   define CONTAINOS_WINDOWS
